@@ -1,91 +1,51 @@
 import Link from 'next/link'
-import { Mail } from 'lucide-react'
 import { siteConfig } from '@/lib/content/site-config'
 
-// Inline SVGs for brand icons not available in lucide-react 1.x
-function IconGithub({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z" />
-    </svg>
-  )
-}
-
-function IconX({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.912-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117Z" />
-    </svg>
-  )
-}
-
-function IconLinkedin({ size = 18 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-    </svg>
-  )
-}
+// ══════════════════════════════════════════════════════════════════════════════
+// THE CONCEPT: THE SIGNATURE
+//
+// The credits. The final physical element of the homepage.
+// Not a standard generic grid. An asymmetrical, meticulously composed archive.
+//
+// The CTA ended the conceptual journey. The footer exists purely to anchor
+// the brand. The massive edge-to-edge KRYPTON SVG creates an undeniable
+// final baseline, resolving in a single tiny cyan point.
+//
+// Silence.
+// ══════════════════════════════════════════════════════════════════════════════
 
 export function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="border-t border-border bg-base" aria-label="Site footer">
-      <div className="container-site py-16">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-3 lg:grid-cols-4">
-          {/* Brand */}
-          <div className="lg:col-span-2">
-            <Link
-              href="/"
-              className="font-mono text-sm tracking-[0.2em] uppercase text-fg hover:text-accent transition-colors"
-            >
-              {siteConfig.name}
-            </Link>
-            <p className="mt-4 text-sm text-fg-muted max-w-xs leading-relaxed">
-              {siteConfig.description}
-            </p>
-            <div className="mt-6 flex items-center gap-4">
-              <a
-                href={siteConfig.contact.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-fg-subtle hover:text-fg transition-colors"
-                aria-label="GitHub"
-              >
-                <IconGithub size={18} />
-              </a>
-              <a
-                href={siteConfig.contact.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-fg-subtle hover:text-fg transition-colors"
-                aria-label="X (formerly Twitter)"
-              >
-                <IconX size={18} />
-              </a>
-              <a
-                href={siteConfig.contact.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-fg-subtle hover:text-fg transition-colors"
-                aria-label="LinkedIn"
-              >
-                <IconLinkedin size={18} />
-              </a>
-            </div>
-          </div>
+    <footer className="bg-base relative overflow-hidden w-full flex flex-col pt-32 md:pt-48 pb-8 px-6 md:px-12 border-t border-fg-subtle/10 text-fg">
+      
+      <div className="w-full flex flex-col md:flex-row justify-between items-end mb-24 md:mb-32 max-w-[1800px] mx-auto">
+        
+        {/* ── LEFT: SYSTEM INDICATOR ── */}
+        <div className="hidden md:flex flex-col items-start gap-4 mb-8 md:mb-0">
+          <div className="w-px h-32 bg-gradient-to-b from-cyan-400/50 to-transparent" />
+          <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-cyan-400">
+            [ End of System ]
+          </span>
+        </div>
 
-          {/* Navigation */}
-          <div>
-            <h3 className="text-xs font-mono tracking-widest uppercase text-fg-subtle mb-4">Navigation</h3>
+        {/* ── RIGHT: THE ARCHIVE ── */}
+        <div className="flex flex-col md:flex-row gap-16 md:gap-32 w-full md:w-auto border-t border-fg-subtle/20 pt-12 md:border-none md:pt-0">
+          
+          {/* Index / Navigation */}
+          <div className="flex flex-col gap-8">
+            <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-fg-subtle">
+              System Index
+            </span>
             <ul className="flex flex-col gap-3">
-              {siteConfig.footerLinks.map((link) => (
+              {siteConfig.footerLinks.map(link => (
                 <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="text-sm text-fg-muted hover:text-fg transition-colors"
+                  <Link 
+                    href={link.href} 
+                    className="text-sm text-fg-muted hover:text-fg transition-colors duration-300 flex items-center group py-1 outline-none focus-visible:text-cyan-400"
                   >
+                    <span className="w-0 h-px bg-cyan-400 transition-all duration-300 ease-out mr-0 group-hover:w-3 group-hover:mr-3" />
                     {link.label}
                   </Link>
                 </li>
@@ -93,37 +53,88 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
-          <div>
-            <h3 className="text-xs font-mono tracking-widest uppercase text-fg-subtle mb-4">Contact</h3>
-            <a
-              href={`mailto:${siteConfig.contact.email}`}
-              className="flex items-center gap-2 text-sm text-fg-muted hover:text-fg transition-colors"
-            >
-              <Mail size={14} />
-              {siteConfig.contact.email}
-            </a>
-            <div className="mt-6">
-              <Link
-                href="/contact"
-                className="text-sm text-accent hover:text-accent-light transition-colors"
-              >
-                Start a project →
-              </Link>
-            </div>
+          {/* Network / Contact */}
+          <div className="flex flex-col gap-8">
+            <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-fg-subtle">
+              Network
+            </span>
+            <ul className="flex flex-col gap-3">
+              <li>
+                <a 
+                  href={`mailto:${siteConfig.contact.email}`} 
+                  className="text-sm text-fg-muted hover:text-fg transition-colors duration-300 flex items-center group py-1 outline-none focus-visible:text-cyan-400"
+                >
+                  <span className="w-0 h-px bg-cyan-400 transition-all duration-300 ease-out mr-0 group-hover:w-3 group-hover:mr-3" />
+                  Direct / Email
+                </a>
+              </li>
+              <li>
+                <a 
+                  href={siteConfig.contact.github} 
+                  target="_blank" rel="noopener noreferrer"
+                  className="text-sm text-fg-muted hover:text-fg transition-colors duration-300 flex items-center group py-1 outline-none focus-visible:text-cyan-400"
+                >
+                  <span className="w-0 h-px bg-cyan-400 transition-all duration-300 ease-out mr-0 group-hover:w-3 group-hover:mr-3" />
+                  GitHub
+                </a>
+              </li>
+              <li>
+                <a 
+                  href={siteConfig.contact.twitter} 
+                  target="_blank" rel="noopener noreferrer"
+                  className="text-sm text-fg-muted hover:text-fg transition-colors duration-300 flex items-center group py-1 outline-none focus-visible:text-cyan-400"
+                >
+                  <span className="w-0 h-px bg-cyan-400 transition-all duration-300 ease-out mr-0 group-hover:w-3 group-hover:mr-3" />
+                  X (Twitter)
+                </a>
+              </li>
+              <li>
+                <a 
+                  href={siteConfig.contact.linkedin} 
+                  target="_blank" rel="noopener noreferrer"
+                  className="text-sm text-fg-muted hover:text-fg transition-colors duration-300 flex items-center group py-1 outline-none focus-visible:text-cyan-400"
+                >
+                  <span className="w-0 h-px bg-cyan-400 transition-all duration-300 ease-out mr-0 group-hover:w-3 group-hover:mr-3" />
+                  LinkedIn
+                </a>
+              </li>
+            </ul>
           </div>
-        </div>
 
-        {/* Bottom bar */}
-        <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <p className="text-xs text-fg-subtle">
-            © {year} {siteConfig.name}. All rights reserved.
-          </p>
-          <p className="text-xs text-fg-subtle">
-            Engineered with precision.
-          </p>
         </div>
       </div>
+
+      {/* ── THE SIGNATURE ── */}
+      <div className="w-full flex flex-col items-center max-w-[1800px] mx-auto">
+        <div className="w-full h-px bg-fg-subtle/10 mb-8" />
+        
+        {/* Massive edge-to-edge SVG Wordmark guarantees perfect scaling on all devices */}
+        <div className="w-full select-none" aria-hidden="true">
+          <svg viewBox="0 0 1000 160" className="w-full h-auto block" preserveAspectRatio="xMidYMid meet">
+            <text 
+              x="500" 
+              y="145" 
+              textAnchor="middle" 
+              className="text-[175px] font-light tracking-[-0.04em] uppercase fill-fg"
+            >
+              {siteConfig.name}
+            </text>
+          </svg>
+        </div>
+        
+        {/* ── THE FINAL METADATA ── */}
+        <div className="w-full flex flex-col md:flex-row justify-between items-center gap-6 mt-8 md:mt-12 px-2">
+          <span className="font-mono text-[10px] tracking-[0.2em] text-fg-muted uppercase text-center md:text-left">
+            © {year} {siteConfig.name} Digital Systems
+          </span>
+          <span className="font-mono text-[10px] tracking-[0.2em] text-fg-muted uppercase flex items-center justify-center gap-3">
+            Engineered with precision
+            {/* The final cyan point */}
+            <span className="inline-block w-1.5 h-1.5 bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+          </span>
+        </div>
+      </div>
+
     </footer>
   )
 }

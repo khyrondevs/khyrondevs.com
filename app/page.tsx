@@ -4,6 +4,7 @@ import { ServicesSection } from '@/components/sections/home/services'
 import { WorkSection } from '@/components/sections/home/work'
 import { WhyUsSection } from '@/components/sections/home/why-us'
 import { TechStackSection } from '@/components/sections/home/tech-stack'
+import { AboutSection } from '@/components/sections/home/about-section'
 import { CtaSection } from '@/components/sections/home/cta-section'
 import { ProcessSectionDynamic } from '@/components/sections/home/process-section-dynamic'
 import { SceneTransition } from '@/components/ui/scene-transition'
@@ -24,6 +25,8 @@ export default function HomePage() {
       <ProcessSectionDynamic />
       <SceneTransition type="line-drop" />
       <TechStackSection />
+      <SceneTransition type="grid-fade" />
+      <AboutSection />
       <CtaSection />
     </>
   )

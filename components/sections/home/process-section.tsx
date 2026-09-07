@@ -1,317 +1,526 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { useReducedMotion } from '@/hooks/use-reduced-motion'
-import { processSteps } from '@/lib/content/process-steps'
+import { useRef } from 'react'
+import { motion, useScroll, useTransform, MotionValue } from 'motion/react'
 
-const useIsomorphicLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
+// ══════════════════════════════════════════════════════════════════════════════
+// THE CONCEPT: ONE SIGNAL THAT BECOMES A SYSTEM.
+//
+// A single horizontal line is the protagonist. It starts whole, fragments into
+// noise (the unknown problem), gets pulled back into focus (discover), then
+// multiplies into precise parallel structure (architect), pulses with data
+// (build), gets struck by a rogue signal that causes turbulence (validate),
+// then all lines except one fade away — the center line alone, luminous,
+// certain — and it drops out the bottom of the viewport (ship).
+//
+// The same element appears in every phase. The visitor subconsciously
+// recognizes it. By the end, they've watched something survive its own
+// transformation.
+// ══════════════════════════════════════════════════════════════════════════════
 
-export function ProcessSection() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  
-  // Deterministic refs
-  const textStepRefs = useRef<(HTMLDivElement | null)[]>([])
-  const detailRefs = useRef<(HTMLLIElement | null)[][]>([])
-  const illStepRefs = useRef<(HTMLDivElement | null)[]>([])
-  
-  const reducedMotion = useReducedMotion()
+const N     = 18       // number of lines in the system
+const VW    = 1000     // SVG coordinate width
+const VH    = 900      // SVG coordinate height
+const GT    = 195      // grid top Y
+const GB    = 705      // grid bottom Y
+const GS    = (GB - GT) / (N - 1)
+const MID   = Math.floor(N / 2)   // 9 — the protagonist line
+const ROGUE = MID - 2             // 7 — the line that gets hit during validate
 
-  // Initialize the 2D array for detail refs
-  if (detailRefs.current.length === 0) {
-    detailRefs.current = processSteps.map(() => [])
-  }
+// Deterministic scatter positions — no Math.random()
+const CHAOS: number[] = Array.from({ length: N }, (_, i) => ((i * 137 + 71) % (VH - 40)) + 20)
+const GRID:  number[] = Array.from({ length: N }, (_, i) => GT + i * GS)
 
-  useIsomorphicLayoutEffect(() => {
-    if (reducedMotion || !containerRef.current || typeof window === 'undefined') return
+// ── SCROLL TIMING ─────────────────────────────────────────────────────────────
+//
+//  0.00 – 0.03  lines materialise from nothing (chaos positions)
+//  0.03 – 0.18  DISCOVER: scattered lines converge to a precise grid
+//  0.18 – 0.35  ARCHITECT: grid breathes — guide rails appear, structure sets
+//  0.35 – 0.55  BUILD: a wave of light pulses left→right through every line
+//  0.55 – 0.75  VALIDATE: a rogue signal strikes, turbulence, then recovery
+//  0.75 – 0.93  SHIP: all lines except MID collapse to center and vanish
+//  0.93 – 1.00  EXIT: center line alone, glowing, drops out the bottom
+//
+const D2 = 0.03; const D3 = 0.18   // chaos → grid
+const B0 = 0.35; const B1 = 0.55   // build pulses
+const V0 = 0.55; const V1 = 0.75   // validate
+const S0 = 0.75; const S1 = 0.93   // ship
 
-    gsap.registerPlugin(ScrollTrigger)
-    
-    const ctx = gsap.context(() => {
-      // 1. Initial State Setup
-      textStepRefs.current.forEach((step, i) => {
-        if (!step) return
-        gsap.set(step, { autoAlpha: i === 0 ? 1 : 0, y: i === 0 ? 0 : 30 })
-      })
-      
-      illStepRefs.current.forEach((ill, i) => {
-        if (!ill) return
-        gsap.set(ill, { autoAlpha: i === 0 ? 1 : 0, scale: i === 0 ? 1 : 0.95 })
-      })
+// ══════════════════════════════════════════════════════════════════════════════
+// LINE ACTOR  — one line, its complete life story in one useTransform per axis
+// ══════════════════════════════════════════════════════════════════════════════
 
-      detailRefs.current.forEach((details, i) => {
-        details.forEach((detail) => {
-          if (!detail) return
-          gsap.set(detail, { autoAlpha: i === 0 ? 1 : 0, x: i === 0 ? 0 : -15 })
-        })
-      })
+function LineActor({ i, p }: { i: number; p: MotionValue<number> }) {
+  const isMid = i === MID
 
-      // 2. Timeline construction
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top top',
-          end: `+=${processSteps.length * 100}%`,
-          scrub: 1,
-          pin: true,
-          pinSpacing: true,
-        }
-      })
+  // Turbulence amplitude: lines nearest the rogue hit feel the most
+  const amp = Math.max(0, 26 - Math.abs(i - ROGUE) * 3.0)
 
-      // 3. Sequence
-      for (let i = 0; i < processSteps.length; i++) {
-        const step = textStepRefs.current[i]
-        const ill = illStepRefs.current[i]
-        
-        // HOLD phase
-        tl.to(step, { duration: 1 }) // Empty tween to hold duration
-        
-        // TRANSITION phase to next step
-        if (i < processSteps.length - 1) {
-          const nextStep = textStepRefs.current[i + 1]
-          const nextIll = illStepRefs.current[i + 1]
-          const nextDetails = detailRefs.current[i + 1].filter(Boolean)
-          
-          // Outgoing Text & Illustration
-          tl.to(step, { autoAlpha: 0, y: -30, duration: 1 }, `transition-${i}`)
-          tl.to(ill, { autoAlpha: 0, scale: 1.05, duration: 1 }, `transition-${i}`)
-          
-          // Incoming Text & Illustration
-          tl.to(nextStep, { autoAlpha: 1, y: 0, duration: 1 }, `transition-${i}`)
-          tl.to(nextIll, { autoAlpha: 1, scale: 1, duration: 1 }, `transition-${i}`)
-          
-          // Incoming Details Stagger
-          if (nextDetails.length > 0) {
-            tl.to(nextDetails, {
-              autoAlpha: 1,
-              x: 0,
-              duration: 0.5,
-              stagger: 0.15
-            }, `transition-${i}+=0.3`)
-          }
-        }
-      }
-    }, containerRef)
+  // ── COMPLETE Y JOURNEY (single useTransform — one element, one story) ──────
+  // Phase sequence: chaos → grid (architect/build hold) → turbulence → collapse
+  // V0+0.185 = 0.735, just before S0=0.75 — turbulence settles at ship start
+  const y = useTransform(p,
+    [D2, D3,     V0, V0+0.04, V0+0.09, V0+0.14, V0+0.185, S0,      S0+0.13],
+    [CHAOS[i], GRID[i], GRID[i], GRID[i]+amp, GRID[i]-amp*0.55, GRID[i]+amp*0.22, GRID[i]-amp*0.08, GRID[i], GRID[MID]]
+  )
 
-    return () => ctx.revert()
-  }, [reducedMotion])
+  // ── OPACITY ───────────────────────────────────────────────────────────────
+  const opacity = useTransform(p,
+    isMid ? [0, D2 + 0.03]               : [0, D2 + 0.03, S0, S0 + 0.11],
+    isMid ? [0, 1]                       : [0, 1,          1,  0]
+  )
 
-  // Reduced motion: static stack
-  if (reducedMotion) {
-    return (
-      <section className="section-padding border-t border-border bg-base">
-        <div className="container-site">
-          <div className="mb-16">
-            <span className="font-mono text-xs tracking-widest uppercase text-accent">Methodology</span>
-            <h2 className="mt-3 text-4xl md:text-5xl font-light text-fg">How we work.</h2>
-          </div>
-          <div className="flex flex-col gap-24">
-            {processSteps.map((step) => (
-              <div key={step.id} className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
-                <div>
-                  <span className="font-mono text-xs text-accent tracking-[0.2em] uppercase block mb-4">
-                    Phase 0{step.step} — {step.id}
-                  </span>
-                  <h3 className="text-3xl md:text-4xl font-light text-fg mb-4">{step.title}</h3>
-                  <p className="text-lg text-fg-muted leading-relaxed mb-8">{step.description}</p>
-                  <ul className="flex flex-col gap-4">
-                    {step.details.map((d, i) => (
-                      <li key={i} className="flex items-start gap-4 text-sm md:text-[1rem] text-fg-muted font-light">
-                        <span className="font-mono text-accent mt-1 opacity-50 shrink-0">{'->'}</span>
-                        <span>{d}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="relative h-64 md:h-96 w-full bg-surface/30 border border-border/50">
-                  <ProcessIllustration stepId={step.id} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    )
-  }
+  // ── STROKE COLOR — evolves through all five phases ────────────────────────
+  // Keyframe sequence must be strictly monotonically increasing.
+  // V0+0.185 = 0.735 < S0 = 0.75 ✓
+  const stroke = useTransform(p, [
+    D2,   D3,
+    B0,   B0+0.03, B1,
+    V0,   V0+0.04, V0+0.185,
+    S0,   S0+0.13,
+  ], [
+    'rgba(255,255,255,0.04)',                                          // chaos: almost invisible
+    'rgba(255,255,255,0.16)',                                          // grid set: soft white
+    'rgba(255,255,255,0.16)',
+    isMid ? 'rgba(59,130,246,0.95)' : 'rgba(59,130,246,0.42)',        // build activates: blue
+    'rgba(59,130,246,0.25)',                                           // build tail
+    'rgba(59,130,246,0.25)',
+    i === ROGUE ? 'rgba(239,68,68,0.95)' : 'rgba(34,211,238,0.52)',   // validate: rogue turns red
+    i === ROGUE ? 'rgba(34,211,238,0.52)' : 'rgba(34,211,238,0.38)',  // recovery
+    'rgba(255,255,255,0.14)',                                          // ship calm
+    isMid ? 'rgba(34,211,238,1.0)' : 'rgba(255,255,255,0.14)',        // center line becomes luminous
+  ])
 
-  function ProcessIllustration({ stepId }: { stepId: string }) {
-    switch (stepId.toLowerCase()) {
-      case 'discover':
-        return (
-          <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-            <div className="absolute w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.05)_0%,transparent_50%)]" />
-            <div className="relative w-full h-full flex items-center justify-center">
-              {/* Radar/Scanning Field */}
-              <div className="absolute w-[80%] h-[80%] border border-accent/10 rounded-full" />
-              <div className="absolute w-[60%] h-[60%] border border-accent/20 rounded-full" />
-              <div className="absolute w-[40%] h-[40%] border border-accent/30 rounded-full border-dashed animate-[spin_20s_linear_infinite]" />
-              
-              {/* Scanning Beam */}
-              <div className="absolute w-[40%] h-[1px] bg-gradient-to-r from-transparent via-accent/40 to-accent right-[10%] top-1/2 origin-left animate-[spin_4s_linear_infinite]" />
-              
-              {/* Focal Nodes */}
-              <div className="absolute top-[30%] left-[30%] w-2 h-2 bg-accent/50 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)] animate-pulse" />
-              <div className="absolute bottom-[40%] right-[30%] w-1.5 h-1.5 bg-accent/40 rounded-full animate-[pulse_3s_ease-in-out_infinite]" />
-            </div>
-          </div>
-        )
-      case 'design':
-        return (
-          <div className="absolute inset-0 p-8 flex items-center justify-center">
-            <div className="w-full h-full relative perspective-[1000px]">
-              {/* Architecture Grid forming */}
-              <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 gap-1 opacity-60 rotate-x-[20deg] rotate-y-[-10deg] transform-style-3d">
-                {Array.from({ length: 16 }).map((_, i) => (
-                  <div key={i} className="relative border border-accent/10 bg-accent/[0.02]">
-                    <div className="absolute inset-0 border border-accent/30 scale-0 group-data-[active=true]:animate-[ping_2s_ease-out_forwards]" style={{ animationDelay: `${(i % 4) * 100}ms` }} />
-                    {(i === 5 || i === 10 || i === 15) && (
-                      <div className="absolute inset-0 bg-accent/10 border border-accent/40 shadow-[inset_0_0_15px_rgba(59,130,246,0.2)]" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )
-      case 'build':
-        return (
-          <div className="absolute inset-0 p-8 flex flex-col justify-between overflow-hidden font-mono text-[10px] text-accent/60">
-            {/* System Execution View */}
-            <div className="w-full h-full border border-accent/20 bg-surface/80 backdrop-blur-md p-6 relative flex flex-col">
-              <div className="flex justify-between items-center border-b border-accent/20 pb-4 mb-4">
-                <span className="uppercase tracking-widest text-accent/80">KRYPTON.SYS // BUILD</span>
-                <span className="animate-pulse bg-accent w-2 h-2" />
-              </div>
-              <div className="flex-1 space-y-2 opacity-80">
-                <div className="animate-[fade-in_0.5s_ease-out_forwards]">❯ allocating architectural primitives</div>
-                <div className="animate-[fade-in_0.5s_ease-out_0.2s_forwards] text-accent/40">  [success] memory mapped</div>
-                <div className="animate-[fade-in_0.5s_ease-out_0.4s_forwards]">❯ compiling production assets</div>
-                <div className="animate-[fade-in_0.5s_ease-out_0.6s_forwards] text-accent/40">  [success] tree shaken</div>
-                <div className="animate-[fade-in_0.5s_ease-out_0.8s_forwards]">❯ establishing async connections</div>
-                <div className="animate-[pulse_1s_ease-in-out_infinite] pt-4 text-accent">❯ execution loop active_</div>
-              </div>
-              <div className="mt-auto h-[1px] w-full bg-accent/20 relative">
-                <div className="absolute inset-y-0 left-0 bg-accent shadow-[0_0_10px_rgba(59,130,246,0.8)] animate-[scale-x_2s_ease-out_infinite_alternate]" style={{ width: '80%' }} />
-              </div>
-            </div>
-          </div>
-        )
-      case 'ship':
-        return (
-          <div className="absolute inset-0 flex items-center justify-center">
-            {/* Deployment Signal / Artifact */}
-            <div className="relative w-48 h-48 flex items-center justify-center">
-              <div className="absolute inset-0 border border-accent/30 rounded-full animate-[ping_3s_ease-out_infinite]" />
-              <div className="absolute inset-4 border border-accent/20 rounded-full animate-[spin_10s_linear_infinite_reverse]" />
-              <div className="absolute inset-10 border border-accent/10 rounded-full" />
-              
-              <div className="relative z-10 w-16 h-16 bg-accent border border-white/20 shadow-[0_0_40px_rgba(59,130,246,0.6)] rotate-45 flex items-center justify-center">
-                <div className="w-8 h-8 border border-white/40 bg-white/10" />
-              </div>
-            </div>
-            {/* Vertical locking beams */}
-            <div className="absolute top-0 bottom-0 w-[1px] bg-accent/20" />
-            <div className="absolute left-0 right-0 h-[1px] bg-accent/20" />
-          </div>
-        )
-      default:
-        return null
-    }
-  }
+  // ── STROKE WIDTH — center line grows during ship phase ───────────────────
+  const sw = useTransform(p,
+    isMid ? [S0+0.11, S0+0.22] : [0, 1],
+    isMid ? [1, 2.5]           : [1, 1]
+  )
+
+  // ── BUILD PULSE — each line fires in sequence (staggered wave) ───────────
+  const pS      = B0 + (i / N) * 0.12
+  const pE      = Math.min(pS + 0.12, B1)
+  const pulseX  = useTransform(p, [pS, pE], [-90, VW + 90])
+  const pulseOp = useTransform(p, [B0, B0+0.02, B1-0.02, B1], [0, 1, 1, 0])
+
+  // ── CENTER LINE BLOOM — ship phase glow ──────────────────────────────────
+  const midGlow = useTransform(p,
+    isMid ? [S0+0.09, S0+0.20] : [0, 1],
+    isMid ? [0, 1]             : [0, 0]
+  )
 
   return (
-    <section className="relative bg-base border-t border-border" ref={containerRef}>
-      <div className="min-h-screen flex items-center py-24">
-        <div className="container-site w-full">
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-24 items-stretch">
-            
-            {/* Left Column: Content */}
-            <div className="lg:col-span-5 flex flex-col justify-center">
-              {/* Persistent Header */}
-              <div className="mb-16">
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="h-[1px] w-8 bg-accent" />
-                  <span className="font-mono text-xs tracking-[0.2em] uppercase text-accent">
-                    Methodology
-                  </span>
-                </div>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-fg leading-[1.1] tracking-[-0.02em]">
-                  How we work.
-                </h2>
-              </div>
-              
-              {/* Steps Crossfade Container */}
-              <div className="relative grid grid-cols-1 grid-rows-1">
-                {processSteps.map((step, i) => (
-                  <div
-                    key={step.id}
-                    ref={(el) => {
-                      textStepRefs.current[i] = el
-                    }}
-                    className="col-start-1 row-start-1 flex flex-col"
-                    style={{ zIndex: processSteps.length - i }}
-                  >
-                    <span className="font-mono text-[10px] text-accent tracking-[0.2em] uppercase mb-4 block">
-                      Phase 0{step.step} — {step.id}
-                    </span>
-                    <h3 className="text-3xl md:text-4xl font-light text-fg leading-[1.1] mb-4">
-                      {step.title}
-                    </h3>
-                    <p className="text-lg text-fg-muted font-light leading-relaxed mb-10">
-                      {step.description}
-                    </p>
-                    
-                    <ul className="flex flex-col gap-4">
-                      {step.details.map((detail, j) => (
-                        <li 
-                          key={j} 
-                          ref={(el) => {
-                            if (detailRefs.current[i]) {
-                              detailRefs.current[i][j] = el
-                            }
-                          }}
-                          className="flex items-start gap-4 text-sm md:text-[1rem] text-fg-muted font-light"
-                        >
-                          <span className="font-mono text-accent mt-1 opacity-50 shrink-0">
-                            {'->'}
-                          </span>
-                          <span>{detail}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            {/* Right Column: Illustration Window */}
-            <div className="lg:col-span-7 relative min-h-[400px] lg:min-h-[600px] w-full">
-              <div className="absolute inset-0 bg-surface/30 border border-border/50 backdrop-blur-sm overflow-hidden flex items-center justify-center">
-                {/* Crosshairs & Accents */}
-                <div className="absolute top-4 left-4 w-4 h-4 border-t border-l border-accent/30" />
-                <div className="absolute top-4 right-4 w-4 h-4 border-t border-r border-accent/30" />
-                <div className="absolute bottom-4 left-4 w-4 h-4 border-b border-l border-accent/30" />
-                <div className="absolute bottom-4 right-4 w-4 h-4 border-b border-r border-accent/30" />
-                
-                {processSteps.map((step, i) => (
-                  <div
-                    key={`ill-${step.id}`}
-                    ref={(el) => {
-                      illStepRefs.current[i] = el
-                    }}
-                    className="absolute inset-0 w-full h-full flex items-center justify-center p-8 lg:p-16 pointer-events-none"
-                    style={{ zIndex: processSteps.length - i }}
-                  >
-                    <ProcessIllustration stepId={step.id} />
-                  </div>
-                ))}
-              </div>
-            </div>
+    <motion.g style={{ y, opacity }}>
+      {/* The line itself */}
+      <motion.line
+        x1={0} y1={0} x2={VW} y2={0}
+        style={{ stroke, strokeWidth: sw }}
+      />
+      {/* Build pulse particle */}
+      <motion.rect
+        y={-1} width={90} height={2} rx={1}
+        fill="rgba(34,211,238,0.95)"
+        style={{
+          x: pulseX,
+          opacity: pulseOp,
+          filter: 'drop-shadow(0 0 5px rgba(34,211,238,0.8))',
+        }}
+      />
+      {/* Center line ship-phase bloom overlay */}
+      {isMid && (
+        <motion.line
+          x1={0} y1={0} x2={VW} y2={0}
+          stroke="rgba(34,211,238,0.55)"
+          strokeWidth={2}
+          style={{
+            opacity: midGlow,
+            filter: 'drop-shadow(0 0 12px rgba(34,211,238,1))',
+          }}
+        />
+      )}
+    </motion.g>
+  )
+}
 
+// ══════════════════════════════════════════════════════════════════════════════
+// ROGUE SIGNAL — the unexpected input that tests the system during VALIDATE
+// ══════════════════════════════════════════════════════════════════════════════
+
+function RogueSignal({ p }: { p: MotionValue<number> }) {
+  const op = useTransform(p, [V0, V0+0.015, V0+0.085, V0+0.10], [0, 1, 1, 0])
+  const rx = useTransform(p, [V0, V0+0.085], [-70, VW + 70])
+  // Travels from top of grid to the rogue line's position — a diagonal trajectory
+  const ry = useTransform(p, [V0, V0+0.085], [GRID[0] - 40, GRID[ROGUE]])
+  return (
+    <motion.g style={{ opacity: op }}>
+      <motion.circle
+        r={5}
+        fill="rgba(239,68,68,1)"
+        style={{
+          x: rx, y: ry,
+          filter: 'drop-shadow(0 0 10px rgba(239,68,68,1))',
+        }}
+      />
+      {/* Trail */}
+      <motion.line
+        x1={-32} y1={0} x2={0} y2={0}
+        stroke="rgba(239,68,68,0.45)"
+        strokeWidth={1.5}
+        style={{ x: rx, y: ry }}
+      />
+    </motion.g>
+  )
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ARCHITECT GUIDE RAILS — precision markers that appear during the grid phase
+// These make the moment of ORDER feel intentional, not accidental
+// ══════════════════════════════════════════════════════════════════════════════
+
+function ArchitectGuides({ p }: { p: MotionValue<number> }) {
+  const op = useTransform(p, [0.20, 0.26, 0.31, 0.35], [0, 0.35, 0.35, 0])
+  return (
+    <motion.g style={{ opacity: op }}>
+      {/* Vertical measurement guides */}
+      {[200, 400, 500, 600, 800].map(x => (
+        <line key={x}
+          x1={x} y1={GT - 20} x2={x} y2={GB + 20}
+          stroke="rgba(255,255,255,0.06)"
+          strokeDasharray="3 10"
+        />
+      ))}
+      {/* Horizontal boundary rails */}
+      <line x1={0} y1={GT - 20} x2={VW} y2={GT - 20} stroke="rgba(255,255,255,0.05)" />
+      <line x1={0} y1={GB + 20} x2={VW} y2={GB + 20} stroke="rgba(255,255,255,0.05)" />
+    </motion.g>
+  )
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SHIP EXIT BEAM — the center line drops out the bottom of the viewport
+// This is the literal handoff to the next section
+// ══════════════════════════════════════════════════════════════════════════════
+
+function ShipBeam({ p }: { p: MotionValue<number> }) {
+  const op     = useTransform(p, [S0+0.15, S0+0.22], [0, 1])
+  const scaleY = useTransform(p, [S0+0.15, S1], [0, 1])
+  // Top of beam is at the center line's Y position, scaled downward
+  const topPct = `${((GRID[MID] / VH) * 100).toFixed(2)}%`
+  return (
+    <motion.div
+      className="absolute w-[2px] bg-cyan-400"
+      style={{
+        opacity: op,
+        scaleY,
+        transformOrigin: 'top center',
+        top: topPct,
+        left: 'calc(50% - 1px)',
+        bottom: 0,
+        boxShadow: '0 0 24px 5px rgba(34,211,238,0.45)',
+      }}
+    />
+  )
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ATMOSPHERE — environmental light that responds to phase energy
+// ══════════════════════════════════════════════════════════════════════════════
+
+function Atmosphere({ p }: { p: MotionValue<number> }) {
+  // BUILD: gentle blue bloom as system activates
+  const blueOp = useTransform(p, [B0, B0+0.06, B1, V0], [0, 1, 1, 0])
+  // VALIDATE: brief red blush as the rogue signal causes distress
+  // V0+0.185 < V1 = 0.75 ✓
+  const redOp  = useTransform(p, [V0, V0+0.04, V0+0.185, V1], [0, 1, 1, 0])
+  return (
+    <>
+      <motion.div style={{ opacity: blueOp }}
+        className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_50%_50%,rgba(59,130,246,0.07)_0%,transparent_72%)]"
+      />
+      <motion.div style={{ opacity: redOp }}
+        className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_50%_50%,rgba(239,68,68,0.06)_0%,transparent_72%)]"
+      />
+    </>
+  )
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PHASE TEXT — the typography that names each transformation
+// Positioned to change the spatial composition per phase:
+//   DISCOVER: bottom-left (intimate, ground-level)
+//   ARCHITECT: bottom-right (structured, opposite corner)
+//   BUILD: top-center (elevated, above the action)
+//   VALIDATE: bottom-left again (same as discover — tension mirror)
+//   SHIP: centered (absolute stillness)
+// ══════════════════════════════════════════════════════════════════════════════
+
+function PhaseText({ p }: { p: MotionValue<number> }) {
+  const intro = useTransform(p, [0, 0.01, 0.05, 0.09], [0, 1, 1, 0])
+  const disc  = useTransform(p, [0.09, 0.13, 0.16, 0.20], [0, 1, 1, 0])
+  const arch  = useTransform(p, [0.20, 0.24, 0.31, 0.35], [0, 1, 1, 0])
+  const build = useTransform(p, [0.35, 0.39, 0.51, 0.55], [0, 1, 1, 0])
+  const val   = useTransform(p, [0.56, 0.60, 0.71, 0.75], [0, 1, 1, 0])
+  const ship  = useTransform(p, [0.76, 0.81, 0.91, 0.95], [0, 1, 1, 0])
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 select-none">
+
+      {/* ─── INTRO ─── */}
+      <motion.div style={{ opacity: intro }}
+        className="absolute flex flex-col items-center text-center px-8">
+        <span className="font-mono text-[10px] text-accent tracking-[0.4em] uppercase mb-10 block">
+          [ Process ]
+        </span>
+        <h2 className="text-[clamp(3.5rem,10vw,8rem)] font-light text-fg tracking-tighter uppercase leading-none">
+          HOW WE<br/>BUILD.
+        </h2>
+        <p className="text-[10px] text-fg-subtle font-light mt-10 tracking-[0.5em] uppercase">
+          scroll
+        </p>
+      </motion.div>
+
+      {/* ─── DISCOVER — bottom left ─── */}
+      <motion.div style={{ opacity: disc }}
+        className="absolute bottom-12 left-8 md:left-20 max-w-xs md:max-w-md">
+        <div className="font-mono text-[10px] text-accent tracking-[0.3em] mb-5 uppercase">
+          01 / Discover
+        </div>
+        <h3 className="text-[clamp(2.2rem,7vw,5rem)] font-light text-fg tracking-tighter mb-5 uppercase leading-[0.9]">
+          THE<br/>PROBLEM.
+        </h3>
+        <p className="text-sm md:text-base text-fg-muted font-light leading-relaxed">
+          Understand the real problem before defining the solution. This is
+          where expensive mistakes are caught cheaply.
+        </p>
+      </motion.div>
+
+      {/* ─── ARCHITECT — bottom right ─── */}
+      <motion.div style={{ opacity: arch }}
+        className="absolute bottom-12 right-8 md:right-20 max-w-xs md:max-w-md text-right">
+        <div className="font-mono text-[10px] text-accent tracking-[0.3em] mb-5 uppercase">
+          02 / Architect
+        </div>
+        <h3 className="text-[clamp(2.2rem,7vw,5rem)] font-light text-fg tracking-tighter mb-5 uppercase leading-[0.9]">
+          THE<br/>SHAPE.
+        </h3>
+        <p className="text-sm md:text-base text-fg-muted font-light leading-relaxed">
+          System design, data models, and API contracts before a single line
+          of production code is written.
+        </p>
+      </motion.div>
+
+      {/* ─── BUILD — top center ─── */}
+      <motion.div style={{ opacity: build }}
+        className="absolute top-12 left-1/2 -translate-x-1/2 text-center w-full max-w-lg px-6">
+        <div className="font-mono text-[10px] text-accent tracking-[0.3em] mb-5 uppercase">
+          03 / Build
+        </div>
+        <h3 className="text-[clamp(2.2rem,7vw,5rem)] font-light text-fg tracking-tighter mb-5 uppercase leading-[0.9]">
+          MAKE IT REAL.
+        </h3>
+        <p className="text-sm md:text-base text-fg-muted font-light leading-relaxed">
+          Architecture becomes production-quality software. Weekly builds,
+          code review, observability from day one.
+        </p>
+      </motion.div>
+
+      {/* ─── VALIDATE — bottom left (mirrors Discover, creates tension) ─── */}
+      <motion.div style={{ opacity: val }}
+        className="absolute bottom-12 left-8 md:left-20 max-w-xs md:max-w-md">
+        <div className="font-mono text-[10px] text-red-400 tracking-[0.3em] mb-5 uppercase">
+          04 / Validate
+        </div>
+        <h3 className="text-[clamp(2.2rem,7vw,5rem)] font-light text-fg tracking-tighter mb-5 uppercase leading-[0.9]">
+          FIND<br/>OUT.
+        </h3>
+        <p className="text-sm md:text-base text-fg-muted font-light leading-relaxed">
+          We don&apos;t assume it works. We introduce real pressure and observe
+          how the system responds to things that shouldn&apos;t happen.
+        </p>
+      </motion.div>
+
+      {/* ─── SHIP — centered (stillness after all the motion) ─── */}
+      <motion.div style={{ opacity: ship }}
+        className="absolute flex flex-col items-center text-center px-8">
+        <div className="font-mono text-[10px] text-accent tracking-[0.3em] mb-5 uppercase">
+          05 / Ship
+        </div>
+        <h3 className="text-[clamp(2.2rem,7vw,5rem)] font-light text-fg tracking-tighter mb-5 uppercase leading-[0.9]">
+          PUT IT<br/>TO WORK.
+        </h3>
+        <p className="text-sm md:text-base text-fg-muted font-light leading-relaxed max-w-sm">
+          Deployment is planned, not improvised. Real users. Real environment.
+          The system is ready.
+        </p>
+      </motion.div>
+
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PROCESS CINEMATIC  — the desktop scroll experience
+// ══════════════════════════════════════════════════════════════════════════════
+
+function ProcessCinematic() {
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress: p } = useScroll({
+    target: ref,
+    offset: ['start start', 'end end'],
+  })
+
+  return (
+    <div ref={ref} className="relative h-[650vh] bg-base">
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
+        <Atmosphere p={p} />
+        <svg
+          viewBox={`0 0 ${VW} ${VH}`}
+          className="absolute inset-0 w-full h-full"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <ArchitectGuides p={p} />
+          {Array.from({ length: N }, (_, i) => (
+            <LineActor key={i} i={i} p={p} />
+          ))}
+          <RogueSignal p={p} />
+        </svg>
+        {/* ShipBeam is a div outside SVG — avoids SVG filter animation complexity */}
+        <ShipBeam p={p} />
+        <PhaseText p={p} />
+      </div>
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// STATIC VERSION — mobile and prefers-reduced-motion
+// Each phase shows a static SVG snapshot of what the line system looks like
+// in that state, so the visual language still comes through without animation
+// ══════════════════════════════════════════════════════════════════════════════
+
+type LinePattern = 'scattered' | 'grid' | 'active' | 'turbulent' | 'single'
+
+const STATIC_PHASES: {
+  num: string
+  phase: string
+  title: string
+  isValidate: boolean
+  desc: string
+  pattern: LinePattern
+}[] = [
+  {
+    num: '01', phase: 'Discover', title: 'THE PROBLEM.', isValidate: false,
+    desc: 'Understand the real problem before defining the solution. This is where expensive mistakes are caught cheaply.',
+    pattern: 'scattered',
+  },
+  {
+    num: '02', phase: 'Architect', title: 'THE SHAPE.', isValidate: false,
+    desc: 'System design, data models, and API contracts before a line of production code is written.',
+    pattern: 'grid',
+  },
+  {
+    num: '03', phase: 'Build', title: 'MAKE IT REAL.', isValidate: false,
+    desc: 'Turn architecture into production-quality software. Weekly builds, code review, observability from day one.',
+    pattern: 'active',
+  },
+  {
+    num: '04', phase: 'Validate', title: 'FIND OUT.', isValidate: true,
+    desc: "We don't assume it works. We introduce real pressure and observe how the system responds.",
+    pattern: 'turbulent',
+  },
+  {
+    num: '05', phase: 'Ship', title: 'PUT IT TO WORK.', isValidate: false,
+    desc: 'Deployment is planned, not improvised. Real users. Real environment. The system is ready.',
+    pattern: 'single',
+  },
+]
+
+const SCATTER_Y = [8, 22, 35, 48, 56, 64, 72, 80, 89, 15, 42, 67, 30, 58, 75, 20, 45, 93]
+const EVEN_Y    = Array.from({ length: 18 }, (_, i) => 12 + i * 4.4)
+
+function MiniLines({ pattern }: { pattern: LinePattern }) {
+  const positions = pattern === 'scattered' ? SCATTER_Y
+    : pattern === 'single' ? [50]
+    : EVEN_Y.slice(0, 14)
+
+  return (
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
+      {positions.map((y, li) => {
+        const isRogue  = pattern === 'turbulent' && li === 6
+        const turbDy   = isRogue ? 3 : 0
+        const isSingle = pattern === 'single'
+        const strokeC = isRogue
+          ? 'rgba(239,68,68,0.8)'
+          : pattern === 'active'
+            ? 'rgba(59,130,246,0.48)'
+            : isSingle
+              ? 'rgba(34,211,238,1)'
+              : pattern === 'turbulent'
+                ? 'rgba(34,211,238,0.35)'
+                : 'rgba(255,255,255,0.15)'
+        return (
+          <line key={li}
+            x1={0} y1={y + turbDy} x2={100} y2={y + turbDy}
+            stroke={strokeC}
+            strokeWidth={isSingle ? 0.6 : 0.22}
+          />
+        )
+      })}
+    </svg>
+  )
+}
+
+function ProcessStatic() {
+  return (
+    <div className="bg-base">
+      {STATIC_PHASES.map(ph => (
+        <div
+          key={ph.num}
+          className={`relative min-h-[65vh] flex flex-col justify-end overflow-hidden border-b ${
+            ph.isValidate ? 'border-red-500/20' : 'border-border/30'
+          }`}
+        >
+          {/* Phase-state line snapshot */}
+          <div className="absolute inset-0 pointer-events-none opacity-55">
+            <MiniLines pattern={ph.pattern} />
+          </div>
+
+          {/* Content */}
+          <div className="relative z-10 p-8 md:p-16">
+            <div className={`font-mono text-[10px] tracking-[0.3em] mb-5 uppercase ${ph.isValidate ? 'text-red-400' : 'text-accent'}`}>
+              {ph.num} / {ph.phase}
+            </div>
+            <h3 className="text-4xl md:text-5xl font-light text-fg tracking-tighter mb-5 uppercase">
+              {ph.title}
+            </h3>
+            <p className="text-base text-fg-muted font-light leading-relaxed max-w-xl">
+              {ph.desc}
+            </p>
           </div>
         </div>
+      ))}
+
+      {/* Exit beam */}
+      <div className="h-32 flex justify-center bg-base border-t border-border/30">
+        <div className="w-[2px] h-full bg-cyan-400/80 shadow-[0_0_15px_rgba(34,211,238,0.6)]" />
       </div>
-    </section>
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════════════════════════════════════════
+
+export function ProcessSection() {
+  return (
+    <>
+      <div className="hidden md:block md:motion-reduce:hidden">
+        <ProcessCinematic />
+      </div>
+      <div className="block md:hidden md:motion-reduce:block">
+        <ProcessStatic />
+      </div>
+    </>
   )
 }

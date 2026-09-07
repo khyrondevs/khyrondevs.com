@@ -2,9 +2,9 @@
 
 import dynamic from 'next/dynamic'
 
-// ProcessSection uses GSAP + ScrollTrigger which must not run on the server.
-// This client wrapper is the correct place to use dynamic() with ssr: false in Next.js 16.
+// We now use Framer Motion which is fully SSR compatible.
+// But we still export the dynamic wrapper to keep the file structure intact for the parent.
 export const ProcessSectionDynamic = dynamic(
   () => import('./process-section').then((m) => m.ProcessSection),
-  { ssr: false }
+  { ssr: true }
 )
