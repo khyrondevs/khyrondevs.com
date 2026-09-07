@@ -164,3 +164,13 @@ a {
   background-repeat: repeat;
   mix-blend-mode: overlay;
 }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-x {
+  from { width: 0%; opacity: 0; }
+  to { width: 100%; opacity: 1; }
+}

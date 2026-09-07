@@ -139,37 +139,80 @@ export function ProcessSection() {
     switch (stepId.toLowerCase()) {
       case 'discover':
         return (
-          <div className="absolute inset-0 flex items-center justify-center opacity-40">
-            <div className="w-full h-full border border-accent/20 rounded-full animate-ping [animation-duration:3s]" />
-            <div className="absolute w-24 h-24 border border-accent/40 rounded-full" />
-            <div className="absolute w-full h-[1px] bg-accent/20" />
-            <div className="absolute w-[1px] h-full bg-accent/20" />
+          <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+            <div className="absolute w-[200%] h-[200%] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.05)_0%,transparent_50%)]" />
+            <div className="relative w-full h-full flex items-center justify-center">
+              {/* Radar/Scanning Field */}
+              <div className="absolute w-[80%] h-[80%] border border-accent/10 rounded-full" />
+              <div className="absolute w-[60%] h-[60%] border border-accent/20 rounded-full" />
+              <div className="absolute w-[40%] h-[40%] border border-accent/30 rounded-full border-dashed animate-[spin_20s_linear_infinite]" />
+              
+              {/* Scanning Beam */}
+              <div className="absolute w-[40%] h-[1px] bg-gradient-to-r from-transparent via-accent/40 to-accent right-[10%] top-1/2 origin-left animate-[spin_4s_linear_infinite]" />
+              
+              {/* Focal Nodes */}
+              <div className="absolute top-[30%] left-[30%] w-2 h-2 bg-accent/50 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)] animate-pulse" />
+              <div className="absolute bottom-[40%] right-[30%] w-1.5 h-1.5 bg-accent/40 rounded-full animate-[pulse_3s_ease-in-out_infinite]" />
+            </div>
           </div>
         )
       case 'design':
         return (
-          <div className="absolute inset-0 grid grid-cols-4 grid-rows-3 gap-2 opacity-50">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div key={i} className={`border border-accent/20 ${i % 3 === 0 ? 'bg-accent/10' : 'bg-transparent'}`} />
-            ))}
+          <div className="absolute inset-0 p-8 flex items-center justify-center">
+            <div className="w-full h-full relative perspective-[1000px]">
+              {/* Architecture Grid forming */}
+              <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 gap-1 opacity-60 rotate-x-[20deg] rotate-y-[-10deg] transform-style-3d">
+                {Array.from({ length: 16 }).map((_, i) => (
+                  <div key={i} className="relative border border-accent/10 bg-accent/[0.02]">
+                    <div className="absolute inset-0 border border-accent/30 scale-0 group-data-[active=true]:animate-[ping_2s_ease-out_forwards]" style={{ animationDelay: `${(i % 4) * 100}ms` }} />
+                    {(i === 5 || i === 10 || i === 15) && (
+                      <div className="absolute inset-0 bg-accent/10 border border-accent/40 shadow-[inset_0_0_15px_rgba(59,130,246,0.2)]" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )
       case 'build':
         return (
-          <div className="absolute inset-0 flex flex-col gap-2 opacity-60 font-mono text-[8px] sm:text-[10px] text-accent/50 overflow-hidden p-8">
-            <div className="animate-pulse">{'> initializing build process...'}</div>
-            <div>{'> compiling components [ok]'}</div>
-            <div>{'> linking dependencies [ok]'}</div>
-            <div className="animate-pulse [animation-delay:200ms]">{'> optimizing assets...'}</div>
-            <div className="w-full h-2 bg-accent/10 mt-2"><div className="h-full bg-accent/40 w-3/4" /></div>
+          <div className="absolute inset-0 p-8 flex flex-col justify-between overflow-hidden font-mono text-[10px] text-accent/60">
+            {/* System Execution View */}
+            <div className="w-full h-full border border-accent/20 bg-surface/80 backdrop-blur-md p-6 relative flex flex-col">
+              <div className="flex justify-between items-center border-b border-accent/20 pb-4 mb-4">
+                <span className="uppercase tracking-widest text-accent/80">KRYPTON.SYS // BUILD</span>
+                <span className="animate-pulse bg-accent w-2 h-2" />
+              </div>
+              <div className="flex-1 space-y-2 opacity-80">
+                <div className="animate-[fade-in_0.5s_ease-out_forwards]">❯ allocating architectural primitives</div>
+                <div className="animate-[fade-in_0.5s_ease-out_0.2s_forwards] text-accent/40">  [success] memory mapped</div>
+                <div className="animate-[fade-in_0.5s_ease-out_0.4s_forwards]">❯ compiling production assets</div>
+                <div className="animate-[fade-in_0.5s_ease-out_0.6s_forwards] text-accent/40">  [success] tree shaken</div>
+                <div className="animate-[fade-in_0.5s_ease-out_0.8s_forwards]">❯ establishing async connections</div>
+                <div className="animate-[pulse_1s_ease-in-out_infinite] pt-4 text-accent">❯ execution loop active_</div>
+              </div>
+              <div className="mt-auto h-[1px] w-full bg-accent/20 relative">
+                <div className="absolute inset-y-0 left-0 bg-accent shadow-[0_0_10px_rgba(59,130,246,0.8)] animate-[scale-x_2s_ease-out_infinite_alternate]" style={{ width: '80%' }} />
+              </div>
+            </div>
           </div>
         )
       case 'ship':
         return (
-          <div className="absolute inset-0 flex items-center justify-center opacity-80">
-            <div className="relative w-20 h-20 bg-accent/20 border border-accent flex items-center justify-center rotate-45 shadow-[0_0_30px_rgba(59,130,246,0.3)]">
-              <div className="w-10 h-10 bg-accent border border-white/20 shadow-inner" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            {/* Deployment Signal / Artifact */}
+            <div className="relative w-48 h-48 flex items-center justify-center">
+              <div className="absolute inset-0 border border-accent/30 rounded-full animate-[ping_3s_ease-out_infinite]" />
+              <div className="absolute inset-4 border border-accent/20 rounded-full animate-[spin_10s_linear_infinite_reverse]" />
+              <div className="absolute inset-10 border border-accent/10 rounded-full" />
+              
+              <div className="relative z-10 w-16 h-16 bg-accent border border-white/20 shadow-[0_0_40px_rgba(59,130,246,0.6)] rotate-45 flex items-center justify-center">
+                <div className="w-8 h-8 border border-white/40 bg-white/10" />
+              </div>
             </div>
+            {/* Vertical locking beams */}
+            <div className="absolute top-0 bottom-0 w-[1px] bg-accent/20" />
+            <div className="absolute left-0 right-0 h-[1px] bg-accent/20" />
           </div>
         )
       default:

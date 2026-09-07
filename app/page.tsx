@@ -6,16 +6,23 @@ import { WhyUsSection } from '@/components/sections/home/why-us'
 import { TechStackSection } from '@/components/sections/home/tech-stack'
 import { CtaSection } from '@/components/sections/home/cta-section'
 import { ProcessSectionDynamic } from '@/components/sections/home/process-section-dynamic'
+import { SceneTransition } from '@/components/ui/scene-transition'
 
 export default function HomePage() {
   return (
     <>
       <HeroSection />
+      <SceneTransition type="line-drop" />
       <CapabilitySection />
+      <SceneTransition type="grid-fade" />
       <ServicesSection />
+      <SceneTransition type="line-drop" />
       <WorkSection />
+      <SceneTransition type="signal-cross" />
       <WhyUsSection />
+      <SceneTransition type="grid-fade" />
       <ProcessSectionDynamic />
+      <SceneTransition type="line-drop" />
       <TechStackSection />
       <CtaSection />
     </>

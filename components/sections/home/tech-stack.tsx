@@ -2,15 +2,15 @@ import { RevealOnScroll } from '@/components/ui/reveal-on-scroll'
 
 const techDomains = [
   {
-    domain: 'Frontend',
+    domain: 'Frontend & Edge',
     items: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'Motion', 'WebGL'],
   },
   {
-    domain: 'Backend',
+    domain: 'Backend Services',
     items: ['Node.js', 'PostgreSQL', 'Redis', 'REST', 'GraphQL', 'BullMQ'],
   },
   {
-    domain: 'AI & Data',
+    domain: 'Data & Intelligence',
     items: ['OpenAI', 'LangChain', 'pgvector', 'Pinecone', 'Python', 'Hugging Face'],
   },
   {
@@ -21,73 +21,76 @@ const techDomains = [
 
 export function TechStackSection() {
   return (
-    <section className="section-padding bg-base relative overflow-hidden">
-      {/* Background Grid */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-30 pointer-events-none" />
+    <section className="section-padding bg-base relative overflow-hidden py-32 border-y border-border/40">
+      {/* Deep Technical Background */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(59,130,246,0.03)_0%,transparent_80%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
 
-      <div className="container-site relative z-10">
+      <div className="container-site relative z-10 max-w-5xl mx-auto">
         <RevealOnScroll>
-          <div className="mb-20">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="h-[1px] w-8 bg-accent" />
-              <span className="font-mono text-xs tracking-[0.2em] uppercase text-accent">
-                Architecture
-              </span>
-            </div>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-fg leading-[1.1] tracking-[-0.02em]">
+          <div className="mb-32 text-center flex flex-col items-center">
+            <span className="font-mono text-[10px] tracking-[0.4em] uppercase text-accent mb-6 block border border-accent/20 bg-accent/5 px-4 py-2">
+              System Topography
+            </span>
+            <h2 className="text-4xl md:text-5xl lg:text-7xl font-light text-fg leading-[1.05] tracking-[-0.03em] max-w-3xl">
               The technical map.
             </h2>
           </div>
         </RevealOnScroll>
 
-        {/* Unified Map Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-px bg-border/40 border border-border/40">
-          {techDomains.map((group, idx) => (
-            <RevealOnScroll key={group.domain} delay={idx * 0.1}>
-              <div className="bg-base h-full p-8 md:p-12 lg:p-16 group relative overflow-hidden flex flex-col transition-colors duration-500 hover:bg-surface/20">
-                {/* Subtle corner crosshairs */}
-                <div className="absolute top-4 left-4 w-3 h-3 border-t border-l border-border group-hover:border-accent/50 transition-colors duration-500" />
-                <div className="absolute top-4 right-4 w-3 h-3 border-t border-r border-border group-hover:border-accent/50 transition-colors duration-500" />
-                <div className="absolute bottom-4 left-4 w-3 h-3 border-b border-l border-border group-hover:border-accent/50 transition-colors duration-500" />
-                <div className="absolute bottom-4 right-4 w-3 h-3 border-b border-r border-border group-hover:border-accent/50 transition-colors duration-500" />
-                
-                {/* Connection lines on hover */}
-                <div className="absolute inset-x-0 top-1/2 h-[1px] bg-accent/0 group-hover:bg-accent/10 transition-colors duration-700 pointer-events-none" />
-                <div className="absolute inset-y-0 left-1/2 w-[1px] bg-accent/0 group-hover:bg-accent/10 transition-colors duration-700 pointer-events-none" />
+        {/* Unified Map Pipeline */}
+        <div className="relative">
+          {/* Main vertical trunk line */}
+          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-[1px] bg-border/50 md:-translate-x-1/2" />
+          
+          <div className="flex flex-col gap-0 relative">
+            {techDomains.map((group, idx) => {
+              const isEven = idx % 2 === 0
+              return (
+                <RevealOnScroll key={group.domain} delay={0.1}>
+                  <div className={`relative flex flex-col md:flex-row items-start md:items-center w-full py-12 md:py-16 group ${isEven ? 'md:flex-row-reverse' : ''}`}>
+                    
+                    {/* The Node Center Point */}
+                    <div className="absolute left-4 md:left-1/2 top-12 md:top-1/2 w-3 h-3 bg-base border border-accent/40 rounded-full md:-translate-x-1/2 md:-translate-y-1/2 group-hover:bg-accent group-hover:shadow-[0_0_15px_rgba(59,130,246,0.6)] transition-all duration-500 z-20" />
+                    <div className="absolute left-4 md:left-1/2 top-12 md:top-1/2 w-8 h-8 border border-accent/0 rounded-full md:-translate-x-1/2 md:-translate-y-1/2 group-hover:border-accent/30 transition-all duration-700 z-10 group-hover:scale-150" />
+                    
+                    {/* Connecting Branch Line */}
+                    <div className={`absolute top-12 md:top-1/2 h-[1px] bg-border/50 w-8 md:w-32 hidden md:block ${isEven ? 'right-1/2' : 'left-1/2'}`} />
 
-                {/* Hover gradient sweep */}
-                <div className="absolute inset-0 bg-gradient-to-br from-accent/[0.03] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none mix-blend-overlay" />
-                
-                <div className="relative z-10 flex flex-col h-full">
-                  <div className="flex items-center justify-between mb-16">
-                    <div className="flex flex-col gap-2">
-                      <h3 className="font-mono text-sm tracking-[0.2em] uppercase text-fg-subtle group-hover:text-accent transition-colors duration-300">
-                        {group.domain}
-                      </h3>
-                      <span className="font-mono text-[10px] text-fg-subtle/40 tracking-widest uppercase">
-                        System Level // 0{idx + 1}
-                      </span>
+                    {/* Content Half */}
+                    <div className={`w-full md:w-1/2 pl-12 md:px-16 lg:px-24 flex flex-col ${isEven ? 'md:items-start text-left' : 'md:items-end text-left md:text-right'}`}>
+                      <div className="flex flex-col mb-8">
+                        <span className="font-mono text-[10px] text-accent/50 tracking-[0.2em] uppercase mb-3">
+                          Layer {String(idx + 1).padStart(2, '0')}
+                        </span>
+                        <h3 className="text-2xl lg:text-3xl font-light text-fg group-hover:text-white transition-colors duration-300">
+                          {group.domain}
+                        </h3>
+                      </div>
+                      
+                      <div className={`flex flex-wrap gap-2 ${isEven ? 'justify-start' : 'justify-start md:justify-end'}`}>
+                        {group.items.map((tech) => (
+                          <span
+                            key={tech}
+                            className="bg-surface/30 border border-border/40 px-3 py-1.5 text-[10px] sm:text-xs text-fg-muted font-mono uppercase tracking-wider group-hover:border-accent/30 group-hover:text-fg group-hover:bg-accent/5 transition-all duration-500 cursor-default"
+                          >
+                            <span className="inline-block w-1 h-1 bg-accent/40 mr-2 rounded-full group-hover:bg-accent transition-colors" />
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <span className="font-mono text-xs text-accent/40 group-hover:text-accent group-hover:shadow-[0_0_10px_rgba(59,130,246,0.3)] transition-all duration-300 bg-accent/5 px-2 py-1">
-                      [{String(idx + 1).padStart(2, '0')}]
-                    </span>
+                    
+                    {/* Empty Half for Balance */}
+                    <div className="hidden md:block md:w-1/2" />
                   </div>
-                  
-                  <div className="flex flex-wrap gap-3 mt-auto relative z-10 bg-base/50 p-4 border border-border/30 backdrop-blur-sm group-hover:border-accent/20 transition-colors duration-500">
-                    {group.items.map((tech) => (
-                      <span
-                        key={tech}
-                        className="inline-flex items-center gap-2 bg-surface/80 border border-border/50 px-3 py-1.5 text-xs text-fg-muted font-mono hover:border-accent hover:text-fg hover:bg-accent/10 transition-all duration-300 cursor-default"
-                      >
-                        <span className="w-1.5 h-1.5 bg-accent/40 group-hover:animate-pulse" />
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </RevealOnScroll>
-          ))}
+                </RevealOnScroll>
+              )
+            })}
+          </div>
+          
+          {/* Animated data packet traveling down the trunk */}
+          <div className="absolute left-4 md:left-1/2 top-0 w-[1px] h-32 bg-gradient-to-b from-transparent via-accent to-transparent md:-translate-x-1/2 animate-[scale-x_4s_linear_infinite_alternate]" style={{ transform: 'translateY(-100%)' }} />
         </div>
       </div>
     </section>
