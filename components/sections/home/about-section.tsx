@@ -27,6 +27,8 @@ const CY = 500
 // ── DETERMINISTIC GEOMETRY ────────────────────────────────────────────────────
 // Generated outside the component to avoid SSR hydration mismatches
 
+const round = (val: number, precision = 6) => Number(val.toFixed(precision))
+
 const ORBITS = [460, 400, 340, 280, 220, 160]
 
 const RAYS = Array.from({ length: 48 }).map((_, i) => {
@@ -35,10 +37,10 @@ const RAYS = Array.from({ length: 48 }).map((_, i) => {
   const r1 = isMajor ? 520 : 440
   const r2 = 60
   return {
-    x1: CX + r1 * Math.cos(angle),
-    y1: CY + r1 * Math.sin(angle),
-    x2: CX + r2 * Math.cos(angle),
-    y2: CY + r2 * Math.sin(angle),
+    x1: round(CX + r1 * Math.cos(angle)),
+    y1: round(CY + r1 * Math.sin(angle)),
+    x2: round(CX + r2 * Math.cos(angle)),
+    y2: round(CY + r2 * Math.sin(angle)),
     op: isMajor ? 0.4 : 0.15,
     width: isMajor ? 1 : 0.5,
   }
@@ -48,10 +50,10 @@ const PARTICLES = Array.from({ length: 180 }).map((_, i) => {
   const r = 80 + ((i * 47) % 400)
   const angle = ((i * 17) % 360) * (Math.PI / 180)
   return {
-    cx: CX + r * Math.cos(angle),
-    cy: CY + r * Math.sin(angle),
-    r: ((i * 11) % 3) * 0.5 + 0.5,
-    op: ((i * 13) % 50) / 100 + 0.1, // 0.1 to 0.6
+    cx: round(CX + r * Math.cos(angle)),
+    cy: round(CY + r * Math.sin(angle)),
+    r: round(((i * 11) % 3) * 0.5 + 0.5),
+    op: round(((i * 13) % 50) / 100 + 0.1, 4), // 0.1 to 0.6
   }
 })
 
