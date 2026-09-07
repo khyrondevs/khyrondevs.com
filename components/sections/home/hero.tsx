@@ -9,43 +9,7 @@ import { MagneticButton } from '@/components/ui/magnetic-button'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
 import { useMousePosition } from '@/hooks/use-mouse-position'
 
-function SystemCore() {
-  // A vast, slow-moving architectural geometric core that sits behind the typography
-  return (
-    <div className="absolute inset-0 z-0 flex items-center justify-center overflow-hidden pointer-events-none opacity-20 md:opacity-30 mix-blend-screen">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ duration: 150, repeat: Infinity, ease: 'linear' }}
-        className="relative w-[150vw] h-[150vw] md:w-[100vw] md:h-[100vw] max-w-[1200px] max-h-[1200px] flex items-center justify-center"
-      >
-        {/* Outer Ring */}
-        <div className="absolute inset-0 rounded-full border-[1px] border-accent/20 border-dashed" />
-        
-        {/* Middle complex rings */}
-        <div className="absolute w-[80%] h-[80%] rounded-full border-[1px] border-accent/30" />
-        <div className="absolute w-[80%] h-[80%] rounded-full border-[1px] border-accent/40 scale-[0.98] rotate-45 border-dashed" />
-        
-        {/* Radiating lines (simulate 3D wireframe volume) */}
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div 
-            key={i}
-            className="absolute w-[100%] h-[1px] bg-accent/10"
-            style={{ transform: `rotate(${i * 15}deg)` }}
-          />
-        ))}
-
-        {/* Inner Core */}
-        <div className="absolute w-[40%] h-[40%] rounded-full border-[1px] border-accent/50 shadow-[0_0_80px_rgba(59,130,246,0.1)] flex items-center justify-center">
-          <motion.div
-            animate={{ rotate: -360 }}
-            transition={{ duration: 80, repeat: Infinity, ease: 'linear' }}
-            className="w-[80%] h-[80%] rounded-full border-[1px] border-accent/60 border-dotted"
-          />
-        </div>
-      </motion.div>
-    </div>
-  )
-}
+import { SystemCore } from './system-core'
 
 export function HeroSection() {
   const reducedMotion = useReducedMotion()
