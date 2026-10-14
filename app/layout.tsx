@@ -1,6 +1,10 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
+import './cyphr-case-study.css'
+import './jobpilot-case-study.css'
+import './eazyshop-case-study.css'
+import './houseprice-case-study.css'
 import { Nav } from '@/components/sections/shared/nav'
 import { Footer } from '@/components/sections/shared/footer'
 import { LenisProvider } from '@/components/providers/lenis-provider'
@@ -45,9 +49,9 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-base text-fg">
+      <body className="min-h-screen flex flex-col bg-base text-fg">
         <ReducedMotionProvider>
           <LenisProvider>
             <Nav />

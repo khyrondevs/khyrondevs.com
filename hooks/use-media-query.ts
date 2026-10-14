@@ -1,25 +1,27 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useCallback, useSyncExternalStore } from 'react'
 
+/**
+ * Responsive media query hook using useSyncExternalStore to avoid hydration mismatches.
+ */
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState<boolean>(() => {
+  const subscribe = useCallback(
+    (notify: () => void) => {
+      if (typeof window === 'undefined') return () => {}
+      const media = window.matchMedia(query)
+      media.addEventListener('change', notify)
+      return () => media.removeEventListener('change', notify)
+    },
+    [query]
+  )
+
+  const snapshot = useCallback(() => {
     if (typeof window === 'undefined') return false
     return window.matchMedia(query).matches
-  })
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    const mediaQuery = window.matchMedia(query)
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setMatches(e.matches)
-    }
-
-    mediaQuery.addEventListener('change', handleChange)
-    return () => mediaQuery.removeEventListener('change', handleChange)
   }, [query])
 
-  return matches
+  return useSyncExternalStore(subscribe, snapshot, () => false)
 }
+
+export default useMediaQuery

@@ -1,0 +1,909 @@
+/* JobPilot keeps the portfolio's paper / ink / lime / periwinkle system. */
+.jobpilot-experience { position: relative; }
+.jobpilot-project-card { position: relative; }
+
+.jobpilot-story {
+  position: relative;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: clamp(6rem, 10vw, 9rem) 2.5rem 7rem;
+  overflow: clip;
+}
+
+.jobpilot-story-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(260px, .7fr);
+  align-items: end;
+  gap: 3rem;
+  margin-bottom: clamp(3rem, 5vw, 4.5rem);
+}
+
+.jobpilot-story-intro h2 {
+  max-width: 760px;
+  margin: 1.5rem 0 0;
+  color: var(--color-ink);
+  font-size: clamp(3.2rem, 7.3vw, 7.5rem);
+  font-weight: 600;
+  letter-spacing: -.075em;
+  line-height: .88;
+}
+
+.jobpilot-story-intro h2 > span { position: relative; isolation: isolate; }
+.jobpilot-story-intro h2 > span::after {
+  position: absolute;
+  z-index: -1;
+  right: -.02em;
+  bottom: .02em;
+  left: .03em;
+  height: .17em;
+  background: var(--color-accent);
+  content: "";
+}
+
+.jobpilot-reel-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.jobpilot-reel-index { margin: 1.7rem 0 0; color: color-mix(in srgb, var(--color-ink) 48%, transparent); font: 9px var(--font-mono); letter-spacing: .13em; text-transform: uppercase; }
+.jobpilot-reel-index > span { margin: 0 .65rem; color: var(--color-accent-2); }
+
+.jobpilot-story-lead {
+  max-width: 400px;
+  margin: 0 0 .35rem auto;
+  color: color-mix(in srgb, var(--color-ink) 62%, transparent);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.jobpilot-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-ink) 48%, transparent);
+  font: 10px var(--font-mono);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.jobpilot-pulse {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+.jobpilot-story-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(2rem, 4vw, 5rem);
+}
+
+.jobpilot-chapters {
+  position: relative;
+  min-width: 0;
+}
+
+.jobpilot-story-rail {
+  position: absolute;
+  top: 3.1rem;
+  bottom: 3.1rem;
+  left: 1.48rem;
+  width: 1px;
+  background: color-mix(in srgb, var(--color-ink) 13%, transparent);
+  pointer-events: none;
+}
+
+.jobpilot-story-rail span {
+  position: absolute;
+  top: 0;
+  left: -1px;
+  display: block;
+  width: 3px;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--color-accent);
+  transform: scaleY(0);
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+
+.jobpilot-chapter {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  align-items: start;
+  gap: 1.5rem;
+  min-height: 0;
+  padding: 3rem 0;
+  scroll-margin-top: 7rem;
+  border-radius: .8rem;
+}
+
+.jobpilot-chapter:focus-visible { outline: 2px solid var(--color-ink); outline-offset: .8rem; }
+
+.jobpilot-chapter-marker {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  align-self: start;
+  grid-row: 1 / span 2;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 16%, transparent);
+  border-radius: .9rem;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: 0 12px 28px -18px color-mix(in srgb, var(--color-ink) 60%, transparent);
+  transition: background-color .35s ease, border-color .35s ease, color .35s ease, box-shadow .35s ease;
+}
+
+.jobpilot-chapter-marker::after {
+  position: absolute;
+  inset: -7px;
+  border: 1px solid var(--color-accent-2);
+  border-radius: inherit;
+  opacity: 0;
+  transform: rotate(-12deg) scale(.85);
+  transition: opacity .3s ease, transform .4s ease;
+  content: "";
+}
+.jobpilot-chapter.is-active .jobpilot-chapter-marker::after,
+.jobpilot-chapter:hover .jobpilot-chapter-marker::after,
+.jobpilot-chapter:focus-within .jobpilot-chapter-marker::after { opacity: 1; transform: rotate(0deg) scale(1); }
+
+.jobpilot-chapter-marker span {
+  position: absolute;
+  top: 3.25rem;
+  color: color-mix(in srgb, var(--color-ink) 34%, transparent);
+  font: 9px var(--font-mono);
+}
+
+.jobpilot-chapter.is-active .jobpilot-chapter-marker {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-accent) 18%, transparent), 0 16px 30px -18px color-mix(in srgb, var(--color-ink) 70%, transparent);
+}
+
+.jobpilot-chapter-copy { min-width: 0; }
+
+.jobpilot-chapter-copy h3 {
+  max-width: 450px;
+  margin: .9rem 0 1rem;
+  color: var(--color-ink);
+  font-size: clamp(2rem, 3.3vw, 3.8rem);
+  font-weight: 600;
+  letter-spacing: -.065em;
+  line-height: .94;
+}
+
+.jobpilot-chapter-copy > p:not(.jobpilot-kicker) {
+  max-width: 430px;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-ink) 64%, transparent);
+  line-height: 1.7;
+}
+
+.jobpilot-chapter-copy ul {
+  display: grid;
+  gap: .55rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  color: color-mix(in srgb, var(--color-ink) 55%, transparent);
+  font: 10px var(--font-mono);
+  letter-spacing: .08em;
+  list-style: none;
+  text-transform: uppercase;
+}
+
+.jobpilot-chapter-copy li { display: flex; align-items: center; gap: .5rem; }
+.jobpilot-chapter-copy li svg { color: var(--color-accent); }
+
+.jobpilot-boundary-route {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: .65rem;
+  margin-top: 1.6rem;
+  padding: .65rem 0 1.05rem;
+  color: color-mix(in srgb, var(--color-ink) 64%, transparent);
+  font: 9px / 1.6 var(--font-mono);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.jobpilot-boundary-route > strong { padding: .35rem .5rem; border-radius: .25rem; background: var(--color-accent-2); color: var(--color-ink); font-weight: 500; }
+.jobpilot-boundary-route > svg { color: var(--color-ink); transition: transform .3s ease; }
+.jobpilot-chapter:hover .jobpilot-boundary-route > svg,
+.jobpilot-chapter:focus-within .jobpilot-boundary-route > svg { transform: translateX(3px); }
+.jobpilot-boundary-route > i { position: absolute; right: 0; bottom: 0; left: 0; height: 2px; background: color-mix(in srgb, var(--color-ink) 13%, transparent); }
+.jobpilot-boundary-route > i > span { display: block; width: 100%; height: 100%; background: var(--color-accent); transform: scaleX(0); transform-origin: 0 50%; }
+
+.jobpilot-story-stage {
+  position: sticky;
+  top: clamp(5rem, 8vh, 6rem);
+  z-index: 2;
+  align-self: start;
+  min-width: 0;
+}
+
+.jobpilot-experience:not([data-jobpilot-layout="desktop"]) .jobpilot-story-stage {
+  position: relative;
+  top: auto;
+}
+
+.jobpilot-progress-nav {
+  margin-bottom: 0;
+  padding: .7rem 1.1rem .55rem;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+  border-radius: 0 0 1.25rem 1.25rem;
+  background: color-mix(in srgb, var(--color-paper) 88%, white);
+  box-shadow: 0 22px 50px -40px color-mix(in srgb, var(--color-ink) 70%, transparent);
+}
+
+.jobpilot-progress-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: color-mix(in srgb, var(--color-ink) 47%, transparent);
+  font: 10px var(--font-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.jobpilot-progress-heading span:last-child { color: var(--color-ink); }
+
+.jobpilot-progress-track {
+  height: 3px;
+  margin: .7rem 0 .55rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-ink) 11%, transparent);
+}
+
+.jobpilot-progress-track span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--color-accent-2), var(--color-accent));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+
+.jobpilot-progress-nav ol {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jobpilot-progress-step {
+  display: grid;
+  gap: .22rem;
+  min-width: 0;
+  padding: .45rem .35rem .35rem;
+  border-radius: .65rem;
+  color: color-mix(in srgb, var(--color-ink) 42%, transparent);
+  font: 9px var(--font-mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  transition: background-color .35s ease, color .35s ease;
+}
+
+.jobpilot-progress-step > span { display: flex; align-items: center; justify-content: space-between; gap: .25rem; font-size: 8px; }
+.jobpilot-progress-step > span > svg { flex: 0 0 auto; opacity: 0; transform: translateX(-4px); transition: opacity .3s ease, transform .3s ease; }
+.jobpilot-progress-step strong { overflow: hidden; font-weight: 500; text-overflow: ellipsis; transition: transform .3s ease; }
+.jobpilot-progress-step:hover > span > svg,
+.jobpilot-progress-step:focus-visible > span > svg,
+.jobpilot-progress-step.is-active > span > svg { opacity: 1; transform: translateX(0); }
+.jobpilot-progress-step:hover strong,
+.jobpilot-progress-step:focus-visible strong { transform: translateY(-1px); }
+.jobpilot-progress-step:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
+.jobpilot-progress-step:hover,
+.jobpilot-progress-step:focus-visible,
+.jobpilot-progress-step.is-active,
+.jobpilot-progress-step[aria-current="step"] {
+  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  color: var(--color-ink);
+}
+
+.jobpilot-stage-figure {
+  position: relative;
+  min-width: 0;
+  margin: 0;
+  padding: .65rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+  border-radius: 0 0 1.8rem 1.8rem;
+  background: color-mix(in srgb, var(--color-paper) 76%, white);
+  box-shadow: 0 34px 75px -50px color-mix(in srgb, var(--color-ink) 78%, transparent);
+}
+
+[data-jobpilot-stage-figure][hidden],
+[data-jobpilot-inline-figure][hidden] { display: none; }
+
+.jobpilot-inline-figure { grid-column: 2; border-radius: 1.8rem; }
+
+.jobpilot-stage-viewport {
+  position: relative;
+  aspect-ratio: 1920 / 968;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 1.1rem;
+  background: var(--color-paper);
+  border: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent);
+  box-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.7);
+  isolation: isolate;
+}
+
+.jobpilot-stage-media-stack {
+  position: relative;
+  z-index: 1;
+  display: grid;
+}
+
+.jobpilot-stage-media {
+  grid-area: 1 / 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.jobpilot-stage-plane { opacity: 0; visibility: hidden; transform-origin: 50% 50%; }
+.jobpilot-stage-media:first-child .jobpilot-stage-plane { opacity: 1; visibility: visible; }
+.jobpilot-stage-media img,
+.jobpilot-inline-media img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: top center !important;
+  display: block;
+}
+.jobpilot-inline-media {
+  position: absolute;
+  inset: 0;
+}
+
+.jobpilot-stage-caption {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: .65rem;
+  padding: .65rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-paper) 22%, transparent);
+  border-radius: .9rem;
+  background: color-mix(in srgb, var(--color-ink) 78%, transparent);
+  color: var(--color-paper);
+  font: 11px / 1.5 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.jobpilot-stage-caption > span { min-width: 0; overflow-wrap: anywhere; }
+.jobpilot-stage-caption svg { flex: 0 0 auto; color: var(--color-accent); }
+.jobpilot-stage-caption[data-jobpilot-caption] { visibility: hidden; }
+.jobpilot-stage-caption[data-jobpilot-caption].is-active { visibility: visible; }
+
+.jobpilot-stage-note {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .65rem .35rem .15rem;
+  color: color-mix(in srgb, var(--color-ink) 45%, transparent);
+  font: 9px var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.jobpilot-stage-note .jobpilot-pulse { width: 5px; height: 5px; box-shadow: none; }
+
+.jobpilot-story-close {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 650px;
+  margin: 5rem auto 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-paper) 70%, white);
+  color: var(--color-ink);
+  box-shadow: 0 20px 40px -32px color-mix(in srgb, var(--color-ink) 70%, transparent);
+}
+
+.jobpilot-story-close p { margin: 0; }
+.jobpilot-story-close > div:nth-child(2) { flex: 1; }
+.jobpilot-story-close > div:nth-child(2) > p:last-child { margin-top: .25rem; font-size: .95rem; }
+.jobpilot-close-icon { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--color-accent); color: var(--color-ink); }
+.jobpilot-story-close > svg { color: var(--color-accent-2); }
+
+.jobpilot-console-heading {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  padding: .6rem 1.1rem;
+  border-radius: 1.4rem 1.4rem 0 0;
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+.jobpilot-console-heading > div:nth-child(2) { display: grid; gap: .2rem; min-width: 0; }
+.jobpilot-console-heading > div:nth-child(2) > span,
+.jobpilot-console-heading > p { margin: 0; color: color-mix(in srgb, var(--color-paper) 62%, transparent); font: 8px / 1.6 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
+.jobpilot-console-heading strong { font-size: 1rem; font-weight: 600; letter-spacing: -.03em; }
+.jobpilot-console-heading > p { margin-left: auto; text-align: right; }
+.jobpilot-console-heading > p > span { color: var(--color-accent); }
+.jobpilot-console-heading .jobpilot-motion-toggle { margin-left: auto; border-color: var(--color-accent-2); }
+.jobpilot-signal-orbit { position: relative; flex: 0 0 2.5rem; width: 2.5rem; height: 2.5rem; }
+.jobpilot-signal-orbit > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.jobpilot-signal-rings { stroke: var(--color-accent-2); stroke-width: .7; opacity: .4; }
+.jobpilot-signal-runner { stroke: var(--color-accent); stroke-width: 1.5; transform-origin: 50% 50%; }
+.jobpilot-signal-runner > circle { fill: var(--color-accent); stroke: none; }
+.jobpilot-console-boundary { position: relative; z-index: 1; display: flex; justify-content: space-between; gap: .8rem; padding: .3rem .35rem .65rem; color: color-mix(in srgb, var(--color-ink) 62%, transparent); font: 8px / 1.5 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+.jobpilot-console-boundary > span:last-child { color: var(--color-ink); text-align: right; }
+.jobpilot-console-grid { position: absolute; inset: 0; pointer-events: none; opacity: .12; background-image: linear-gradient(var(--color-accent-2) 1px, transparent 1px), linear-gradient(90deg, var(--color-accent-2) 1px, transparent 1px); background-size: 24px 24px; }
+.jobpilot-depth-stack { display: none; }
+.jobpilot-command-line { position: relative; z-index: 1; display: flex; align-items: center; gap: .5rem; min-height: 2rem; margin-top: .5rem; padding: .5rem .7rem; border-radius: .45rem; background: var(--color-ink); color: var(--color-paper); font: 9px / 1.5 var(--font-mono); }
+.jobpilot-command-line > span { color: var(--color-accent); }
+.jobpilot-command-line > code { min-width: 0; overflow-wrap: anywhere; font: inherit; }
+.jobpilot-command-line > i { width: .4rem; height: .8rem; flex: 0 0 auto; margin-left: auto; background: var(--color-accent); }
+.jobpilot-data-rail { overflow: hidden; margin: 0 0 2.5rem; padding: .85rem 0; border-top: 1px solid color-mix(in srgb, var(--color-ink) 13%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 13%, transparent); pointer-events: none; mask-image: linear-gradient(90deg, transparent, var(--color-ink) 5%, var(--color-ink) 95%, transparent); }
+.jobpilot-data-flow { display: flex; width: max-content; }
+.jobpilot-data-run { display: flex; align-items: center; gap: 2.5rem; padding-right: 2.5rem; }
+.jobpilot-data-run > span { display: flex; align-items: center; gap: .65rem; white-space: nowrap; color: color-mix(in srgb, var(--color-ink) 62%, transparent); font: 9px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+.jobpilot-data-run i { width: 5px; height: 5px; border-radius: 50%; background: var(--color-accent); }
+.jobpilot-data-run > span:nth-child(even) i { background: var(--color-accent-2); }
+.jobpilot-story-body + .jobpilot-data-rail { margin: 3rem 0 0; }
+.jobpilot-console-data-rail { position: relative; z-index: 1; margin: .65rem 0 0; padding: .55rem 0; }
+.jobpilot-console-data-rail .jobpilot-data-run > span { font-size: 8px; }
+.jobpilot-motion-toggle { display: inline-flex; align-items: center; gap: .45rem; flex: 0 0 auto; padding: .5rem .6rem; border: 1px solid color-mix(in srgb, var(--color-ink) 16%, transparent); border-radius: .45rem; background: var(--color-paper); color: var(--color-ink); font: 9px var(--font-mono); cursor: pointer; transition: background-color .25s ease; }
+.jobpilot-motion-toggle:hover { background: var(--color-accent-2); }
+.jobpilot-motion-toggle:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }
+.jobpilot-play-icon { display: none; }
+.jobpilot-motion-toggle[aria-pressed="true"] .jobpilot-pause-icon { display: none; }
+.jobpilot-motion-toggle[aria-pressed="true"] .jobpilot-play-icon { display: block; }
+[data-jobpilot-motion-toggle][hidden] { display: none; }
+
+@keyframes jobpilot-data-transit { to { transform: translateX(-50%); } }
+@keyframes jobpilot-signal-orbit { to { transform: rotate(360deg); } }
+@keyframes jobpilot-signal-pulse { 50% { transform: scale(1.18); } }
+@keyframes jobpilot-command-clock { 50% { transform: scaleY(.45); } }
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-jobpilot-motion="enabled"] .jobpilot-data-flow { animation: jobpilot-data-transit 28s linear infinite; animation-play-state: paused; }
+  [data-jobpilot-motion="enabled"] .jobpilot-signal-runner { animation: jobpilot-signal-orbit 12s linear infinite; animation-play-state: paused; }
+  [data-jobpilot-motion="enabled"] .jobpilot-pulse { animation: jobpilot-signal-pulse 3.5s ease-in-out infinite; animation-play-state: paused; }
+  [data-jobpilot-motion="enabled"] .jobpilot-command-line > i { animation: jobpilot-command-clock 2.5s ease-in-out infinite; animation-play-state: paused; }
+  [data-jobpilot-ambient="running"] .jobpilot-data-flow,
+  [data-jobpilot-ambient="running"] .jobpilot-signal-runner,
+  [data-jobpilot-ambient="running"] .jobpilot-pulse,
+  [data-jobpilot-ambient="running"] .jobpilot-command-line > i { animation-play-state: running; }
+  [data-jobpilot-motion="enabled"] .jobpilot-inline-media { will-change: transform; }
+}
+
+@media (min-width: 901px) and (min-height: 800px) and (prefers-reduced-motion: no-preference) {
+  [data-jobpilot-layout="desktop"] .jobpilot-story-body { grid-template-columns: minmax(280px, .8fr) minmax(420px, 1.2fr); }
+  [data-jobpilot-layout="desktop"] .jobpilot-chapters { grid-column: 1; grid-row: 1; }
+  [data-jobpilot-layout="desktop"] .jobpilot-story-stage { grid-column: 2; grid-row: 1; }
+  [data-jobpilot-layout="desktop"] .jobpilot-chapter { align-items: center; min-height: clamp(34rem, 78vh, 48rem); padding: 0; }
+  [data-jobpilot-layout="desktop"] .jobpilot-chapter-marker { grid-row: auto; }
+  [data-jobpilot-layout="desktop"] .jobpilot-progress-nav { border-bottom: 0; border-radius: 0; }
+  [data-jobpilot-layout="desktop"] .jobpilot-stage-plane { will-change: transform, opacity; }
+}
+
+@media (max-width: 1100px) {
+  .jobpilot-story-body { gap: 3rem; }
+  .jobpilot-progress-nav ol { gap: .1rem; }
+}
+
+@media (max-width: 900px) {
+  .jobpilot-story { padding-right: 1.25rem; padding-left: 1.25rem; }
+  .jobpilot-story-intro { grid-template-columns: 1fr; gap: 1.5rem; }
+  .jobpilot-story-lead { margin-left: 0; }
+  .jobpilot-story-body { grid-template-columns: 1fr; gap: 2.8rem; }
+  .jobpilot-story-stage { position: relative; top: auto; }
+  .jobpilot-progress-nav { margin-bottom: 0; }
+  .jobpilot-stage-viewport { min-height: 0; background: transparent; }
+  .jobpilot-stage-note { padding-top: .8rem; }
+  .jobpilot-story-rail { left: 1.48rem; }
+}
+
+@media (max-width: 560px) {
+  .jobpilot-story { padding-top: 6rem; padding-bottom: 5rem; }
+  .jobpilot-story-intro { margin-bottom: 3rem; }
+  .jobpilot-story-intro h2 { font-size: clamp(2.8rem, 14vw, 5rem); }
+  .jobpilot-reel-heading { align-items: flex-start; }
+  .jobpilot-reel-heading > .jobpilot-kicker { max-width: 14rem; font-size: 8px; letter-spacing: .1em; }
+  .jobpilot-motion-toggle { font-size: 8px; padding: .4rem; }
+  .jobpilot-console-heading > p { display: none; }
+  .jobpilot-reel-index { max-width: 19rem; font-size: 8px; line-height: 1.8; }
+  .jobpilot-progress-nav { padding: .8rem .75rem .65rem; }
+  .jobpilot-progress-step { padding-right: .18rem; padding-left: .18rem; letter-spacing: .06em; }
+  .jobpilot-stage-figure { padding: .4rem; border-radius: 1.2rem; }
+  .jobpilot-stage-viewport { border-radius: .9rem; }
+  .jobpilot-stage-caption { margin-top: .55rem; padding: .7rem .75rem; border-radius: .72rem; font-size: 10px; }
+  .jobpilot-chapter { grid-template-columns: 2.75rem minmax(0, 1fr); gap: .75rem; min-height: 0; padding: 4rem 0; }
+  .jobpilot-chapter-marker { width: 2.75rem; height: 2.75rem; }
+  .jobpilot-chapter-marker span { display: none; }
+  .jobpilot-chapter-copy h3 { font-size: 2.1rem; }
+  .jobpilot-inline-figure { grid-column: 1 / -1; }
+  .jobpilot-boundary-route { gap: .4rem; font-size: 8px; }
+  .jobpilot-data-rail { margin-bottom: 1.6rem; }
+  .jobpilot-story-close { align-items: flex-start; border-radius: 1.5rem; padding: .9rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jobpilot-story-body { grid-template-columns: 1fr; }
+  .jobpilot-story-stage { position: relative; top: auto; }
+  .jobpilot-stage-viewport { min-height: 0; background: transparent; }
+  .jobpilot-stage-plane,
+  .jobpilot-inline-media {
+    opacity: 1 !important;
+    clip-path: none !important;
+    transform: none !important;
+  }
+  .jobpilot-stage-caption { position: relative; inset: auto; opacity: 1 !important; transform: none !important; }
+  .jobpilot-chapter,
+  .jobpilot-chapter-copy,
+  .jobpilot-chapter-marker { opacity: 1 !important; transform: none !important; }
+  .jobpilot-progress-track span { transform: scaleX(1) !important; }
+  .jobpilot-story-rail span { transform: scaleY(1) !important; }
+  .jobpilot-boundary-route > i > span { transform: scaleX(1) !important; }
+  .jobpilot-data-flow,
+  .jobpilot-signal-orbit,
+  .jobpilot-signal-runner,
+  .jobpilot-pulse,
+  .jobpilot-command-line > i { animation: none !important; transform: none !important; }
+  .jobpilot-chapter-marker,
+  .jobpilot-chapter-marker::after,
+  .jobpilot-boundary-route > svg,
+  .jobpilot-progress-step,
+  .jobpilot-progress-step > span > svg,
+  .jobpilot-progress-step strong,
+  .jobpilot-motion-toggle { transition: none; }
+}
+
+/* The runtime beam is deliberately layered below the ordered trace.  It is
+   decorative progress, so the nodes remain the source of truth for no-JS and
+   narrow layouts. */
+.jobpilot-runtime-trace-shell {
+  position: relative;
+  min-width: 0;
+}
+
+.jobpilot-runtime-trace-shell .jobpilot-runtime-trace {
+  position: relative;
+  z-index: 1;
+}
+
+.jobpilot-runtime-trace-fill[data-jobpilot-runtime-fill] {
+  position: absolute;
+  z-index: 0;
+  top: 1.35rem;
+  right: 0;
+  left: 0;
+  height: .38rem;
+  border-radius: 999px;
+  background: var(--color-accent);
+  box-shadow: 0 0 .8rem color-mix(in srgb, var(--color-accent) 72%, transparent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
+}
+
+.jobpilot-runtime-trace-fill[data-jobpilot-runtime-fill]::after {
+  position: absolute;
+  top: 50%;
+  right: -.25rem;
+  width: .7rem;
+  height: .7rem;
+  border-radius: 50%;
+  background: var(--color-paper);
+  box-shadow: 0 0 .4rem .15rem var(--color-accent);
+  content: "";
+  transform: translateY(-50%);
+}
+
+.jobpilot-stage-sweep[data-jobpilot-stage-sweep] {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  left: -18%;
+  width: 18%;
+  border-right: 2px solid var(--color-accent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-accent-2) 42%, transparent), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(0);
+}
+
+@keyframes jobpilot-runtime-packet-transit {
+  to { transform: translateX(calc(100% - .38rem)); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-jobpilot-motion="enabled"] .jobpilot-runtime-trace-packet {
+    animation: jobpilot-runtime-packet-transit 2.8s linear infinite;
+    animation-play-state: paused;
+  }
+  [data-jobpilot-ambient="running"] .jobpilot-runtime-trace-packet { animation-play-state: running; }
+}
+
+@media (max-width: 700px) {
+  .jobpilot-runtime-trace-fill[data-jobpilot-runtime-fill] { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jobpilot-runtime-trace-fill[data-jobpilot-runtime-fill] { transform: scaleX(1); }
+  .jobpilot-runtime-trace-packet { animation: none !important; }
+  .jobpilot-stage-sweep[data-jobpilot-stage-sweep] { opacity: 0 !important; transform: none !important; }
+}
+
+/* Runtime dashboard: a deliberately different, full-width command surface for the system trace. */
+.jobpilot-runtime-panel {
+  position: relative;
+  width: 100%;
+  margin: clamp(2.5rem, 6vw, 5rem) 0 clamp(3rem, 7vw, 6rem);
+  padding: clamp(1.25rem, 3.4vw, 2.6rem);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-paper) 20%, transparent);
+  border-radius: 1.6rem;
+  background: var(--color-ink);
+  color: var(--color-paper);
+  box-shadow: 0 34px 80px -52px color-mix(in srgb, var(--color-ink) 90%, transparent);
+  isolation: isolate;
+}
+
+.jobpilot-runtime-panel::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: linear-gradient(color-mix(in srgb, var(--color-paper) 9%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 9%, transparent) 1px, transparent 1px);
+  background-size: 2.5rem 2.5rem;
+  content: "";
+  opacity: .42;
+  pointer-events: none;
+}
+
+.jobpilot-runtime-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-bottom: 1.7rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-paper) 20%, transparent);
+}
+
+.jobpilot-runtime-kicker {
+  margin: .15rem 0 0;
+  color: var(--color-accent);
+  font: 10px / 1.5 var(--font-mono);
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.jobpilot-runtime-state {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  column-gap: .65rem;
+  flex: 0 0 auto;
+  text-align: right;
+}
+
+.jobpilot-runtime-signal {
+  width: .65rem;
+  height: .65rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 .35rem color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+.jobpilot-runtime-state h3 {
+  margin: 0;
+  color: var(--color-paper);
+  font-size: clamp(2.8rem, 7vw, 6.5rem);
+  font-weight: 600;
+  letter-spacing: -.09em;
+  line-height: .8;
+}
+
+.jobpilot-runtime-state > span:last-child {
+  grid-column: 2;
+  margin-top: .55rem;
+  color: var(--color-accent-2);
+  font: 9px / 1.5 var(--font-mono);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.jobpilot-runtime-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .7rem;
+  margin: 1.4rem 0 2.4rem;
+  padding: 0;
+  list-style: none;
+}
+
+.jobpilot-runtime-metric {
+  display: grid;
+  gap: .65rem;
+  min-width: 0;
+  padding: 1rem 1.05rem;
+  border: 1px solid color-mix(in srgb, var(--color-paper) 18%, transparent);
+  border-radius: .75rem;
+  background: color-mix(in srgb, var(--color-paper) 8%, transparent);
+}
+
+.jobpilot-runtime-metric > span {
+  overflow: hidden;
+  color: color-mix(in srgb, var(--color-paper) 58%, transparent);
+  font: 9px / 1.4 var(--font-mono);
+  letter-spacing: .12em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.jobpilot-runtime-metric > strong {
+  overflow-wrap: anywhere;
+  color: var(--color-accent);
+  font-size: clamp(1.15rem, 2vw, 1.65rem);
+  font-weight: 500;
+  letter-spacing: -.045em;
+  line-height: 1;
+}
+
+.jobpilot-runtime-trace {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jobpilot-runtime-trace-step {
+  position: relative;
+  min-width: 0;
+  padding: .25rem .9rem 0 0;
+  color: color-mix(in srgb, var(--color-paper) 62%, transparent);
+  transition: color .3s ease;
+}
+
+.jobpilot-runtime-trace-node {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-paper) 30%, transparent);
+  border-radius: .7rem;
+  background: color-mix(in srgb, var(--color-paper) 10%, transparent);
+  color: var(--color-accent-2);
+  transition: background-color .3s ease, border-color .3s ease, color .3s ease, transform .3s ease;
+}
+
+.jobpilot-runtime-trace-copy { min-width: 0; }
+
+.jobpilot-runtime-trace-copy h4 {
+  margin: 0 0 .45rem;
+  color: var(--color-paper);
+  font: 600 12px / 1 var(--font-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  transition: color .3s ease;
+}
+
+.jobpilot-runtime-trace-copy p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .35rem;
+  min-height: 2.8rem;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-paper) 54%, transparent);
+  font: 10px / 1.5 var(--font-mono);
+}
+
+.jobpilot-runtime-trace-copy p > svg { flex: 0 0 auto; color: var(--color-accent-2); }
+.jobpilot-runtime-trace-copy strong { color: var(--color-paper); font-weight: 500; }
+
+.jobpilot-runtime-trace-line {
+  position: absolute;
+  top: 1.5rem;
+  right: .7rem;
+  left: 3.2rem;
+  height: 1px;
+  background: color-mix(in srgb, var(--color-paper) 28%, transparent);
+  transition: background-color .3s ease;
+}
+
+.jobpilot-runtime-trace-packet {
+  position: absolute;
+  top: -.18rem;
+  left: 0;
+  width: .38rem;
+  height: .38rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-accent) 15%, transparent);
+  transition: left .3s ease;
+}
+
+.jobpilot-experience[data-jobpilot-active="discover"] .jobpilot-runtime-trace-step:nth-child(1) .jobpilot-runtime-trace-node,
+.jobpilot-experience[data-jobpilot-active="normalize"] .jobpilot-runtime-trace-step:nth-child(2) .jobpilot-runtime-trace-node,
+.jobpilot-experience[data-jobpilot-active="decide"] .jobpilot-runtime-trace-step:nth-child(3) .jobpilot-runtime-trace-node,
+.jobpilot-experience[data-jobpilot-active="operate"] .jobpilot-runtime-trace-step:nth-child(4) .jobpilot-runtime-trace-node {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: var(--color-ink);
+  transform: translateY(-.6rem) scale(1.08);
+}
+
+.jobpilot-experience[data-jobpilot-active="discover"] .jobpilot-runtime-trace-step:nth-child(1) .jobpilot-runtime-trace-copy h4,
+.jobpilot-experience[data-jobpilot-active="normalize"] .jobpilot-runtime-trace-step:nth-child(2) .jobpilot-runtime-trace-copy h4,
+.jobpilot-experience[data-jobpilot-active="decide"] .jobpilot-runtime-trace-step:nth-child(3) .jobpilot-runtime-trace-copy h4,
+.jobpilot-experience[data-jobpilot-active="operate"] .jobpilot-runtime-trace-step:nth-child(4) .jobpilot-runtime-trace-copy h4 {
+  color: var(--color-accent);
+}
+
+.jobpilot-experience[data-jobpilot-active="discover"] .jobpilot-runtime-trace-step:nth-child(1) .jobpilot-runtime-trace-line,
+.jobpilot-experience[data-jobpilot-active="normalize"] .jobpilot-runtime-trace-step:nth-child(2) .jobpilot-runtime-trace-line,
+.jobpilot-experience[data-jobpilot-active="decide"] .jobpilot-runtime-trace-step:nth-child(3) .jobpilot-runtime-trace-line {
+  background: color-mix(in srgb, var(--color-accent) 72%, transparent);
+}
+
+.jobpilot-experience:not([data-jobpilot-active]) .jobpilot-runtime-trace-step,
+.jobpilot-experience:not([data-jobpilot-active]) .jobpilot-runtime-trace-copy,
+.jobpilot-experience:not([data-jobpilot-active]) .jobpilot-runtime-trace-node { opacity: 1; }
+
+@media (max-width: 700px) {
+  .jobpilot-runtime-head { gap: 1.25rem; }
+  .jobpilot-runtime-state h3 { font-size: clamp(2.4rem, 11vw, 4.5rem); }
+  .jobpilot-runtime-trace {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .jobpilot-runtime-trace-step {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    column-gap: .85rem;
+    min-height: 5.3rem;
+    padding: 0 0 1.2rem;
+  }
+  .jobpilot-runtime-trace-node { grid-column: 1; grid-row: 1; margin: 0; }
+  .jobpilot-runtime-trace-copy { grid-column: 2; grid-row: 1; padding-top: .15rem; }
+  .jobpilot-runtime-trace-line {
+    top: 2.5rem;
+    right: auto;
+    bottom: 0;
+    left: 1.25rem;
+    width: 1px;
+    height: auto;
+  }
+  .jobpilot-runtime-trace-packet { top: 0; left: -.18rem; }
+}
+
+@media (max-width: 430px) {
+  .jobpilot-runtime-panel { padding: 1rem; border-radius: 1.15rem; }
+  .jobpilot-runtime-head { display: grid; gap: 1.4rem; }
+  .jobpilot-runtime-state { justify-self: start; text-align: left; }
+  .jobpilot-runtime-metrics { grid-template-columns: 1fr; margin-bottom: 2rem; }
+  .jobpilot-runtime-metric { grid-template-columns: 1fr auto; align-items: center; gap: .8rem; }
+  .jobpilot-runtime-metric > strong { text-align: right; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jobpilot-runtime-trace-step,
+  .jobpilot-runtime-trace-node,
+  .jobpilot-runtime-trace-copy h4,
+  .jobpilot-runtime-trace-line,
+  .jobpilot-runtime-trace-packet { transition: none; }
+}

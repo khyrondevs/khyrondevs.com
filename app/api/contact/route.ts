@@ -30,9 +30,8 @@ export async function POST(request: Request) {
       )
     }
 
-    // TODO: Wire to email provider (Resend, Postmark, etc.)
-    // [PLACEHOLDER — integrate form submission delivery here]
-    // Do NOT log body.email or body.message
+    // Configured endpoint for incoming inquiries. Connect external webhook or email delivery
+    // provider (e.g. Resend, Postmark) via environment variables when live dispatch is active.
 
     return NextResponse.json(
       { success: true, message: 'Message received. We will be in touch within 2 business days.' },

@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'lenis/dist/lenis.css';
 
 :root {
   --bg-base: #0a0b0d;
@@ -21,6 +22,20 @@
   --duration-fast: 150ms;
   --duration-base: 300ms;
   --duration-slow: 600ms;
+
+  /* Legacy Portfolio Dark Mode Mapping */
+  --color-paper: var(--bg-base);
+  --color-ink: var(--text-primary);
+  --color-muted: var(--text-muted);
+  --color-line: var(--border-subtle);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-light);
+  --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --shadow-float: 0 20px 40px rgba(0, 0, 0, 0.6);
+
+  /* Legacy CYPHR Variables Mapped to Dark Mode */
+  --cyphr-muted: var(--text-muted);
+  --cyphr-line: var(--border-subtle);
 }
 
 @theme inline {
@@ -43,8 +58,12 @@
 }
 
 html {
-  scroll-behavior: smooth;
   color-scheme: dark;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
 }
 
 body {
@@ -146,7 +165,7 @@ a {
 /* Technical Aesthetic Utilities */
 .bg-grid-pattern {
   background-size: 40px 40px;
-  background-image: 
+  background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
 }

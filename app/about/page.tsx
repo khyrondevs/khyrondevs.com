@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { RevealOnScroll } from '@/components/ui/reveal-on-scroll'
 import { BentoCard } from '@/components/ui/bento-card'
+import InteractiveTerminal from '@/components/ui/interactive-terminal'
 
 export const metadata: Metadata = {
   title: 'About',
@@ -52,11 +53,13 @@ export default function AboutPage() {
               <p>
                 We are a founder-led engineering team. That means the people scoping the work are the people doing the work. No bait-and-switch from senior to junior. No outsourcing decisions made without telling you.
               </p>
-              <p className="text-sm font-mono opacity-60">
-                [PLACEHOLDER — Update with accurate team composition once confirmed]
-              </p>
+              <p className="text-sm font-mono text-fg-muted mt-4">We are a founding team of two engineers. We learn best by building real projects rather than isolated demos — overseeing everything from database architecture and backend APIs to frontend interfaces, security, and edge deployment.</p>
             </div>
           </div>
+        </RevealOnScroll>
+
+        <RevealOnScroll className="mb-24">
+          <InteractiveTerminal />
         </RevealOnScroll>
 
         <RevealOnScroll>

@@ -1,86 +1,168 @@
 export type ProjectStatus = 'self-initiated' | 'client' | 'concept' | 'open-source'
 
+export type GalleryItem = {
+  src: string
+  label: string
+  theme?: "Light" | "Dark"
+}
+
+export type ProjectLink = {
+  label: string
+  href: string
+  kind: "live" | "github" | "api" | "docs"
+}
+
+export type Metric = {
+  label: string
+  value: string
+}
+
 export type Project = {
   slug: string
   title: string
   status: ProjectStatus
-  statusLabel: string // Human readable: 'Self-initiated build', 'Client project', etc.
+  statusLabel: string
   category: string
+  badge?: string
   problem: string
   solution: string
+  summary?: string
+  highlights?: string[]
   keyDecisions: string[]
   stack: string[]
-  result?: string // Only include if real and supportable
+  metrics?: Metric[]
+  links?: ProjectLink[]
+  gallery?: GalleryItem[]
+  result?: string
   featured: boolean
-  coverDescription: string // Short description for card
+  coverDescription: string
   year: number
 }
 
 export const projects: Project[] = [
-  // [PLACEHOLDER — Replace with a real project. Fill in all fields accurately.]
   {
-    slug: 'rag-knowledge-platform',
-    title: 'RAG Knowledge Platform',
+    slug: 'cyphr',
+    title: 'CYPHR',
     status: 'self-initiated',
     statusLabel: 'Self-initiated technical build',
     category: 'AI / RAG',
-    problem:
-      'Internal knowledge bases become stale and unsearchable as teams grow. Standard search returns documents, not answers.',
-    solution:
-      'Built a retrieval-augmented generation system that indexes structured and unstructured documents, maintains source traceability, and answers natural-language queries with grounded responses.',
-    keyDecisions: [
-      'Chose pgvector over a dedicated vector store to keep the stack footprint minimal',
-      'Implemented chunking strategy with contextual overlap to preserve semantic coherence across section boundaries',
-      'Used streaming responses to reduce perceived latency on longer answers',
+    problem: 'Standard search returns documents, not answers. Answers needed to be strictly grounded in user-uploaded documents with verifiable provenance.',
+    solution: 'A document-grounded RAG platform where PDFs are extracted, chunked, embedded via Jina Embeddings v3, and indexed in MongoDB Atlas Vector Search. Answers cite the exact source file and page.',
+    summary: 'A retrieval-augmented chat platform that answers strictly from documents you upload. PDFs are extracted, chunked and embedded into MongoDB Atlas vector search; every answer cites the source file and page it came from.',
+    highlights: [
+      'MongoDB Atlas Vector Search over Jina Embeddings v3',
+      'Configurable LLM providers with runtime model selection',
+      'FastAPI service layer with Google OAuth and CSRF boundaries'
     ],
-    stack: ['Next.js', 'TypeScript', 'PostgreSQL', 'pgvector', 'OpenAI', 'LangChain', 'Vercel'],
-    // result: undefined — no fabricated metrics
+    keyDecisions: [
+      'MongoDB Atlas Vector Search over dedicated vector stores for stack consolidation',
+      'Runtime model selection across 6 dynamic LLM providers',
+      'Per-user tenant isolation with strict OAuth 2.0 and CSRF boundaries'
+    ],
+    stack: ['FastAPI', 'React', 'MongoDB Atlas', 'Vector Search', 'Jina Embeddings'],
+    metrics: [
+      { label: 'Security & Regression', value: '125 tests' }
+    ],
+    links: [
+      { label: 'Open CYPHR', href: 'https://cyphr-rag.vercel.app/', kind: 'live' },
+      { label: 'View source', href: 'https://github.com/Vittal-17/CYPHR-RAG', kind: 'github' }
+    ],
+    gallery: [
+      { src: '/images/cyphr/dark/6_chat_response.png', label: 'Grounded answer with citation', theme: 'Dark' },
+      { src: '/images/cyphr/dark/7_new_chat.png', label: 'Workspace with indexed document', theme: 'Dark' },
+      { src: '/images/cyphr/dark/5_knowledge_base.png', label: 'Knowledge base — PDF ingestion', theme: 'Dark' }
+    ],
     featured: true,
-    coverDescription: 'A self-initiated RAG system for structured knowledge retrieval with grounded, source-traceable answers.',
-    year: 2025,
+    coverDescription: 'A document-grounded RAG platform that answers strictly from uploaded PDFs, providing exact file and page citations.',
+    year: 2026,
   },
-  // [PLACEHOLDER — Replace with a real project.]
   {
-    slug: 'workflow-automation-engine',
-    title: 'Workflow Automation Engine',
+    slug: 'jobpilot',
+    title: 'JobPilot',
     status: 'self-initiated',
     statusLabel: 'Self-initiated technical build',
-    category: 'Automation',
-    problem:
-      'Business teams were manually copying data between three systems and creating errors. No API integration existed.',
-    solution:
-      'Designed and built an event-driven integration layer with retry logic, schema validation, and a monitoring dashboard — eliminating the manual hand-off entirely.',
+    category: 'Automation Systems',
+    problem: 'Business teams were manually copying data between systems. Provider noise needed to be turned into a daily, fresher-friendly stream without manual intervention.',
+    solution: 'A fully autonomous job-hunt platform deployed on Oracle Cloud. FastAPI and PostgreSQL own provider ingestion, canonical deduplication, enrichment, fresher eligibility, and match scoring.',
+    summary: 'JobPilot turns provider noise into a daily, fresher-friendly stream without asking the operator to manually search every source.',
     keyDecisions: [
-      'Event-driven over polling to reduce latency and unnecessary compute',
-      'Schema validation at ingestion boundary to catch mismatches before they propagate',
-      'Observable by default: structured logs and alerting from day one',
+      'Multi-provider job discovery with source-level and canonical deduplication',
+      'Deterministic eligibility and preference-based matching',
+      'Exact-SHA ARM64 deployment with pre-migration backup and restore verification'
     ],
-    stack: ['Node.js', 'TypeScript', 'PostgreSQL', 'BullMQ', 'Redis', 'React', 'Docker'],
+    stack: ['FastAPI', 'PostgreSQL 16', 'React 19', 'Docker', 'n8n'],
+    metrics: [
+      { label: 'Automated tests', value: '590 tests' }
+    ],
+    links: [
+      { label: 'Live Platform', href: 'https://jobpilot.cfd', kind: 'live' }
+    ],
+    gallery: [
+      { src: '/images/jobpilot/Today.png', label: 'Today / live recommendations' },
+      { src: '/images/jobpilot/Jobs.png', label: 'Jobs / normalized archive' },
+      { src: '/images/jobpilot/Search_Vectors.png', label: 'Search vectors / operator intent' }
+    ],
     featured: true,
-    coverDescription: 'An event-driven workflow engine that replaced a multi-step manual process with a validated, observable pipeline.',
-    year: 2025,
+    coverDescription: 'An autonomous job intelligence platform featuring multi-provider discovery and deterministic matching.',
+    year: 2026,
   },
-  // [PLACEHOLDER — Replace with a real project.]
   {
-    slug: 'developer-dashboard',
-    title: 'Internal Developer Dashboard',
+    slug: 'eazyshop',
+    title: 'EazyShop',
     status: 'self-initiated',
     statusLabel: 'Self-initiated technical build',
-    category: 'Full-Stack / Tooling',
-    problem:
-      'Engineering teams using multiple tools (CI, deployments, error tracking, databases) have no unified operational view.',
-    solution:
-      'Built a composable internal dashboard that aggregates signals from multiple sources — deployments, error rates, queue depths — into a single, permission-aware view.',
+    category: 'Production Full-Stack',
+    problem: 'E-commerce platforms require robust lifecycle management spanning authentication, payments, and administrative oversight without compromising performance.',
+    solution: 'A database-backed Django REST and React commerce platform covering the complete shopping lifecycle alongside comprehensive administrative workflows and audit logging.',
+    summary: 'A database-backed Django REST + React commerce platform covering the full shopping lifecycle — authentication, catalogue, cart, wishlist, checkout, payments, and reviews.',
     keyDecisions: [
-      'Plugin architecture so each data source is independently configurable',
-      'Permission model at the data-source level, not just the UI level',
-      'Server-side rendering for initial load; real-time updates via WebSocket',
+      'Isolated application boundaries separating customer storefronts from admin workflows',
+      'Comprehensive audit logging for all transactional states'
     ],
-    stack: ['Next.js', 'TypeScript', 'Tailwind CSS', 'PostgreSQL', 'WebSocket', 'Docker'],
+    stack: ['Django', 'React', 'SQL', 'REST API'],
+    links: [
+      { label: 'Open live app', href: 'https://django-react-ecommerce-platform.vercel.app', kind: 'live' },
+      { label: 'View source', href: 'https://github.com/Vittal-17/django-react-ecommerce-platform', kind: 'github' }
+    ],
+    gallery: [
+      { src: '/images/eazyshop/eazyshop_home.png', label: 'Home' },
+      { src: '/images/eazyshop/products.png', label: 'Products' },
+      { src: '/images/eazyshop/checkout1.png', label: 'Checkout' }
+    ],
     featured: true,
-    coverDescription: 'A composable internal dashboard that unifies deployment, error, and infrastructure signals into one operational view.',
-    year: 2024,
+    coverDescription: 'A production-grade e-commerce platform covering the full shopping lifecycle and administrative workflows.',
+    year: 2026,
   },
+  {
+    slug: 'ai-house-price-estimator',
+    title: 'AI House Price Estimator',
+    status: 'self-initiated',
+    statusLabel: 'Self-initiated technical build',
+    category: 'Applied Machine Learning',
+    problem: 'Machine learning models are often trapped in notebooks. This required an end-to-end deployment of an evaluated model through a functional API and interface.',
+    solution: 'An end-to-end machine learning application predicting California house prices. Tuned Random Forest model deployed via FastAPI and React.',
+    summary: 'Random Forest + FastAPI + React, tuned with GridSearchCV and deployed on Render and Vercel.',
+    keyDecisions: [
+      'GridSearchCV hyperparameter tuning resulting in an R² of 0.8062',
+      'Axios API communication with animated prediction results and toast notifications'
+    ],
+    stack: ['Python', 'Scikit-learn', 'FastAPI', 'React'],
+    metrics: [
+      { label: 'Accuracy', value: 'R² 0.8062' }
+    ],
+    links: [
+      { label: 'Open live app', href: 'https://aihouseprice.vercel.app', kind: 'live' },
+      { label: 'View source', href: 'https://github.com/Vittal-17/ai-house-price-estimator', kind: 'github' },
+      { label: 'API docs', href: 'https://aihouseprice.onrender.com/docs', kind: 'docs' }
+    ],
+    gallery: [
+      { src: '/images/aihouseprice/home.png', label: 'Home' },
+      { src: '/images/aihouseprice/predicted_price.png', label: 'Prediction Result' }
+    ],
+    featured: true,
+    coverDescription: 'A tuned Random Forest regression model deployed via a FastAPI backend and React frontend.',
+    year: 2026,
+  }
 ]
 
 export function getProjectBySlug(slug: string): Project | undefined {
