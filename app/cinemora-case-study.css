@@ -1,0 +1,396 @@
+/* ==========================================================================
+   Cinemora: Distributed Real-Time IMAX Concurrency Engine
+   Domain: Distributed Systems, WebSockets, Concurrency Locks, Cryptographic QR
+   Palette: Cinema Obsidian (#06070a), IMAX Screen Cyan (#06b6d4), Velvet Ruby (#e11d48), Neon Gold (#f59e0b)
+   ========================================================================== */
+
+:root {
+  --cine-gold: #f59e0b;
+  --cine-gold-glow: rgba(245, 158, 11, 0.3);
+  --cine-crimson: #e11d48;
+  --cine-crimson-glow: rgba(225, 29, 72, 0.35);
+  --cine-cyan: #06b6d4;
+  --cine-cyan-glow: rgba(6, 182, 212, 0.35);
+  --cine-emerald: #10b981;
+  --cine-emerald-glow: rgba(16, 185, 129, 0.35);
+  --cine-obsidian: #06070a;
+  --cine-surface: #0e111a;
+  --cine-elevated: #151a28;
+  --cine-border: rgba(255, 255, 255, 0.08);
+  --cine-border-gold: rgba(245, 158, 11, 0.4);
+}
+
+/* ── 35mm Film Strip Perforations ── */
+.cinemora-film-strip {
+  position: relative;
+  width: 100%;
+  height: 24px;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cinemora-sprocket {
+  width: 12px;
+  height: 14px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.8);
+  flex-shrink: 0;
+}
+
+/* ── Curved IMAX Screen ── */
+.cinemora-imax-screen {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  height: 58px;
+  margin: 0 auto 2.5rem;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  border-top: 3px solid var(--cine-cyan);
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.35) 0%, rgba(6, 182, 212, 0.02) 100%);
+  box-shadow: 0 -14px 45px -4px var(--cine-cyan-glow), inset 0 2px 24px rgba(6, 182, 212, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.cinemora-imax-screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.6) 0%, transparent 70%);
+  animation: cine-flicker 4s infinite ease-in-out;
+}
+
+@keyframes cine-flicker {
+  0%, 100% { opacity: 0.85; }
+  25% { opacity: 0.65; }
+  50% { opacity: 1; }
+  75% { opacity: 0.75; }
+}
+
+.cinemora-screen-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--cine-cyan);
+  opacity: 0.95;
+  text-shadow: 0 0 12px var(--cine-cyan);
+  font-weight: 600;
+}
+
+/* Projector Light Ray */
+.cinemora-projector-ray {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 85%;
+  height: 140px;
+  background: linear-gradient(180deg, rgba(6, 182, 212, 0.18) 0%, transparent 100%);
+  clip-path: polygon(46% 0%, 54% 0%, 100% 100%, 0% 100%);
+  pointer-events: none;
+  opacity: 0.7;
+  animation: cine-ray-pulse 6s infinite ease-in-out;
+}
+
+@keyframes cine-ray-pulse {
+  0%, 100% { opacity: 0.7; transform: translateX(-50%) scaleX(1); }
+  50% { opacity: 0.45; transform: translateX(-50%) scaleX(1.04); }
+}
+
+/* ── Cinema Seat Matrix ── */
+.cinemora-auditorium-stage {
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+
+.cinemora-seat-grid-3d {
+  transform: rotateX(16deg);
+  transform-origin: 50% 100%;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cinemora-seat-node {
+  position: relative;
+  width: 32px;
+  height: 28px;
+  border-radius: 6px 6px 4px 4px;
+  border: 1px solid var(--cine-border);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.cinemora-seat-node::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 3px;
+  right: 3px;
+  height: 4px;
+  border-radius: 0 0 3px 3px;
+  background: inherit;
+  opacity: 0.7;
+}
+
+/* Seat States */
+.cinemora-seat-available {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.cinemora-seat-available:hover {
+  background: rgba(6, 182, 212, 0.25);
+  border-color: var(--cine-cyan);
+  box-shadow: 0 0 16px var(--cine-cyan-glow);
+  transform: translateY(-3px) scale(1.05);
+  color: var(--cine-cyan);
+}
+
+.cinemora-seat-selected {
+  background: var(--cine-cyan);
+  border-color: #38bdf8;
+  color: #042f2e;
+  box-shadow: 0 0 22px var(--cine-cyan-glow);
+  transform: translateY(-4px) scale(1.1);
+  animation: cine-seat-pulse 2s infinite ease-in-out;
+}
+
+.cinemora-seat-held {
+  background: rgba(245, 158, 11, 0.25);
+  border-color: var(--cine-gold);
+  color: var(--cine-gold);
+  box-shadow: 0 0 16px var(--cine-gold-glow);
+  animation: cine-amber-pulse 1.6s infinite ease-in-out;
+}
+
+.cinemora-seat-locked {
+  background: rgba(225, 29, 72, 0.25);
+  border-color: var(--cine-crimson);
+  color: var(--cine-crimson);
+  cursor: not-allowed;
+  opacity: 0.85;
+}
+
+@keyframes cine-seat-pulse {
+  0%, 100% { box-shadow: 0 0 20px var(--cine-cyan-glow); }
+  50% { box-shadow: 0 0 32px rgba(6, 182, 212, 0.7); }
+}
+
+@keyframes cine-amber-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* ── Laser Scanline Beam ── */
+.cinemora-laser-scanner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 5%, var(--cine-crimson) 50%, transparent 95%);
+  box-shadow: 0 0 18px var(--cine-crimson), 0 0 35px var(--cine-crimson-glow);
+  pointer-events: none;
+  animation: cine-laser-sweep 2.4s infinite ease-in-out;
+  z-index: 10;
+}
+
+@keyframes cine-laser-sweep {
+  0% { top: 6%; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { top: 94%; opacity: 0; }
+}
+
+/* ── Turnstile Gate Arm Physical Animation ── */
+.cinemora-turnstile-arm {
+  transform-origin: 0% 50%;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cinemora-turnstile-arm.is-open {
+  transform: rotate(-75deg);
+}
+
+/* ── Live Wave Broadcast Ripple ── */
+.cinemora-broadcast-wave {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--cine-cyan);
+  pointer-events: none;
+  animation: cine-ripple 1.8s ease-out infinite;
+}
+
+@keyframes cine-ripple {
+  0% { width: 0; height: 0; opacity: 1; transform: translate(-50%, -50%); }
+  100% { width: 340px; height: 340px; opacity: 0; transform: translate(-50%, -50%); }
+}
+
+/* ── Money Particle Float ── */
+@keyframes money-float-up {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-40px) scale(1.2); }
+}
+
+.cinemora-money-float {
+  animation: money-float-up 1.2s ease-out forwards;
+}
+
+/* ── Continuous Circuit Pulse ── */
+.cinemora-circuit-line {
+  stroke-dasharray: 6 8;
+  animation: cine-dash 2s linear infinite;
+}
+
+@keyframes cine-dash {
+  to { stroke-dashoffset: -28; }
+}
+
+/* Holographic Card Perspective */
+.cinemora-holo-card {
+  perspective: 1000px;
+  transition: transform 0.4s ease;
+}
+
+.cinemora-holo-card:hover {
+  transform: translateY(-4px) rotateX(2deg);
+}
+
+/* Status Indicator */
+.cinemora-live-beacon {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--cine-gold);
+  box-shadow: 0 0 12px var(--cine-gold);
+  animation: cine-beacon-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes cine-beacon-ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+/* ── Pinned Panoramic Theater Classes ── */
+.cinemora-theater-section {
+  position: relative;
+  width: 100%;
+}
+
+.cinemora-scroll-track {
+  position: relative;
+  width: 100%;
+}
+
+.cinemora-theater-stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  background: radial-gradient(circle at 50% 20%, #101424 0%, #06070a 80%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.cinemora-hud-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.cinemora-mode-nav {
+  position: relative;
+  width: 100%;
+  margin: 0.75rem 0;
+  flex-shrink: 0;
+}
+
+.cinemora-mode-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.cinemora-mode-tab {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: left;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.cinemora-mode-tab.is-active {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: var(--cine-gold);
+  color: var(--cine-gold);
+  box-shadow: 0 0 15px var(--cine-gold-glow);
+}
+
+.cinemora-scrub-bar {
+  position: relative;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.cinemora-scrub-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: var(--cine-gold);
+  transform-origin: 0% 50%;
+  transform: scaleX(0);
+}
+
+.cinemora-viewport-housing {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #040508;
+  overflow: hidden;
+}
+
+.cinemora-screen-pane {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}

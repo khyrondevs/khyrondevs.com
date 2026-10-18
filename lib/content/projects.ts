@@ -77,6 +77,49 @@ export const projects: Project[] = [
     year: 2026,
   },
   {
+    slug: 'cinemora',
+    title: 'Cinemora',
+    status: 'self-initiated',
+    statusLabel: 'Self-initiated technical build',
+    category: 'Distributed Systems & Real-Time',
+    problem: 'High-demand ticket booking systems suffer from race conditions, double-booked seats under concurrency, and stale seat map synchronization across multiple client sessions.',
+    solution: 'An enterprise-grade movie booking architecture powered by Django Channels WebSockets, Redis pub/sub, and PostgreSQL row-level locks (SELECT ... FOR UPDATE). Pushes instant seat state deltas to connected clients and secures physical entry with cryptographic, unguessable QR codes.',
+    summary: 'Real-time movie ticket reservation engine with WebSocket-synchronized seating maps, ACID transaction guarantees, unguessable ticket verification codes, and an analytics command center.',
+    highlights: [
+      'WebSocket seat synchronization over Django Channels & Redis channel layers',
+      'ACID concurrency control via PostgreSQL SELECT ... FOR UPDATE row-exclusive locks',
+      'Cryptographic door check-in system with unguessable secrets codes & in-app camera QR scanner',
+      'Automated tiered refund engine with instant wallet ledger credit'
+    ],
+    keyDecisions: [
+      'Derived seat state pushed via transaction.on_commit to eliminate stale delta drift upon client reconnection',
+      'PostgreSQL SELECT ... FOR UPDATE row locking on showtimes to guarantee zero double-booking under burst traffic',
+      'Secrets-generated 10-character unguessable alphanumeric ticket credentials excluding ambiguous characters (I, O, 0, 1)',
+      'Compound database indexes matching production query access patterns for O(1) gate check-in and seat availability sweeps'
+    ],
+    stack: ['Django Channels', 'WebSockets', 'PostgreSQL', 'React 19', 'Redis', 'Daphne', 'Tailwind CSS'],
+    metrics: [
+      { label: 'Seat Concurrency', value: '0 Double-Bookings' },
+      { label: 'Hold Expiration TTL', value: '15 Minutes' },
+      { label: 'Gate Lookup Speed', value: '<5ms Indexed' }
+    ],
+    links: [
+      { label: 'View source', href: 'https://github.com/Gowthamr1/Cinemora', kind: 'github' },
+      { label: 'API Backend', href: 'https://cinemora-6r4q.onrender.com/api/', kind: 'api' }
+    ],
+    gallery: [
+      { src: '/images/cinemora/Screenshot_2026-10-17_185403.png', label: 'Real-Time Interactive Seat Grid (WebSockets)' },
+      { src: '/images/cinemora/Screenshot_2026-10-17_184922.png', label: 'Movie Catalog & Premiere Discovery' },
+      { src: '/images/cinemora/Screenshot_2026-10-17_184942.png', label: 'Digital Bookings Ledger & Ticket Wallet' },
+      { src: '/images/cinemora/Screenshot_2026-10-17_185116.png', label: 'Admin Command Center & Revenue Ledger' },
+      { src: '/images/cinemora/Screenshot_2026-10-17_185206.png', label: 'Multi-Tier Auditorium Seating & Pricing Matrix' },
+      { src: '/images/cinemora/Screenshot_2026-10-17_185247.png', label: 'Demand Forecasting & Real-Time Analytics' }
+    ],
+    featured: true,
+    coverDescription: 'A high-concurrency movie booking platform featuring WebSocket seat synchronization and ACID-guaranteed reservations.',
+    year: 2026,
+  },
+  {
     slug: 'jobpilot',
     title: 'JobPilot',
     status: 'self-initiated',
@@ -161,6 +204,48 @@ export const projects: Project[] = [
     ],
     featured: true,
     coverDescription: 'A tuned Random Forest regression model deployed via a FastAPI backend and React frontend.',
+    year: 2026,
+  },
+  {
+    slug: 'online-lms',
+    title: 'Online LMS',
+    status: 'self-initiated',
+    statusLabel: 'Self-initiated technical build',
+    category: 'Full-Stack EdTech Platform',
+    problem: 'Modern online education systems require rigid role isolation across students, instructors, and administrators, accompanied by verifiable proof of course completion that cannot be forged.',
+    solution: 'A production-ready LMS platform built on Django REST Framework and React. Features granular three-tier RBAC, structured multi-module curriculum authoring, in-platform automated quiz grading, simulated checkout, and automated ReportLab PDF certificate generation with cryptographic UUID verification and QR codes.',
+    summary: 'A full-stack learning management system featuring 3-tier RBAC, curriculum lesson streaming, progress tracking gates, and automated PDF certificate generation with scannable QR verification.',
+    highlights: [
+      'Granular 3-tier Role-Based Access Control (Student, Instructor, Administrator)',
+      'Automated vector PDF certificate generation via ReportLab with embedded verification QR',
+      'Curriculum authoring engine with lesson sequencing and progress tracking gates',
+      'In-platform automated MCQ quiz engine for skill evaluation and course completion gating'
+    ],
+    keyDecisions: [
+      'Isolated permission boundaries in DRF custom middleware preventing cross-role privilege escalation',
+      'In-memory ReportLab canvas PDF generation with dynamic text fitting and QR verification payloads',
+      'Atomic enrollment locking with simulated transaction ledger receipts before unlocking course materials',
+      'Automated event-driven email service layer for enrollment confirmations and completion certificates'
+    ],
+    stack: ['Django REST Framework', 'React 18', 'ReportLab PDF', 'JWT Auth', 'Tailwind CSS', 'Recharts'],
+    metrics: [
+      { label: 'Role Isolation', value: '3-Tier RBAC' },
+      { label: 'Certificate Engine', value: 'ReportLab Vector' },
+      { label: 'Curriculum Tracking', value: '100% Progress Gate' }
+    ],
+    links: [
+      { label: 'View source', href: 'https://github.com/Gowthamr1/LMS-django-react', kind: 'github' }
+    ],
+    gallery: [
+      { src: '/images/online_lms/Screenshot_2026-10-17_184130.png', label: 'Course Catalog & Interactive Learning Portal' },
+      { src: '/images/online_lms/Screenshot_2026-10-17_184140.png', label: 'Platform Administration & Governance Console' },
+      { src: '/images/online_lms/Screenshot_2026-10-17_184337.png', label: 'Curriculum & Course Management System' },
+      { src: '/images/online_lms/Screenshot_2026-10-17_184500.png', label: 'RBAC User Access & Permission Controller' },
+      { src: '/images/online_lms/Screenshot_2026-10-17_184656.png', label: 'Payment Ledger & Transaction Receipt History' },
+      { src: '/images/online_lms/Screenshot_2026-10-17_184735.png', label: 'Student Dashboard & Progress Telemetry' }
+    ],
+    featured: true,
+    coverDescription: 'A full-stack learning platform with granular RBAC, lesson progress gating, and dynamic ReportLab PDF certificate generation.',
     year: 2026,
   }
 ]

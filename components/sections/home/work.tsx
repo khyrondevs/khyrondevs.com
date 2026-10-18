@@ -69,9 +69,9 @@ function RAGCinematicWorld({ progress, project, reducedMotion }: { progress: Mot
 
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden bg-base" style={{ perspective: '1200px' }}>
-      
+
       {/* ---------------- VISUAL LAYERS ---------------- */}
-      
+
       {/* 1. The Knowledge Field (Floating Documents) */}
       <motion.div className="absolute inset-0 transform-style-3d pointer-events-none" style={{ opacity: docOpacity }}>
         {docPositions.map((pos, i) => (
@@ -86,7 +86,7 @@ function RAGCinematicWorld({ progress, project, reducedMotion }: { progress: Mot
            {/* Complex web of connections */}
            <path d="M 100,100 L 300,250 L 500,150 L 700,350 L 900,200 M 300,250 L 400,450 L 700,350 M 500,150 L 600,100 L 900,200" fill="none" stroke="rgba(59,130,246,0.3)" strokeWidth="1" strokeDasharray="4 6" />
            <path d="M 200,500 L 400,450 L 600,550 L 700,350" fill="none" stroke="rgba(34,211,238,0.2)" strokeWidth="1" />
-           
+
            {!reducedMotion && (
              <>
                <motion.path d="M 100,100 L 300,250 L 500,150 L 700,350" fill="none" stroke="rgba(34,211,238,0.8)" strokeWidth="2" strokeDasharray="150"
@@ -117,7 +117,7 @@ function RAGCinematicWorld({ progress, project, reducedMotion }: { progress: Mot
       </motion.div>
 
       {/* 3. The Product Interface (Foreground) */}
-      <motion.div 
+      <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-4xl z-30 pointer-events-auto"
         style={{ opacity: uiOpacity, y: reducedMotion ? '-50%' : uiYCalc, scale: reducedMotion ? 1 : uiScale }}
       >
@@ -138,7 +138,7 @@ function RAGCinematicWorld({ progress, project, reducedMotion }: { progress: Mot
               <div className="w-2 h-2 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,1)] animate-pulse" />
             </div>
           </div>
-          
+
           {/* Body */}
           <div className="p-8 md:p-12 lg:p-16">
             <div className="mb-12">
@@ -150,7 +150,7 @@ function RAGCinematicWorld({ progress, project, reducedMotion }: { progress: Mot
                 Extract all risk factors from the Q3 compliance documents and summarize the regulatory impact on current active deployments.
               </div>
             </div>
-            
+
             <div className="pl-6 md:pl-10 border-l border-accent/30 relative">
               <div className="absolute left-[-5px] top-0 w-2.5 h-2.5 bg-accent rounded-full shadow-[0_0_12px_rgba(59,130,246,0.8)]" />
               <div className="font-mono text-[11px] text-accent mb-6 uppercase tracking-widest">Semantic Context Resolved [k=3]</div>
@@ -178,7 +178,7 @@ function RAGCinematicWorld({ progress, project, reducedMotion }: { progress: Mot
       </motion.div>
 
       {/* ---------------- NARRATIVE OVERLAYS ---------------- */}
-      
+
       {/* 1. Title Sequence */}
       <motion.div className="absolute inset-0 flex flex-col items-center justify-center text-center z-40 pointer-events-none p-6" style={{ opacity: titleOp }}>
          <span className="font-mono text-xs text-accent tracking-[0.3em] uppercase mb-8 block border border-accent/30 px-4 py-2 bg-base/80 backdrop-blur-sm">
@@ -209,9 +209,9 @@ function RAGCinematicWorld({ progress, project, reducedMotion }: { progress: Mot
       <motion.div className="absolute right-0 top-1/3 w-full md:w-1/2 p-12 md:p-24 flex flex-col items-end text-right z-40 pointer-events-none" style={{ opacity: archOp }}>
          <div className="border-r-2 border-accent pr-8 md:pr-12 bg-gradient-to-l from-base via-base/80 to-transparent py-12 flex flex-col items-end">
            <div className="font-mono text-xs text-cyan-400 mb-8 uppercase tracking-[0.2em] flex flex-wrap justify-end gap-3 max-w-md leading-loose">
-             <span className="bg-cyan-950/50 px-2 py-1 border border-cyan-400/30">INDEX</span> → 
-             <span className="bg-cyan-950/50 px-2 py-1 border border-cyan-400/30">RETRIEVE</span> → 
-             <span className="bg-cyan-950/50 px-2 py-1 border border-cyan-400/30">CONTEXT</span> → 
+             <span className="bg-cyan-950/50 px-2 py-1 border border-cyan-400/30">INDEX</span> →
+             <span className="bg-cyan-950/50 px-2 py-1 border border-cyan-400/30">RETRIEVE</span> →
+             <span className="bg-cyan-950/50 px-2 py-1 border border-cyan-400/30">CONTEXT</span> →
              <span className="bg-cyan-950/50 px-2 py-1 border border-cyan-400/30 text-cyan-200">GENERATE</span>
            </div>
            <h4 className="text-3xl font-light text-fg mb-6">Semantic architecture.</h4>
@@ -252,7 +252,7 @@ function AutomationWorld({ project, reducedMotion }: { project: Project, reduced
       <div className="absolute inset-0 bg-surface/20 pointer-events-none overflow-hidden">
         {/* Isometric Grid Base */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [transform:rotateX(60deg)_rotateZ(-45deg)_scale(2)] origin-center opacity-50" />
-        
+
         {/* Pipeline graphic */}
         <div className="absolute inset-0 flex items-center justify-center opacity-40 group-hover:opacity-100 transition-opacity duration-1000">
            <svg className="w-full h-full max-w-2xl" viewBox="0 0 800 600">
@@ -266,7 +266,7 @@ function AutomationWorld({ project, reducedMotion }: { project: Project, reduced
               )}
               <rect x="280" y="280" width="40" height="40" fill="rgba(17,19,24,1)" stroke="rgba(59,130,246,0.8)" strokeWidth="2" />
               <rect x="290" y="290" width="20" height="20" fill="rgba(59,130,246,0.3)" />
-              
+
               <rect x="580" y="130" width="40" height="40" fill="rgba(17,19,24,1)" stroke="rgba(59,130,246,0.8)" strokeWidth="2" />
               <rect x="580" y="430" width="40" height="40" fill="rgba(17,19,24,1)" stroke="rgba(34,211,238,0.8)" strokeWidth="2" className="shadow-[0_0_20px_rgba(34,211,238,0.5)]" />
            </svg>
@@ -275,7 +275,7 @@ function AutomationWorld({ project, reducedMotion }: { project: Project, reduced
 
       {/* Content Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-base via-base/60 to-transparent pointer-events-none z-10" />
-      
+
       <div className="relative z-20 mt-auto p-10 md:p-16 lg:p-20 flex flex-col pointer-events-auto">
         <span className="font-mono text-[10px] text-fg-subtle tracking-widest uppercase mb-6 block w-fit border border-border/50 px-3 py-1 bg-surface/50 backdrop-blur-md">
           {project.category}
@@ -306,7 +306,7 @@ function DashboardWorld({ project, reducedMotion }: { project: Project, reducedM
               <div className="font-mono text-[9px] text-accent uppercase tracking-widest absolute top-4 left-4 border border-accent/30 px-2 py-0.5">Live Metrics</div>
               <div className="flex items-end gap-2 h-full pt-8">
                  {Array.from({length: 12}).map((_, i) => (
-                    <motion.div key={i} className="flex-1 bg-cyan-900/50 border-t border-cyan-400/50" 
+                    <motion.div key={i} className="flex-1 bg-cyan-900/50 border-t border-cyan-400/50"
                       initial={{ height: `${20 + ((i * 37) % 60)}%` }}
                       animate={!reducedMotion ? { height: [`${20 + ((i * 37) % 60)}%`, `${20 + ((i * 83) % 60)}%`] } : {}}
                       transition={{ duration: 2 + ((i * 11) % 3), repeat: Infinity, repeatType: 'mirror' }}
@@ -329,7 +329,7 @@ function DashboardWorld({ project, reducedMotion }: { project: Project, reducedM
 
       {/* Content Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-base via-base/80 to-transparent pointer-events-none z-10" />
-      
+
       <div className="relative z-20 mt-auto p-10 md:p-16 lg:p-20 flex flex-col pointer-events-auto">
         <span className="font-mono text-[10px] text-fg-subtle tracking-widest uppercase mb-6 block w-fit border border-border/50 px-3 py-1 bg-surface/50 backdrop-blur-md">
           {project.category}
@@ -373,12 +373,13 @@ export function WorkSection() {
 
   if (!projects || projects.length < 1) return null
 
-  const primaryProject = projects[0]
-  const secondaryProjects = projects.slice(1, 3)
+  const primaryProject = projects.find((p) => p.slug === 'cyphr') ?? projects[0]
+  const automationProject = projects.find((p) => p.slug === 'jobpilot') ?? projects[1]
+  const dashboardProject = projects.find((p) => p.slug === 'eazyshop') ?? projects[2]
 
   return (
     <section className="bg-base border-y border-border">
-      
+
       {/* Intro Sequence */}
       <div className="container-site pt-32 pb-16 md:pb-32">
         <RevealOnScroll>
@@ -453,14 +454,14 @@ export function WorkSection() {
       <div className="flex flex-col xl:flex-row min-h-screen border-y border-border/50">
          {/* World 1 (Automation - 60%) */}
          <div className="w-full xl:w-[60%] border-b xl:border-b-0 xl:border-r border-border/50 h-[80vh] xl:h-auto">
-           {secondaryProjects[0] && (
-             <AutomationWorld project={secondaryProjects[0]} reducedMotion={reducedMotion} />
+           {automationProject && (
+             <AutomationWorld project={automationProject} reducedMotion={reducedMotion} />
            )}
          </div>
          {/* World 2 (Dashboard - 40%) */}
          <div className="w-full xl:w-[40%] h-[80vh] xl:h-auto">
-           {secondaryProjects[1] && (
-             <DashboardWorld project={secondaryProjects[1]} reducedMotion={reducedMotion} />
+           {dashboardProject && (
+             <DashboardWorld project={dashboardProject} reducedMotion={reducedMotion} />
            )}
          </div>
       </div>

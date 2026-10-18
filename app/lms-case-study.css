@@ -1,0 +1,298 @@
+/* ==========================================================================
+   Online LMS: Cyber-Academy 3-Tier RBAC & ReportLab Vector Studio
+   Domain: EdTech Architecture, RBAC Isolation, Vector PDF Compilation, Progress Gates
+   Palette: Cyber Indigo (#6366f1), Azure (#3b82f6), Holographic Cyan (#22d3ee), Emerald (#10b981), Academic Gold (#eab308)
+   ========================================================================== */
+
+:root {
+  --lms-indigo: #6366f1;
+  --lms-indigo-glow: rgba(99, 102, 241, 0.35);
+  --lms-azure: #3b82f6;
+  --lms-azure-glow: rgba(59, 130, 246, 0.35);
+  --lms-cyan: #22d3ee;
+  --lms-cyan-glow: rgba(34, 211, 238, 0.35);
+  --lms-emerald: #10b981;
+  --lms-emerald-glow: rgba(16, 185, 129, 0.35);
+  --lms-gold: #eab308;
+  --lms-gold-glow: rgba(234, 179, 8, 0.35);
+  --lms-carbon: #070913;
+  --lms-surface: #0e1224;
+  --lms-elevated: #161c36;
+  --lms-border: rgba(255, 255, 255, 0.08);
+}
+
+/* ── 3-Tier Concentric Orbital RBAC Rings ── */
+.lms-orbital-container {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  height: 440px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lms-orbital-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px dashed rgba(99, 102, 241, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lms-ring-admin {
+  width: 140px;
+  height: 140px;
+  border-color: rgba(234, 179, 8, 0.5);
+  background: radial-gradient(circle, rgba(234, 179, 8, 0.12) 0%, transparent 70%);
+  animation: lms-spin-reverse 24s infinite linear;
+}
+
+.lms-ring-instructor {
+  width: 270px;
+  height: 270px;
+  border-color: rgba(99, 102, 241, 0.4);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+  animation: lms-spin 36s infinite linear;
+}
+
+.lms-ring-student {
+  width: 390px;
+  height: 390px;
+  border-color: rgba(34, 211, 238, 0.35);
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.04) 0%, transparent 70%);
+  animation: lms-spin-reverse 48s infinite linear;
+}
+
+@keyframes lms-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes lms-spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+/* Active Highlight on Rings */
+.lms-ring-active {
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: 0 0 35px var(--lms-indigo-glow);
+  filter: brightness(1.4);
+}
+
+/* ── Certificate Dynamic Vector Canvas ── */
+.lms-cert-canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.414 / 1; /* A4 Landscape aspect ratio */
+  border-radius: 12px;
+  background: #fdfdfd;
+  color: #0f172a;
+  padding: clamp(1rem, 3.5vw, 2.5rem);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 40px -10px var(--lms-indigo-glow);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.lms-cert-outer-border {
+  position: absolute;
+  inset: 12px;
+  border: 4px solid #1d4ed8;
+  pointer-events: none;
+}
+
+.lms-cert-inner-border {
+  position: absolute;
+  inset: 18px;
+  border: 1px solid #93c5fd;
+  pointer-events: none;
+}
+
+/* Animated cursive signature path */
+.lms-signature-stroke {
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  animation: lms-write-sig 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes lms-write-sig {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Liquid Progress Waterfall */
+.lms-liquid-bar {
+  position: relative;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.lms-liquid-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(90deg, #3b82f6 0%, #6366f1 50%, #10b981 100%);
+  border-radius: 999px;
+  box-shadow: 0 0 16px var(--lms-indigo-glow);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.lms-liquid-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: lms-liquid-shimmer 2s infinite linear;
+}
+
+@keyframes lms-liquid-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Pulsing Badge Beacon */
+.lms-beacon {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--lms-indigo);
+  box-shadow: 0 0 14px var(--lms-indigo);
+  animation: lms-pulse-beacon 1.8s infinite ease-in-out;
+}
+
+@keyframes lms-pulse-beacon {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.8); }
+}
+
+/* Continuous Circuit Pulse */
+.lms-circuit-line {
+  stroke-dasharray: 5 7;
+  animation: lms-dash 2s linear infinite;
+}
+
+@keyframes lms-dash {
+  to { stroke-dashoffset: -24; }
+}
+
+/* ── Pinned Panoramic Theater Classes ── */
+.lms-theater-section {
+  position: relative;
+  width: 100%;
+}
+
+.lms-scroll-track {
+  position: relative;
+  width: 100%;
+}
+
+.lms-theater-stage {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  background: radial-gradient(circle at 50% 20%, #141b36 0%, #070913 80%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.lms-hud-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.lms-mode-nav {
+  position: relative;
+  width: 100%;
+  margin: 0.75rem 0;
+  flex-shrink: 0;
+}
+
+.lms-mode-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+
+.lms-mode-tab {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: left;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.lms-mode-tab.is-active {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: var(--lms-indigo);
+  color: var(--lms-indigo);
+  box-shadow: 0 0 15px var(--lms-indigo-glow);
+}
+
+.lms-scrub-bar {
+  position: relative;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  margin-top: 0.5rem;
+  overflow: hidden;
+}
+
+.lms-scrub-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: var(--lms-indigo);
+  transform-origin: 0% 50%;
+  transform: scaleX(0);
+}
+
+.lms-viewport-housing {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #060812;
+  overflow: hidden;
+}
+
+.lms-screen-pane {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}

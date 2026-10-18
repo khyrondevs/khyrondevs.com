@@ -5,13 +5,15 @@ import { projects, getProjectBySlug } from '@/lib/content/projects'
 import { RevealOnScroll } from '@/components/ui/reveal-on-scroll'
 import { Badge } from '@/components/ui/badge'
 import { BentoCard } from '@/components/ui/bento-card'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, ExternalLink, CheckCircle2 } from 'lucide-react'
 import { Gallery } from '@/components/ui/gallery'
 
 import CyphrProjectExperience from '@/components/sections/CyphrProjectExperience'
 import JobPilotProjectExperience from '@/components/sections/JobPilotProjectExperience'
 import EazyShopProjectExperience from '@/components/sections/EazyShopProjectExperience'
 import HousePriceProjectExperience from '@/components/sections/HousePriceProjectExperience'
+import CinemoraProjectExperience from '@/components/sections/CinemoraProjectExperience'
+import LmsProjectExperience from '@/components/sections/LmsProjectExperience'
 
 export async function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }))
@@ -48,6 +50,24 @@ export default async function CaseStudyPage(props: PageProps<'/work/[slug]'>) {
           <p className="text-xl text-fg-muted mb-12">{project.coverDescription}</p>
         </div>
       </CyphrProjectExperience>
+    )
+  }
+
+  if (slug === 'cinemora') {
+    return (
+      <CinemoraProjectExperience project={project}>
+        <div className="pt-24 md:pt-32 px-6 container-site max-w-4xl pb-12">
+          <Link className="inline-flex items-center gap-2 text-sm text-fg-muted hover:text-fg transition-colors mb-12" href="/work">
+            <ArrowLeft size={16} /> All work
+          </Link>
+          <div className="flex items-center gap-3 flex-wrap mb-6">
+            <Badge variant="muted">{project.statusLabel}</Badge>
+            <Badge variant="outline">{project.category}</Badge>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-light text-fg mb-6">{project.title}</h1>
+          <p className="text-xl text-fg-muted mb-12">{project.coverDescription}</p>
+        </div>
+      </CinemoraProjectExperience>
     )
   }
 
@@ -105,6 +125,24 @@ export default async function CaseStudyPage(props: PageProps<'/work/[slug]'>) {
     )
   }
 
+  if (slug === 'online-lms') {
+    return (
+      <LmsProjectExperience project={project}>
+        <div className="pt-24 md:pt-32 px-6 container-site max-w-4xl pb-12">
+          <Link className="inline-flex items-center gap-2 text-sm text-fg-muted hover:text-fg transition-colors mb-12" href="/work">
+            <ArrowLeft size={16} /> All work
+          </Link>
+          <div className="flex items-center gap-3 flex-wrap mb-6">
+            <Badge variant="muted">{project.statusLabel}</Badge>
+            <Badge variant="outline">{project.category}</Badge>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-light text-fg mb-6">{project.title}</h1>
+          <p className="text-xl text-fg-muted mb-12">{project.coverDescription}</p>
+        </div>
+      </LmsProjectExperience>
+    )
+  }
+
   // Generic Fallback Layout
   return (
     <div className="pt-24 md:pt-32 pb-24 md:pb-32">
@@ -123,6 +161,38 @@ export default async function CaseStudyPage(props: PageProps<'/work/[slug]'>) {
             {project.title}
           </h1>
 
+          <p className="text-xl text-fg-muted mb-8 leading-relaxed">
+            {project.coverDescription}
+          </p>
+
+          {project.links && project.links.length > 0 && (
+            <div className="flex items-center gap-3 flex-wrap mb-8">
+              {project.links.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-xs border border-border bg-surface hover:border-accent transition-colors text-fg"
+                >
+                  <span>{link.label}</span>
+                  <ExternalLink size={13} />
+                </a>
+              ))}
+            </div>
+          )}
+
+          {project.metrics && project.metrics.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+              {project.metrics.map((metric) => (
+                <div key={metric.label} className="p-5 rounded-xl border border-border bg-surface/50">
+                  <div className="font-mono text-2xl font-light text-accent">{metric.value}</div>
+                  <div className="font-mono text-xs uppercase tracking-wider text-fg-subtle mt-1">{metric.label}</div>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="flex items-center gap-4 text-sm font-mono text-fg-subtle mb-16 border-b border-border pb-8">
             <span>{project.year}</span>
             <span className="text-border-strong">|</span>
@@ -135,6 +205,20 @@ export default async function CaseStudyPage(props: PageProps<'/work/[slug]'>) {
           {project.gallery && project.gallery.length > 0 && (
             <RevealOnScroll>
               <Gallery items={project.gallery} name={project.title} />
+            </RevealOnScroll>
+          )}
+
+          {project.highlights && project.highlights.length > 0 && (
+            <RevealOnScroll>
+              <h2 className="text-xl font-mono text-fg-subtle mb-4">Architectural Highlights</h2>
+              <ul className="space-y-3">
+                {project.highlights.map((highlight, i) => (
+                  <li key={i} className="flex items-start gap-3 text-fg-muted leading-relaxed">
+                    <CheckCircle2 size={16} className="text-accent flex-none mt-1" />
+                    <span>{highlight}</span>
+                  </li>
+                ))}
+              </ul>
             </RevealOnScroll>
           )}
 
