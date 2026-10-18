@@ -71,7 +71,7 @@ function buildEmailHtml(payload: ContactPayload): string {
   <div style="max-width: 620px; margin: 0 auto; background: #0f121d; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; overflow: hidden;">
     <!-- Header -->
     <div style="background: linear-gradient(135deg, #0f172a 0%, #0369a1 100%); padding: 24px 32px; border-bottom: 1px solid rgba(255,255,255,0.12);">
-      <span style="display: inline-block; font-family: monospace; font-size: 11px; font-weight: 600; background: rgba(56,189,248,0.2); color: #38bdf8; padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(56,189,248,0.35); text-transform: uppercase; letter-spacing: 0.08em;">Krypton &bull; Client Inquiry Dispatch</span>
+      <span style="display: inline-block; font-family: monospace; font-size: 11px; font-weight: 600; background: rgba(56,189,248,0.2); color: #38bdf8; padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(56,189,248,0.35); text-transform: uppercase; letter-spacing: 0.08em;">Khyron Devs &bull; Client Inquiry Dispatch</span>
       <h1 style="font-size: 20px; font-weight: 700; color: #ffffff; margin: 12px 0 0 0; letter-spacing: -0.01em;">New Project Brief Received</h1>
     </div>
 
@@ -122,7 +122,7 @@ function buildEmailHtml(payload: ContactPayload): string {
 
     <!-- Footer -->
     <div style="padding: 18px 32px; background: #07090e; border-top: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: #64748b; font-family: monospace;">
-      Delivered via Krypton Contact Pipeline &bull; ${safeCurrency} Inquiry &bull; Hit 'Reply' in Gmail to respond directly
+      Delivered via Khyron Devs Contact Pipeline &bull; ${safeCurrency} Inquiry &bull; Hit 'Reply' in email to respond directly
     </div>
   </div>
 </body>
@@ -166,7 +166,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const recipient = process.env.CONTACT_RECIPIENT_EMAIL || 'devs.krypton@gmail.com'
+    const recipient = process.env.CONTACT_RECIPIENT_EMAIL || 'enquiries@khyrondevs.com'
     const subject = `New Project Inquiry: ${body.name.trim()} (${body.company?.trim() || 'Direct'}) [${body.currency || 'INR'}]`
     const html = buildEmailHtml(body)
     let dispatched = false
@@ -174,12 +174,12 @@ export async function POST(request: Request) {
     // 2. Dispatch Method: Brevo REST API (if BREVO_API_KEY is configured)
     if (process.env.BREVO_API_KEY) {
       try {
-        const senderName = process.env.BREVO_SENDER_NAME || 'Krypton Inquiries'
+        const senderName = process.env.BREVO_SENDER_NAME || 'Khyron Devs Inquiries'
         const senderEmail = process.env.BREVO_SENDER_EMAIL || recipient
 
         const payload: Record<string, unknown> = {
           sender: { name: senderName, email: senderEmail },
-          to: [{ email: recipient, name: 'Krypton Team' }],
+          to: [{ email: recipient, name: 'Khyron Devs Team' }],
           replyTo: { email: body.email.trim(), name: body.name.trim() },
           subject,
           htmlContent: html,

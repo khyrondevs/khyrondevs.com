@@ -190,7 +190,7 @@ export default function InteractiveTerminal() {
             <span className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
             <span className="h-3 w-3 rounded-full bg-[#27c93f]" />
             <span className="ml-2 font-mono text-[11px] text-fg-subtle hidden sm:inline">
-              guest@krypton:~ (zsh)
+              guest@khyron:~ (zsh)
             </span>
           </div>
 
@@ -212,7 +212,7 @@ export default function InteractiveTerminal() {
           {logs.map((log) => (
             <motion.div key={log.id} initial={animate && log.id !== "init" ? { opacity: 0, y: 8 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: animate ? .25 : 0 }} className="space-y-1">
               <div className="flex items-center gap-2 text-fg-subtle text-xs">
-                <span className="text-accent">guest@krypton:~$</span>
+                <span className="text-accent">guest@khyron:~$</span>
                 <span className="text-fg font-semibold">{log.command}</span>
               </div>
               <div className="pl-4">{log.output}</div>

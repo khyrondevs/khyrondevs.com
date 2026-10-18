@@ -8,7 +8,7 @@ class SoundManager {
   constructor() {
     if (typeof window !== "undefined") {
       try {
-        const saved = localStorage.getItem("krypton_sound_muted");
+        const saved = localStorage.getItem("khyron_sound_muted") ?? localStorage.getItem("krypton_sound_muted");
         this.muted = saved !== "false";
       } catch { /* Storage is optional: blocked storage stays muted. */ }
     }
@@ -35,8 +35,8 @@ class SoundManager {
   public toggleMute(): boolean {
     this.muted = !this.muted;
     if (typeof window !== "undefined") {
-      try { localStorage.setItem("krypton_sound_muted", String(this.muted)); } catch {}
-      window.dispatchEvent(new CustomEvent("krypton:sound-toggle", { detail: { muted: this.muted } }));
+      try { localStorage.setItem("khyron_sound_muted", String(this.muted)); } catch {}
+      window.dispatchEvent(new CustomEvent("khyron:sound-toggle", { detail: { muted: this.muted } }));
     }
     if (!this.muted) {
       this.initContext();
@@ -48,8 +48,8 @@ class SoundManager {
   public setMuted(muted: boolean) {
     this.muted = muted;
     if (typeof window !== "undefined") {
-      try { localStorage.setItem("krypton_sound_muted", String(this.muted)); } catch {}
-      window.dispatchEvent(new CustomEvent("krypton:sound-toggle", { detail: { muted: this.muted } }));
+      try { localStorage.setItem("khyron_sound_muted", String(this.muted)); } catch {}
+      window.dispatchEvent(new CustomEvent("khyron:sound-toggle", { detail: { muted: this.muted } }));
     }
   }
 

@@ -85,7 +85,7 @@ export const CURRENCIES: Record<CurrencyCode, CurrencyConfig> = {
 
 export const DEFAULT_CURRENCY: CurrencyCode = "INR";
 
-const STORAGE_KEY = "krypton_currency";
+const STORAGE_KEY = "khyron_currency";
 
 /**
  * Detect initial currency:
@@ -97,7 +97,7 @@ export function detectInitialCurrency(): CurrencyCode {
   if (typeof window === "undefined") return DEFAULT_CURRENCY;
 
   try {
-    const saved = localStorage.getItem(STORAGE_KEY) as CurrencyCode | null;
+    const saved = (localStorage.getItem(STORAGE_KEY) || localStorage.getItem("krypton_currency")) as CurrencyCode | null;
     if (saved && saved in CURRENCIES) return saved;
 
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";

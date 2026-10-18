@@ -18,11 +18,11 @@ export type SiteConfig = {
 }
 
 export const siteConfig: SiteConfig = {
-  name: 'KRYPTON',
+  name: 'KHYRON DEVS',
   tagline: 'Engineering-led digital products.',
   description:
     'We build full-stack web applications, AI systems, and workflow automation — engineered around the problem, not around a template.',
-  url: 'https://krypton-site.vercel.app',
+  url: 'https://khyrondevs.com',
   primaryCta: { label: 'Start a project', href: '/contact' },
   secondaryCta: { label: 'See our work', href: '/work' },
   navLinks: [
@@ -40,9 +40,9 @@ export const siteConfig: SiteConfig = {
     { label: 'Contact', href: '/contact' },
   ],
   contact: {
-    email: 'devs.krypton@gmail.com',
-    twitter: 'https://twitter.com/kryptondev', // [PLACEHOLDER]
-    github: 'https://github.com/kryptondev', // [PLACEHOLDER]
-    linkedin: 'https://linkedin.com/company/kryptondev', // [PLACEHOLDER]
+    email: 'enquiries@khyrondevs.com',
+    twitter: 'https://twitter.com/khyrondevs', // [PLACEHOLDER]
+    github: 'https://github.com/khyrondevs',
+    linkedin: 'https://linkedin.com/company/khyrondevs', // [PLACEHOLDER]
   },
 }

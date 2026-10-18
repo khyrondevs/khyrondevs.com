@@ -489,7 +489,7 @@ export default function EazyShopProjectExperience({ project, children }: { proje
                         <i className="eazyshop-lamp is-amber" />
                         <i className="eazyshop-lamp" />
                       </span>
-                      <span className="eazyshop-model-tag">KRYPTON·POS-4</span>
+                      <span className="eazyshop-model-tag">KHYRON·POS-4</span>
                       <span className="eazyshop-status-meter" data-eazyshop-status-meter data-eazyshop-status>
                         {chapters[0].status}
                       </span>
@@ -538,7 +538,7 @@ export default function EazyShopProjectExperience({ project, children }: { proje
                       <div className="eazyshop-receipt-slot" aria-hidden="true" />
                       <div className="eazyshop-receipt-tape" data-eazyshop-receipt-tape aria-hidden="true">
                         <div className="eazyshop-receipt-header">
-                          KRYPTON // EAZYSHOP
+                          KHYRON // EAZYSHOP
                           <span>TX#9841-AUTH · RAZORPAY</span>
                         </div>
                         <div className="eazyshop-receipt-row"><span>STATUS</span><strong>{current.status}</strong></div>

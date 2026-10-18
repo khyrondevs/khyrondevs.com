@@ -8,7 +8,7 @@ import { siteConfig } from '@/lib/content/site-config'
 // Not a standard generic grid. An asymmetrical, meticulously composed archive.
 //
 // The CTA ended the conceptual journey. The footer exists purely to anchor
-// the brand. The massive edge-to-edge KRYPTON SVG creates an undeniable
+// the brand. The massive edge-to-edge KHYRON DEVS SVG creates an undeniable
 // final baseline, resolving in a single tiny cyan point.
 //
 // Silence.
@@ -110,12 +110,12 @@ export function Footer() {
         
         {/* Massive edge-to-edge SVG Wordmark guarantees perfect scaling on all devices */}
         <div className="w-full select-none" aria-hidden="true">
-          <svg viewBox="0 0 1000 160" className="w-full h-auto block" preserveAspectRatio="xMidYMid meet">
-            <text 
-              x="500" 
-              y="145" 
-              textAnchor="middle" 
-              className="text-[175px] font-light tracking-[-0.04em] uppercase fill-fg"
+          <svg viewBox="0 0 1200 160" className="w-full h-auto block" preserveAspectRatio="xMidYMid meet">
+            <text
+              x="600"
+              y="135"
+              textAnchor="middle"
+              className="text-[132px] font-light tracking-[-0.03em] uppercase fill-fg"
             >
               {siteConfig.name}
             </text>

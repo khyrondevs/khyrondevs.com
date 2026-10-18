@@ -1,6 +1,6 @@
-# KRYPTON Company Site
+# Khyron Devs Flagship Site
 
-Engineering-led digital products. Built with Next.js 16, Tailwind CSS 4, and Motion.
+Engineering-led digital products, bespoke web apps, and digital experiences. Built with Next.js 16, Tailwind CSS 4, and Motion.
 
 ## Tech Stack
 - Framework: Next.js 16 (App Router)
