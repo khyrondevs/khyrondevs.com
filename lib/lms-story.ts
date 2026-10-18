@@ -139,9 +139,9 @@ export function scoreLmsTheater(
   // ─────────────────────────────────────────────────────────────
   if (targets.ringStudent && targets.ringInstructor && targets.ringAdmin) {
     timeline
-      .fromTo(targets.ringStudent, { scale: 0.6, rotation: 0, opacity: 0 }, { scale: 1, rotation: 180, opacity: 1, duration: q1 * 0.5, ease: "power2.out" }, 0)
-      .fromTo(targets.ringInstructor, { scale: 0.5, rotation: 0, opacity: 0 }, { scale: 1, rotation: -180, opacity: 1, duration: q1 * 0.5, ease: "power2.out" }, q1 * 0.1)
-      .fromTo(targets.ringAdmin, { scale: 0.4, rotation: 0, opacity: 0 }, { scale: 1, rotation: 180, opacity: 1, duration: q1 * 0.5, ease: "power2.out" }, q1 * 0.2);
+      .fromTo(targets.ringStudent, { opacity: 0 }, { opacity: 1, duration: q1 * 0.45, ease: "power2.out" }, 0)
+      .fromTo(targets.ringInstructor, { opacity: 0 }, { opacity: 1, duration: q1 * 0.45, ease: "power2.out" }, q1 * 0.1)
+      .fromTo(targets.ringAdmin, { opacity: 0 }, { opacity: 1, duration: q1 * 0.45, ease: "power2.out" }, q1 * 0.2);
   }
 
   if (targets.coreShield) {

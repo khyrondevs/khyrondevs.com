@@ -215,30 +215,39 @@ export default function LmsProjectExperience({
                 data-theater-screen
               >
                 <div className="relative w-full max-w-4xl mx-auto flex items-center justify-center">
-                  <div className="lms-orbital-container scale-90 sm:scale-100">
+                  <div className="lms-orbital-container scale-[0.8] xs:scale-[0.88] sm:scale-95 md:scale-100">
                     <div data-ring-student className="lms-orbital-ring lms-ring-student">
-                      <span className="absolute top-2 font-mono text-[9px] text-[#22d3ee] tracking-widest uppercase">
-                        TIER 01: STUDENT
-                      </span>
+                      <div className="lms-orbit-badge border border-[#22d3ee]/60 text-[#22d3ee] shadow-[0_0_14px_rgba(34,211,238,0.35)]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#22d3ee] shadow-[0_0_6px_#22d3ee]" />
+                        <span className="font-mono text-xs font-bold tracking-wider uppercase">
+                          TIER 01: STUDENT
+                        </span>
+                      </div>
                     </div>
 
                     <div data-ring-instructor className="lms-orbital-ring lms-ring-instructor">
-                      <span className="absolute top-2 font-mono text-[9px] text-[#6366f1] tracking-widest uppercase">
-                        TIER 02: INSTRUCTOR
-                      </span>
+                      <div className="lms-orbit-badge border border-[#818cf8]/60 text-[#818cf8] shadow-[0_0_14px_rgba(99,102,241,0.35)]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#818cf8] shadow-[0_0_6px_#818cf8]" />
+                        <span className="font-mono text-xs font-bold tracking-wider uppercase">
+                          TIER 02: INSTRUCTOR
+                        </span>
+                      </div>
                     </div>
 
                     <div data-ring-admin className="lms-orbital-ring lms-ring-admin">
-                      <span className="absolute top-2 font-mono text-[9px] text-[#eab308] tracking-widest uppercase">
-                        TIER 03: ADMIN
-                      </span>
+                      <div className="lms-orbit-badge border border-[#facc15]/70 text-[#facc15] shadow-[0_0_16px_rgba(234,179,8,0.4)]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#facc15] shadow-[0_0_6px_#facc15]" />
+                        <span className="font-mono text-xs font-bold tracking-wider uppercase">
+                          TIER 03: ADMIN
+                        </span>
+                      </div>
                     </div>
 
                     {/* Central Core Shield & JWT Ingress */}
-                    <div data-core-shield className="relative z-10 flex flex-col items-center justify-center w-28 h-28 rounded-full bg-black/90 border-2 border-[#6366f1] shadow-[0_0_30px_rgba(99,102,241,0.5)]">
-                      <ShieldCheck size={32} className="text-[#6366f1] animate-pulse" />
-                      <span className="font-mono text-[9px] text-white/80 mt-1 font-bold">SIMPLEJWT</span>
-                      <div data-jwt-packet className="absolute top-[-20px] rounded bg-[#22d3ee] px-2 py-0.5 text-[8px] font-mono text-black font-bold">
+                    <div data-core-shield className="relative z-10 flex flex-col items-center justify-center w-24 h-24 rounded-full bg-black/95 border-2 border-[#6366f1] shadow-[0_0_30px_rgba(99,102,241,0.5)]">
+                      <ShieldCheck size={28} className="text-[#6366f1] animate-pulse" />
+                      <span className="font-mono text-[9px] text-white/90 mt-1 font-bold tracking-wider">SIMPLEJWT</span>
+                      <div data-jwt-packet className="absolute top-[-14px] rounded bg-[#22d3ee] px-2 py-0.5 text-[8px] font-mono text-black font-bold shadow-md">
                         BEARER CLAIMS
                       </div>
                     </div>

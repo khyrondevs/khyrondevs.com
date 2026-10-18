@@ -42,6 +42,7 @@ export type CinemoraMotionTargets = {
   refundGaugeDial?: gsap.TweenTarget;
   moneyBurstParticles?: gsap.TweenTarget[];
   walletCard?: gsap.TweenTarget;
+  walletBalance?: gsap.TweenTarget;
   // Screen Stage Panes
   screens: gsap.TweenTarget[];
 };
@@ -315,6 +316,29 @@ export function scoreCinemoraTheater(
       { scale: 0.95 },
       { scale: 1.05, duration: (scrollDistance - q3) * 0.3, ease: "back.out(2)" },
       walletPoint
+    );
+  }
+
+  if (targets.walletBalance) {
+    const p4Len = scrollDistance - q3;
+    const balanceStart = q3 + p4Len * 0.45;
+    const balanceTarget = targets.walletBalance as HTMLElement;
+    const balanceState = { val: 145 };
+
+    timeline.fromTo(
+      balanceState,
+      { val: 145 },
+      {
+        val: 195,
+        duration: p4Len * 0.4,
+        ease: "power2.out",
+        onUpdate: () => {
+          if (balanceTarget) {
+            balanceTarget.textContent = `$${balanceState.val.toFixed(2)}`;
+          }
+        },
+      },
+      balanceStart
     );
   }
 }

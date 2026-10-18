@@ -76,6 +76,7 @@ export default function CinemoraProjectExperience({
         const refundGaugeDial = stage.querySelector<HTMLElement>("[data-refund-dial]");
         const moneyBurstParticles = gsap.utils.toArray<HTMLElement>("[data-money-particle]", stage);
         const walletCard = stage.querySelector<HTMLElement>("[data-wallet-card]");
+        const walletBalance = stage.querySelector<HTMLElement>("[data-wallet-balance]");
 
         const scrollDistance = window.innerHeight * 2.8;
         const timeline = gsap.timeline({ paused: true });
@@ -102,6 +103,7 @@ export default function CinemoraProjectExperience({
             refundGaugeDial: refundGaugeDial ?? undefined,
             moneyBurstParticles: moneyBurstParticles.length ? moneyBurstParticles : undefined,
             walletCard: walletCard ?? undefined,
+            walletBalance: walletBalance ?? undefined,
             screens,
           },
           scrollDistance
@@ -383,7 +385,7 @@ export default function CinemoraProjectExperience({
                       <span>CUSTOMER WALLET LEDGER</span>
                       <Wallet size={16} className="text-[#f59e0b]" />
                     </div>
-                    <div className="text-3xl font-light text-[#f59e0b]">$145.00</div>
+                    <div data-wallet-balance className="text-3xl font-light text-[#f59e0b]">$145.00</div>
 
                     {/* Floating Money Particles */}
                     <div className="absolute right-6 top-4 flex flex-col gap-1">
