@@ -3,14 +3,21 @@ import Link from 'next/link'
 import { services } from '@/lib/content/services'
 import { RevealOnScroll } from '@/components/ui/reveal-on-scroll'
 import { BentoCard } from '@/components/ui/bento-card'
-import { Globe, Brain, Workflow, Code2, CheckCircle2 } from 'lucide-react'
+import { Globe, Brain, Workflow, Code2, Smartphone, CheckCircle2 } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Services',
-  description: 'Full-stack web development, AI systems, workflow automation, and custom software — engineered around your problem.',
+  description:
+    'Full-stack web development, mobile apps (iOS & Android), AI systems, workflow automation, and custom software — engineered around your problem.',
 }
 
-const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = { Globe, Brain, Workflow, Code2 }
+const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  Globe,
+  Brain,
+  Workflow,
+  Code2,
+  Smartphone,
+}
 
 export default function ServicesPage() {
   return (

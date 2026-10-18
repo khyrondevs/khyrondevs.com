@@ -65,4 +65,18 @@ export const services: Service[] = [
     ],
     href: '/services#custom',
   },
+  {
+    id: 'mobile',
+    icon: 'Smartphone',
+    title: 'Mobile App Development',
+    tagline: 'High-performance native & cross-platform apps for iOS & Android.',
+    description:
+      'We engineer polished, responsive mobile applications for iOS and Android — from native Swift/Kotlin performance to universal Flutter and React Native architectures. Fluid 120Hz gesture interactions, offline-first sync, and rock-solid App Store deployment.',
+    outcomes: [
+      'Universal iOS & Android parity with a unified, clean codebase',
+      'Fluid 120fps gesture-driven animations and native UX responsiveness',
+      'End-to-end App Store & Google Play submission with zero release friction',
+    ],
+    href: '/services#mobile',
+  },
 ]
