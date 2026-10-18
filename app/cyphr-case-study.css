@@ -14,26 +14,26 @@
 .cyphr-case-study-redesign { padding: clamp(3rem, 6vw, 6rem) 0; }
 .cyphr-inner-shell { width: min(1360px, calc(100% - 32px)); margin: 0 auto; }
 .cyphr-portal-stage { position: relative; width: 100%; }
-.cyphr-portal-shell { position: relative; width: 100%; border-radius: 28px; background: var(--color-paper); }
-.cyphr-card-front { position: relative; width: 100%; z-index: 2; }
+.cyphr-portal-shell { position: relative; width: 100%; min-height: clamp(550px, 70vh, 760px); border-radius: 28px; background: var(--color-paper); }
+.cyphr-card-front { position: relative; width: 100%; min-height: inherit; display: flex; flex-direction: column; justify-content: center; z-index: 2; }
 .cyphr-portal-cover { display: none; position: absolute; inset: 0; z-index: 3; pointer-events: none; border-radius: inherit; background: var(--color-paper); }
 .cyphr-portal-experience[data-enhanced] .cyphr-portal-cover { display: block; }
 /* The original links stay keyboard-reachable even during a scrubbed handoff. */
 .cyphr-card-front:focus-within { opacity: 1 !important; pointer-events: auto !important; z-index: 4; }
-.cyphr-cover-layout { height: 100%; display: grid; grid-template-columns: .95fr 1.05fr; align-items: center; gap: 2rem; padding: clamp(2rem, 4vw, 4rem); }
+.cyphr-cover-layout { height: 100%; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: center; gap: clamp(1.5rem, 3vw, 3rem); padding: clamp(1.5rem, 3.5vw, 3rem); }
 .cyphr-cover-copy .editorial-label { color: var(--cyphr-muted); }
 .cyphr-cover-title { margin: 1.4rem 0; font-size: clamp(3.2rem, 6vw, 6.5rem); line-height: .9; letter-spacing: -.075em; font-weight: 600; }
 .cyphr-cover-title span { background: var(--color-accent); }
 .cyphr-cover-copy > p:last-of-type { max-width: 26rem; color: var(--cyphr-muted); line-height: 1.6; }
 .cyphr-cover-facts { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.6rem; font: 10px / 1.5 var(--font-mono); }
 .cyphr-cover-facts span { padding: .4rem .6rem; border-bottom: 1px solid var(--cyphr-line); }
-.cyphr-cover-visual { position: relative; padding-top: 2.5rem; }
+.cyphr-cover-visual { position: relative; width: 100%; max-width: 920px; justify-self: end; padding-top: 1.5rem; }
 .cyphr-cover-image { position: relative; z-index: 1; padding: .5rem; border: 1px solid var(--cyphr-line); border-radius: .8rem; background: var(--color-paper); box-shadow: 0 25px 45px -30px color-mix(in srgb, var(--color-ink) 45%, transparent); }
-.cyphr-cover-image img { width: 100%; height: auto; object-fit: contain; border-radius: .4rem; }
-.cyphr-cover-document { position: absolute; top: -3rem; right: 1.5rem; display: grid; gap: .5rem; width: 170px; padding: 1.3rem; border: 1px solid var(--color-ink); background: var(--color-accent-2); rotate: 8deg; font: 8px var(--font-mono); }
+.cyphr-cover-image img { width: 100%; max-height: clamp(300px, 48vh, 480px); height: auto; object-fit: contain; border-radius: .4rem; }
+.cyphr-cover-document { position: absolute; top: -2.2rem; right: 1.5rem; display: grid; gap: .5rem; width: 170px; padding: 1.3rem; border: 1px solid var(--color-ink); background: var(--color-accent-2); rotate: 8deg; font: 8px var(--font-mono); }
 .cyphr-cover-document i { height: 3px; background: color-mix(in srgb, var(--color-ink) 24%, transparent); }
 .cyphr-cover-citation { display: block; margin-top: .85rem; padding-left: 1rem; border-left: 2px solid var(--color-accent); font: 10px / 1.5 var(--font-mono); }
-.cyphr-dive-hint { display: flex; align-items: center; justify-content: center; gap: .75rem; margin-top: 1.5rem; padding: 1rem; border-bottom: 1px solid var(--cyphr-line); color: var(--cyphr-muted); font: 10px / 1.5 var(--font-mono); letter-spacing: .15em; text-transform: uppercase; }
+.cyphr-dive-hint { position: relative; z-index: 10; display: flex; align-items: center; justify-content: center; gap: .75rem; margin-top: clamp(2.5rem, 5vw, 4rem); padding: 1rem; border-bottom: 1px solid var(--cyphr-line); color: var(--cyphr-muted); font: 10px / 1.5 var(--font-mono); letter-spacing: .15em; text-transform: uppercase; }
 .cyphr-dive-hint > svg { transition: translate .25s ease; }
 .cyphr-dive-hint:hover > svg, .cyphr-dive-hint:focus-visible > svg { translate: 0 4px; }
 

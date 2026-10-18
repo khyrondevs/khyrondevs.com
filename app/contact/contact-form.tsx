@@ -4,6 +4,12 @@ import { useState } from 'react'
 import * as Accordion from '@radix-ui/react-accordion'
 import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { CurrencySelector } from '@/components/ui/currency-selector'
+import {
+  CURRENCIES,
+  useCurrency,
+  type CurrencyCode,
+} from '@/lib/currency'
 
 interface Faq {
   question: string
@@ -14,16 +20,58 @@ interface ContactFormProps {
   faqs: Faq[]
 }
 
+interface CountryCodeOption {
+  code: string
+  name: string
+  flag: string
+}
+
+const COUNTRY_CODES: CountryCodeOption[] = [
+  { code: '+91', name: 'India', flag: '🇮🇳' },
+  { code: '+1', name: 'US / Canada', flag: '🇺🇸' },
+  { code: '+44', name: 'UK', flag: '🇬🇧' },
+  { code: '+971', name: 'UAE', flag: '🇦🇪' },
+  { code: '+65', name: 'Singapore', flag: '🇸🇬' },
+  { code: '+61', name: 'Australia', flag: '🇦🇺' },
+  { code: '+49', name: 'Germany', flag: '🇩🇪' },
+  { code: '+33', name: 'France', flag: '🇫🇷' },
+  { code: '+81', name: 'Japan', flag: '🇯🇵' },
+  { code: '+82', name: 'South Korea', flag: '🇰🇷' },
+  { code: '+966', name: 'Saudi Arabia', flag: '🇸🇦' },
+  { code: '+974', name: 'Qatar', flag: '🇶🇦' },
+  { code: '+41', name: 'Switzerland', flag: '🇨🇭' },
+  { code: '+31', name: 'Netherlands', flag: '🇳🇱' },
+  { code: '+46', name: 'Sweden', flag: '🇸🇪' },
+  { code: '+353', name: 'Ireland', flag: '🇮🇪' },
+  { code: '+64', name: 'New Zealand', flag: '🇳🇿' },
+]
+
 export function ContactForm({ faqs }: ContactFormProps) {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [currency, setCurrency] = useCurrency()
+  const [countryCode, setCountryCode] = useState('+91')
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     company: '',
     message: '',
-    budget: ''
+    budget: '',
   })
+
+  const handleCurrencyChange = (newCurrency: CurrencyCode) => {
+    setCurrency(newCurrency)
+    setFormData((prev) => ({ ...prev, budget: '' }))
+  }
+
+  const handleCountryCodeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newCode = e.target.value
+    setCountryCode(newCode)
+    if (newCode === '+91' && formData.phone.length > 10) {
+      setFormData((prev) => ({ ...prev, phone: prev.phone.slice(0, 10) }))
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,6 +85,19 @@ export function ContactForm({ faqs }: ContactFormProps) {
       setErrorMsg('Please enter a valid email address.')
       return
     }
+    if (formData.phone.trim().length > 0) {
+      if (countryCode === '+91' && formData.phone.trim().length !== 10) {
+        setErrorMsg('Indian phone numbers (+91) must be exactly 10 digits.')
+        return
+      }
+      if (
+        countryCode !== '+91' &&
+        (formData.phone.trim().length < 7 || formData.phone.trim().length > 15)
+      ) {
+        setErrorMsg('Please enter a valid phone number (7 to 15 digits).')
+        return
+      }
+    }
     if (formData.message.trim().length < 20) {
       setErrorMsg('Please describe your project in at least 20 characters.')
       return
@@ -47,7 +108,11 @@ export function ContactForm({ faqs }: ContactFormProps) {
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          ...formData,
+          phone: formData.phone.trim() ? `${countryCode} ${formData.phone.trim()}` : '',
+          currency,
+        }),
       })
       const data = await res.json()
 
@@ -102,31 +167,87 @@ export function ContactForm({ faqs }: ContactFormProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label htmlFor="phone" className="text-sm text-fg-muted block font-medium">
+                    Phone / WhatsApp
+                  </label>
+                  {countryCode === '+91' && (
+                    <span className="text-[11px] font-mono text-fg-subtle">
+                      {formData.phone.length}/10 digits
+                    </span>
+                  )}
+                </div>
+                <div className="flex rounded-lg border border-border bg-surface focus-within:border-border-strong focus-within:ring-1 focus-within:ring-[var(--accent)] transition-colors overflow-hidden">
+                  <select
+                    value={countryCode}
+                    onChange={handleCountryCodeChange}
+                    className="bg-surface/50 border-r border-border px-2.5 py-3 text-fg text-sm focus:outline-none cursor-pointer shrink-0"
+                    aria-label="Country Code"
+                  >
+                    {COUNTRY_CODES.map((c) => (
+                      <option key={c.code} value={c.code} className="bg-[#0f121d] text-fg">
+                        {c.flag} {c.code} ({c.name})
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    id="phone"
+                    type="tel"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={countryCode === '+91' ? 10 : 15}
+                    placeholder={countryCode === '+91' ? '98765 43210' : 'Phone number'}
+                    className="bg-transparent px-3.5 py-3 text-fg w-full placeholder:text-fg-subtle focus:outline-none text-sm"
+                    value={formData.phone}
+                    onKeyDown={(e) => {
+                      if (
+                        !/^[0-9]$/.test(e.key) &&
+                        !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key) &&
+                        !e.ctrlKey &&
+                        !e.metaKey
+                      ) {
+                        e.preventDefault()
+                      }
+                    }}
+                    onChange={(e) => {
+                      const numbersOnly = e.target.value.replace(/\D/g, '')
+                      const max = countryCode === '+91' ? 10 : 15
+                      setFormData({ ...formData, phone: numbersOnly.slice(0, max) })
+                    }}
+                  />
+                </div>
+              </div>
+              <div>
                 <label htmlFor="company" className="text-sm text-fg-muted mb-1.5 block font-medium">Company</label>
                 <input
                   id="company"
                   type="text"
+                  placeholder="e.g. Acme Studio"
                   className="bg-surface border border-border rounded-lg px-4 py-3 text-fg w-full placeholder:text-fg-subtle focus:border-border-strong focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors"
                   value={formData.company}
                   onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                 />
               </div>
-              <div>
-                <label htmlFor="budget" className="text-sm text-fg-muted mb-1.5 block font-medium">Budget range</label>
-                <select
-                  id="budget"
-                  className="bg-surface border border-border rounded-lg px-4 py-3 text-fg w-full focus:border-border-strong focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors appearance-none"
-                  value={formData.budget}
-                  onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                >
-                  <option value="">Select a range</option>
-                  <option value="< £5k">&lt; £5k</option>
-                  <option value="£5k–£20k">£5k–£20k</option>
-                  <option value="£20k–£50k">£20k–£50k</option>
-                  <option value="£50k+">£50k+</option>
-                  <option value="Not sure">Not sure</option>
-                </select>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1.5 flex-wrap gap-2">
+                <label htmlFor="budget" className="text-sm text-fg-muted block font-medium">Budget range</label>
+                <CurrencySelector value={currency} onChange={handleCurrencyChange} />
               </div>
+              <select
+                id="budget"
+                className="bg-surface border border-border rounded-lg px-4 py-3 text-fg w-full focus:border-border-strong focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors appearance-none"
+                value={formData.budget}
+                onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
+              >
+                <option value="">Select a range ({currency})</option>
+                {CURRENCIES[currency].budgetRanges.map((range) => (
+                  <option key={range} value={range}>
+                    {range}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>

@@ -22,7 +22,7 @@ export const siteConfig: SiteConfig = {
   tagline: 'Engineering-led digital products.',
   description:
     'We build full-stack web applications, AI systems, and workflow automation — engineered around the problem, not around a template.',
-  url: 'https://krypton.dev', // [PLACEHOLDER — update when domain is confirmed]
+  url: 'https://krypton-site.vercel.app',
   primaryCta: { label: 'Start a project', href: '/contact' },
   secondaryCta: { label: 'See our work', href: '/work' },
   navLinks: [
@@ -40,7 +40,7 @@ export const siteConfig: SiteConfig = {
     { label: 'Contact', href: '/contact' },
   ],
   contact: {
-    email: 'hello@krypton.dev', // [PLACEHOLDER]
+    email: 'devs.krypton@gmail.com',
     twitter: 'https://twitter.com/kryptondev', // [PLACEHOLDER]
     github: 'https://github.com/kryptondev', // [PLACEHOLDER]
     linkedin: 'https://linkedin.com/company/kryptondev', // [PLACEHOLDER]

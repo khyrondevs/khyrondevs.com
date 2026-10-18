@@ -219,7 +219,7 @@ export function CyphrCaseStudyCover({ project = DEFAULT_PROJECT }: { project?: P
     </div>
     <div className="cyphr-cover-visual">
       <div className="cyphr-cover-document"><FileText size={18} /><span>source.pdf / page 14</span><i /><i /><i /></div>
-      <div className="cyphr-cover-image"><Image src="/images/cyphr/light/6_chat_response.png" alt="" width={1920} height={994} sizes="(max-width: 1100px) 90vw, 680px" loading="lazy" /></div>
+      <div className="cyphr-cover-image"><Image src="/images/cyphr/light/6_chat_response.png" alt="" width={1920} height={994} sizes="(max-width: 1100px) 90vw, (max-width: 1600px) 850px, 940px" loading="lazy" /></div>
       <span className="cyphr-cover-citation">One answer. A path back to the source.</span>
     </div>
   </div>;

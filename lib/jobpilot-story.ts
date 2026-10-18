@@ -1,192 +1,327 @@
 import type { gsap } from "gsap";
 
-type StoryStateTargets = {
-  root: HTMLElement;
-  chapters: HTMLElement[];
-  links: HTMLAnchorElement[];
-  media: HTMLElement[];
-  captions: HTMLElement[];
-  inlineFigures: HTMLElement[];
-  stageFigure: HTMLElement;
-  progressLabel: HTMLElement;
-  commandLabel: HTMLElement;
-  boundaryLabel: HTMLElement;
-  readouts: readonly { id: string; command: string; boundary: string }[];
+/**
+ * Story engine for the JobPilot Autonomous Panoramic Radar & Mission Theater.
+ * 100% bespoke motion choreography:
+ *   - Phase 01: Multi-source ingestion radar sweep & convergent signal beams.
+ *   - Phase 02: 3-vector duplicate collision, SHA-256 shockwave & canonical badge emergence.
+ *   - Phase 03: High-frequency laser security fence: senior deflection vs. fresher vector lock.
+ *   - Phase 04: Zero-trust SSRF cryptographic lockdown & n8n webhook telemetry beam launch.
+ */
+
+export type JobpilotPhaseReadout = {
+  id: string;
+  number: string;
+  codename: string;
+  title: string;
+  status: string;
+  telemetryLeft: { label: string; value: string };
+  telemetryRight: { label: string; value: string };
 };
 
-/** Resolve the last chapter whose reading boundary has been crossed. Actual
- * chapter offsets, rather than equal progress buckets, also work after resize. */
-export function jobpilotChapterAtTime(offsets: readonly number[], time: number, readingOffset: number) {
-  let index = 0;
-  for (let next = 1; next < offsets.length; next++) {
-    if (time < offsets[next] + readingOffset) break;
-    index = next;
-  }
-  return index;
-}
-
-/** One owner for chapter classes and accessible state. Hidden desktop replicas
- * are never used as the mobile, reduced-motion or server-rendered fallback. */
-export function createJobpilotStoryState(targets: StoryStateTargets) {
-  let activeIndex = -1;
-  let desktop = false;
-
-  const syncMedia = () => {
-    [targets.media, targets.captions].forEach((elements) => {
-      elements.forEach((element, index) => {
-        element.classList.toggle("is-active", index === activeIndex);
-        if (desktop && index !== activeIndex) element.setAttribute("aria-hidden", "true");
-        else element.removeAttribute("aria-hidden");
-      });
-    });
-  };
-
-  const activate = (index: number) => {
-    const next = Number.isFinite(index) ? Math.max(0, Math.min(Math.floor(index), targets.chapters.length - 1)) : 0;
-    if (next === activeIndex) return;
-    activeIndex = next;
-    targets.chapters.forEach((chapter, chapterIndex) => {
-      chapter.classList.toggle("is-active", chapterIndex === next);
-    });
-    targets.links.forEach((link, linkIndex) => {
-      link.classList.toggle("is-active", linkIndex === next);
-      if (linkIndex === next) link.setAttribute("aria-current", "step");
-      else link.removeAttribute("aria-current");
-    });
-    syncMedia();
-    targets.progressLabel.textContent = `${String(next + 1).padStart(2, "0")} / ${String(targets.chapters.length).padStart(2, "0")}`;
-    const readout = targets.readouts[next];
-    if (readout) {
-      targets.root.setAttribute("data-jobpilot-active", readout.id);
-      targets.commandLabel.textContent = readout.command;
-      targets.boundaryLabel.textContent = readout.boundary;
-    }
-  };
-
-  const setDesktop = (enabled: boolean) => {
-    desktop = enabled;
-    if (enabled) targets.root.setAttribute("data-jobpilot-layout", "desktop");
-    else targets.root.removeAttribute("data-jobpilot-layout");
-    targets.stageFigure.hidden = !enabled;
-    targets.inlineFigures.forEach((figure) => { figure.hidden = enabled; });
-    syncMedia();
-  };
-
-  activate(0);
-  return {
-    activate,
-    setDesktop,
-    dispose() {
-      setDesktop(false);
-      activeIndex = -1;
-      activate(0);
-      targets.root.removeAttribute("data-jobpilot-active");
-    },
-  };
-}
-
-/** Ambient loops have a separate pause control from the user-driven scroll
- * score. No ticker or React render is needed; CSS only runs while in view. */
-export function createJobpilotAmbientState(targets: { root: HTMLElement; toggle: HTMLButtonElement; label: HTMLElement }) {
-  let enabled = false;
-  let visible = false;
-  let documentVisible = true;
-  let paused = false;
-
-  const sync = () => {
-    targets.toggle.hidden = !enabled;
-    targets.toggle.setAttribute("aria-pressed", String(paused));
-    const label = paused ? "Resume ambient motion" : "Pause ambient motion";
-    targets.toggle.setAttribute("aria-label", label);
-    targets.label.textContent = paused ? "Resume ambient" : "Pause ambient";
-    if (enabled) {
-      targets.root.setAttribute("data-jobpilot-motion", "enabled");
-      targets.root.setAttribute("data-jobpilot-ambient", visible && documentVisible && !paused ? "running" : "paused");
-    } else {
-      targets.root.removeAttribute("data-jobpilot-motion");
-      targets.root.removeAttribute("data-jobpilot-ambient");
-    }
-  };
-
-  sync();
-  return {
-    setEnabled(value: boolean) { enabled = value; sync(); },
-    setVisible(value: boolean) { visible = value; sync(); },
-    setDocumentVisible(value: boolean) { documentVisible = value; sync(); },
-    togglePause() { paused = !paused; sync(); },
-    dispose() { enabled = false; paused = false; sync(); },
-  };
-}
-
-type StoryMotionTargets = {
-  planes: gsap.TweenTarget[];
-  progressFill: gsap.TweenTarget;
-  railFill: gsap.TweenTarget;
-  orbit?: gsap.TweenTarget;
-  depthPlanes?: gsap.TweenTarget[];
-  aperture?: gsap.TweenTarget;
-  runtimeFill?: gsap.TweenTarget;
-  stageSweep?: gsap.TweenTarget;
+export type JobpilotMotionTargets = {
+  progressFill?: gsap.TweenTarget;
+  radarSweepRay?: gsap.TweenTarget;
+  radarBlips?: gsap.TweenTarget[];
+  ingestBeams?: gsap.TweenTarget[];
+  // Phase 02: Collision Reactor
+  collisionCardLeft?: gsap.TweenTarget;
+  collisionCardRight?: gsap.TweenTarget;
+  collisionCardTop?: gsap.TweenTarget;
+  collisionPulse?: gsap.TweenTarget;
+  canonicalBadge?: gsap.TweenTarget;
+  // Phase 03: Fresher Laser Defense Fence
+  laserFenceBeam?: gsap.TweenTarget;
+  seniorCard?: gsap.TweenTarget;
+  fresherCard?: gsap.TweenTarget;
+  vectorMeterFill?: gsap.TweenTarget;
+  // Phase 04: SSRF Lockdown & Cloud Launchpad
+  ssrfShield?: gsap.TweenTarget;
+  ssrfProbeBadges?: gsap.TweenTarget[];
+  webhookBeam?: gsap.TweenTarget;
+  // Screen Stage Panes
+  screens: gsap.TweenTarget[];
 };
 
-/** Route whole screenshot planes, never images or captions. The bolder .78
- * handoff scale, 7.5% lateral travel and 5deg tilt still fit inside the frame;
- * the deliberately smaller vertical travel protects the wide screenshot's
- * corners at every interpolated position. Holds trace a shallow inward arc.
- * Explicit starts keep arbitrary/reverse seeks and chapter readouts aligned. */
-export function scoreJobpilotStory(
+export const JOBPILOT_PHASES: readonly JobpilotPhaseReadout[] = [
+  {
+    id: "radar",
+    number: "01",
+    codename: "MULTI-VECTOR RECON RADAR",
+    title: "Parallel ATS Ingestion & Signal Intercept",
+    status: "SCANNING_5_PROVIDERS",
+    telemetryLeft: { label: "BUFFER", value: "Redis Stream (180/min)" },
+    telemetryRight: { label: "ATS BOARDS", value: "LinkedIn • Greenhouse • Indeed" },
+  },
+  {
+    id: "collider",
+    number: "02",
+    codename: "CANONICAL COLLISION REACTOR",
+    title: "Tri-Vector Collision & SHA-256 Deduplication",
+    status: "COLLISION_RESOLVED",
+    telemetryLeft: { label: "PURGE RATE", value: "94.8% Redundant Drop" },
+    telemetryRight: { label: "HASH ALGO", value: "sha256(corp:title:loc)" },
+  },
+  {
+    id: "defense",
+    number: "03",
+    codename: "FRESHER DEFENSE PERIMETER",
+    title: "Laser Seniority Fence & Cosine Vector Matcher",
+    status: "FRESHER_LOCKED_0.94",
+    telemetryLeft: { label: "YOE FENCE", value: "Strict <= 1.5 YOE" },
+    telemetryRight: { label: "COSINE SIM", value: "94.2% Profile Intent" },
+  },
+  {
+    id: "launchpad",
+    number: "04",
+    codename: "SSRF GATEWAY & CLOUD RUNTIME",
+    title: "Fail-Closed Security & n8n Instant Dispatch",
+    status: "AUTONOMOUS_DELIVERY",
+    telemetryLeft: { label: "INFRA", value: "Oracle Cloud ARM64" },
+    telemetryRight: { label: "DISPATCH", value: "n8n Webhook (T+0.04s)" },
+  },
+] as const;
+
+/** Resolves current active phase from normalized timeline progress [0, 1] */
+export function jobpilotPhaseAtProgress(progress: number): number {
+  if (progress < 0.25) return 0;
+  if (progress < 0.5) return 1;
+  if (progress < 0.75) return 2;
+  return 3;
+}
+
+/**
+ * Scores the continuous GSAP timeline for the panoramic theater.
+ * Each 25% segment of scroll corresponds to an active operational mode.
+ */
+export function scoreJobpilotTheater(
   timeline: gsap.core.Timeline,
-  targets: StoryMotionTargets,
-  chapterOffsets: readonly number[],
-  viewportHeight: number,
-  scrollDistance: number,
+  targets: JobpilotMotionTargets,
+  scrollDistance: number
 ) {
-  const full = { autoAlpha: 1, scale: 1, xPercent: 0, yPercent: 0, rotation: 0 };
-  const duration = viewportHeight * .33;
-
-  timeline
-    .fromTo(targets.progressFill, { scaleX: 0 }, { scaleX: 1, duration: scrollDistance, ease: "none", immediateRender: false }, 0)
-    .fromTo(targets.railFill, { scaleY: 0 }, { scaleY: 1, duration: scrollDistance, ease: "none", immediateRender: false }, 0);
-  if (targets.runtimeFill) {
-    timeline.fromTo(targets.runtimeFill, { scaleX: 0 }, {
-      scaleX: 1, duration: scrollDistance, ease: "none", immediateRender: false,
-    }, 0);
+  // 1. Progress track scrub
+  if (targets.progressFill) {
+    timeline.fromTo(
+      targets.progressFill,
+      { scaleX: 0 },
+      { scaleX: 1, duration: scrollDistance, ease: "none", immediateRender: false },
+      0
+    );
   }
 
-  if (targets.orbit) {
-    timeline.fromTo(targets.orbit, { rotation: -45 }, { rotation: 315, duration: scrollDistance, ease: "none", immediateRender: true }, 0);
-  }
-  targets.depthPlanes?.forEach((plane) => {
-    timeline.set(plane, { scale: 1, xPercent: 0, yPercent: 0, rotation: 0 }, 0);
-  });
-  if (targets.aperture) {
-    // The clip belongs only to the decorative circuit grid behind the planes.
-    timeline.fromTo(targets.aperture, { clipPath: "inset(0 100% 0 0)" }, {
-      clipPath: "inset(0 0% 0 0)", duration: scrollDistance, ease: "none", immediateRender: true,
-    }, 0);
+  // 2. Continuous 360-degree tactical radar sweep ray across entire duration
+  if (targets.radarSweepRay) {
+    timeline.fromTo(
+      targets.radarSweepRay,
+      { rotation: 0 },
+      { rotation: 1080, duration: scrollDistance, ease: "none", immediateRender: true },
+      0
+    );
   }
 
-  if (targets.planes.length) {
-    timeline.set(targets.planes, { transformOrigin: "50% 50%" }, 0).set(targets.planes[0], { ...full, immediateRender: true }, 0);
-    targets.planes.forEach((plane, index) => {
-      const at = chapterOffsets[index] ?? 0;
-      if (index > 0) {
-        const enter = { autoAlpha: 0, scale: 0.985, yPercent: 1.5, xPercent: 0, rotation: 0 };
-        const leave = { autoAlpha: 0, scale: 1.015, yPercent: -1.5, xPercent: 0, rotation: 0 };
-        timeline
-          .fromTo(targets.planes[index - 1], full, { ...leave, duration, ease: "none", immediateRender: false }, at)
-          .fromTo(plane, enter, { ...full, duration, ease: "none", immediateRender: true }, at);
-      }
-      timeline.addLabel(`chapter:${String(index + 1).padStart(2, "0")}`, index === 0 ? 0 : at + duration / 2);
+  // 3. Screen cross-transitions across 4 operational quarters
+  const q1 = scrollDistance * 0.25;
+  const q2 = scrollDistance * 0.5;
+  const q3 = scrollDistance * 0.75;
+  const dur = scrollDistance * 0.08;
+
+  if (targets.screens.length >= 4) {
+    // Initial states: Screen 0 active, 1, 2, 3 hidden
+    timeline.set(targets.screens[0], { autoAlpha: 1, scale: 1, y: 0 }, 0);
+    for (let i = 1; i < 4; i++) {
+      timeline.set(targets.screens[i], { autoAlpha: 0, scale: 0.94, y: 24 }, 0);
+    }
+
+    // Phase 01 -> Phase 02 transition at q1
+    timeline
+      .to(targets.screens[0], { autoAlpha: 0, scale: 1.05, y: -20, duration: dur, ease: "power2.inOut" }, q1 - dur / 2)
+      .to(targets.screens[1], { autoAlpha: 1, scale: 1, y: 0, duration: dur, ease: "power2.out" }, q1 - dur / 2);
+
+    // Phase 02 -> Phase 03 transition at q2
+    timeline
+      .to(targets.screens[1], { autoAlpha: 0, scale: 1.05, y: -20, duration: dur, ease: "power2.inOut" }, q2 - dur / 2)
+      .to(targets.screens[2], { autoAlpha: 1, scale: 1, y: 0, duration: dur, ease: "power2.out" }, q2 - dur / 2);
+
+    // Phase 03 -> Phase 04 transition at q3
+    timeline
+      .to(targets.screens[2], { autoAlpha: 0, scale: 1.05, y: -20, duration: dur, ease: "power2.inOut" }, q3 - dur / 2)
+      .to(targets.screens[3], { autoAlpha: 1, scale: 1, y: 0, duration: dur, ease: "power2.out" }, q3 - dur / 2);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 01: Multi-Vector Ingestion Radar (0 -> q1)
+  // ─────────────────────────────────────────────────────────────
+  if (targets.ingestBeams && targets.ingestBeams.length) {
+    targets.ingestBeams.forEach((beam, idx) => {
+      const delay = (idx * q1) / (targets.ingestBeams!.length + 1);
+      timeline.fromTo(
+        beam,
+        { scaleX: 0, opacity: 0 },
+        { scaleX: 1, opacity: 0.8, duration: q1 * 0.4, ease: "power2.inOut", yoyo: true, repeat: 1 },
+        delay
+      );
     });
   }
-  if (targets.stageSweep) {
-    timeline.set(targets.stageSweep, { autoAlpha: 0, xPercent: -130 }, 0);
-    chapterOffsets.forEach((at) => {
-      timeline.fromTo(targets.stageSweep!, { autoAlpha: 0, xPercent: -130 }, {
-        autoAlpha: 1, xPercent: 650, duration: duration * .72, ease: "power2.inOut", immediateRender: false,
-      }, at).to(targets.stageSweep!, { autoAlpha: 0, duration: duration * .28, ease: "power1.out" }, at + duration * .72);
+
+  if (targets.radarBlips && targets.radarBlips.length) {
+    targets.radarBlips.forEach((blip, idx) => {
+      timeline.fromTo(
+        blip,
+        { scale: 0, opacity: 0 },
+        { scale: 1.4, opacity: 1, duration: q1 * 0.25, ease: "back.out(2)" },
+        (idx * q1) / 4
+      );
     });
   }
-  return timeline;
+
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 02: Canonical Deduplication Collision Reactor (q1 -> q2)
+  // ─────────────────────────────────────────────────────────────
+  if (targets.collisionCardLeft && targets.collisionCardRight && targets.collisionCardTop) {
+    // 3 Duplicate cards start outward
+    timeline.set(targets.collisionCardLeft, { xPercent: -120, yPercent: 0, opacity: 0, scale: 0.85 }, 0);
+    timeline.set(targets.collisionCardRight, { xPercent: 120, yPercent: 0, opacity: 0, scale: 0.85 }, 0);
+    timeline.set(targets.collisionCardTop, { xPercent: 0, yPercent: -120, opacity: 0, scale: 0.85 }, 0);
+
+    const collisionEntry = q1 + (q2 - q1) * 0.15;
+    const collisionPoint = q1 + (q2 - q1) * 0.5;
+
+    // Fly in towards center
+    timeline
+      .to(targets.collisionCardLeft, { xPercent: -20, opacity: 0.9, scale: 0.95, duration: (q2 - q1) * 0.35, ease: "power1.out" }, collisionEntry)
+      .to(targets.collisionCardRight, { xPercent: 20, opacity: 0.9, scale: 0.95, duration: (q2 - q1) * 0.35, ease: "power1.out" }, collisionEntry)
+      .to(targets.collisionCardTop, { yPercent: -20, opacity: 0.9, scale: 0.95, duration: (q2 - q1) * 0.35, ease: "power1.out" }, collisionEntry);
+
+    // Slam together at center
+    timeline
+      .to(targets.collisionCardLeft, { xPercent: 0, opacity: 0, scale: 0.5, duration: (q2 - q1) * 0.15, ease: "power3.in" }, collisionPoint)
+      .to(targets.collisionCardRight, { xPercent: 0, opacity: 0, scale: 0.5, duration: (q2 - q1) * 0.15, ease: "power3.in" }, collisionPoint)
+      .to(targets.collisionCardTop, { yPercent: 0, opacity: 0, scale: 0.5, duration: (q2 - q1) * 0.15, ease: "power3.in" }, collisionPoint);
+
+    // Shockwave pulse explodes outward
+    if (targets.collisionPulse) {
+      timeline.fromTo(
+        targets.collisionPulse,
+        { scale: 0.1, opacity: 0 },
+        { scale: 2.2, opacity: 1, duration: (q2 - q1) * 0.12, ease: "power1.out" },
+        collisionPoint
+      );
+      timeline.to(
+        targets.collisionPulse,
+        { opacity: 0, scale: 3.0, duration: (q2 - q1) * 0.15, ease: "power2.in" },
+        collisionPoint + (q2 - q1) * 0.12
+      );
+    }
+
+    // Canonical master record badge pops out
+    if (targets.canonicalBadge) {
+      timeline.fromTo(
+        targets.canonicalBadge,
+        { scale: 0.3, opacity: 0, y: 15 },
+        { scale: 1, opacity: 1, y: 0, duration: (q2 - q1) * 0.25, ease: "back.out(2)" },
+        collisionPoint + (q2 - q1) * 0.08
+      );
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 03: Fresher Laser Defense Fence (q2 -> q3)
+  // ─────────────────────────────────────────────────────────────
+  if (targets.laserFenceBeam) {
+    timeline.fromTo(
+      targets.laserFenceBeam,
+      { scaleY: 0, opacity: 0 },
+      { scaleY: 1, opacity: 1, duration: (q3 - q2) * 0.2, ease: "power2.out" },
+      q2 + (q3 - q2) * 0.05
+    );
+  }
+
+  if (targets.seniorCard && targets.fresherCard) {
+    // Both cards enter from left
+    const fenceMid = q2 + (q3 - q2) * 0.45;
+
+    // Senior card approaches laser fence -> ZAP! Deflected and vaporized
+    timeline.fromTo(
+      targets.seniorCard,
+      { xPercent: -100, opacity: 0 },
+      { xPercent: -15, opacity: 1, duration: (q3 - q2) * 0.35, ease: "power1.out" },
+      q2 + (q3 - q2) * 0.1
+    );
+
+    timeline.to(
+      targets.seniorCard,
+      {
+        xPercent: -35,
+        yPercent: -80,
+        rotation: -22,
+        opacity: 0,
+        filter: "hue-rotate(180deg) brightness(2)",
+        duration: (q3 - q2) * 0.25,
+        ease: "power2.in",
+      },
+      fenceMid
+    );
+
+    // Fresher card approaches laser fence -> passes cleanly through and locks in
+    timeline.fromTo(
+      targets.fresherCard,
+      { xPercent: -100, opacity: 0 },
+      { xPercent: -10, opacity: 1, duration: (q3 - q2) * 0.35, ease: "power1.out" },
+      q2 + (q3 - q2) * 0.15
+    );
+
+    timeline.to(
+      targets.fresherCard,
+      {
+        xPercent: 55,
+        scale: 1.05,
+        duration: (q3 - q2) * 0.3,
+        ease: "back.out(1.5)",
+      },
+      fenceMid + (q3 - q2) * 0.05
+    );
+
+    // Vector Similarity meter fills up to 94.2%
+    if (targets.vectorMeterFill) {
+      timeline.fromTo(
+        targets.vectorMeterFill,
+        { scaleX: 0 },
+        { scaleX: 0.942, duration: (q3 - q2) * 0.25, ease: "power2.out" },
+        fenceMid + (q3 - q2) * 0.12
+      );
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 04: SSRF Lockdown & Cloud Launchpad (q3 -> scrollDistance)
+  // ─────────────────────────────────────────────────────────────
+  if (targets.ssrfShield) {
+    timeline.fromTo(
+      targets.ssrfShield,
+      { scale: 0.85, opacity: 0 },
+      { scale: 1, opacity: 1, duration: (scrollDistance - q3) * 0.25, ease: "power2.out" },
+      q3 + (scrollDistance - q3) * 0.05
+    );
+  }
+
+  if (targets.ssrfProbeBadges && targets.ssrfProbeBadges.length) {
+    targets.ssrfProbeBadges.forEach((badge, idx) => {
+      timeline.fromTo(
+        badge,
+        { opacity: 0.3, scale: 0.9 },
+        { opacity: 1, scale: 1, duration: (scrollDistance - q3) * 0.15, ease: "back.out(1.8)" },
+        q3 + (scrollDistance - q3) * (0.2 + idx * 0.12)
+      );
+    });
+  }
+
+  if (targets.webhookBeam) {
+    const launchPoint = q3 + (scrollDistance - q3) * 0.58;
+    timeline.fromTo(
+      targets.webhookBeam,
+      { scaleX: 0, opacity: 0 },
+      { scaleX: 1, opacity: 1, duration: (scrollDistance - q3) * 0.3, ease: "power3.out" },
+      launchPoint
+    );
+  }
 }

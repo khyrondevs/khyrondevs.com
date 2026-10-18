@@ -1,909 +1,1276 @@
-/* JobPilot keeps the portfolio's paper / ink / lime / periwinkle system. */
-.jobpilot-experience { position: relative; }
-.jobpilot-project-card { position: relative; }
+/* ==========================================================================
+   JobPilot: The Autonomous Tactical Radar & Ingestion Theater
+   Domain: Multi-Provider ATS Ingestion, Tri-Vector Deduplication, SSRF Security
+   Palette: Navy Slate (#060913), Aviation Cyan (#38bdf8), Signal Lime (#a3e635)
+   ========================================================================== */
 
-.jobpilot-story {
+:root {
+  --pilot-cyan: #38bdf8;
+  --pilot-cyan-glow: rgba(56, 189, 248, 0.28);
+  --pilot-lime: #a3e635;
+  --pilot-lime-glow: rgba(163, 230, 53, 0.28);
+  --pilot-amber: #f59e0b;
+  --pilot-amber-glow: rgba(245, 158, 11, 0.28);
+  --pilot-danger: #ef4444;
+  --pilot-carbon: #060913;
+  --pilot-surface: #0c1222;
+  --pilot-elevated: #121c34;
+  --pilot-border: rgba(255, 255, 255, 0.08);
+  --pilot-border-strong: rgba(56, 189, 248, 0.35);
+}
+
+.jobpilot-experience {
   position: relative;
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: clamp(6rem, 10vw, 9rem) 2.5rem 7rem;
-  overflow: clip;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  color: var(--color-fg);
 }
 
-.jobpilot-story-intro {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(260px, .7fr);
-  align-items: end;
-  gap: 3rem;
-  margin-bottom: clamp(3rem, 5vw, 4.5rem);
+.jobpilot-project-card {
+  position: relative;
+  width: 100%;
 }
 
-.jobpilot-story-intro h2 {
-  max-width: 760px;
-  margin: 1.5rem 0 0;
-  color: var(--color-ink);
-  font-size: clamp(3.2rem, 7.3vw, 7.5rem);
-  font-weight: 600;
-  letter-spacing: -.075em;
-  line-height: .88;
+/* ── Pinned Panoramic Mission Control Theater ── */
+.jobpilot-theater-section {
+  position: relative;
+  width: 100%;
 }
 
-.jobpilot-story-intro h2 > span { position: relative; isolation: isolate; }
-.jobpilot-story-intro h2 > span::after {
-  position: absolute;
-  z-index: -1;
-  right: -.02em;
-  bottom: .02em;
-  left: .03em;
-  height: .17em;
-  background: var(--color-accent);
-  content: "";
+.jobpilot-scroll-track {
+  position: relative;
+  width: 100%;
 }
 
-.jobpilot-reel-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
-.jobpilot-reel-index { margin: 1.7rem 0 0; color: color-mix(in srgb, var(--color-ink) 48%, transparent); font: 9px var(--font-mono); letter-spacing: .13em; text-transform: uppercase; }
-.jobpilot-reel-index > span { margin: 0 .65rem; color: var(--color-accent-2); }
-
-.jobpilot-story-lead {
-  max-width: 400px;
-  margin: 0 0 .35rem auto;
-  color: color-mix(in srgb, var(--color-ink) 62%, transparent);
-  font-size: 1.05rem;
-  line-height: 1.7;
+@media (min-width: 1024px) {
+  .jobpilot-scroll-track {
+    height: 380vh;
+  }
 }
 
-.jobpilot-kicker {
-  display: inline-flex;
+.jobpilot-theater-stage {
+  position: relative;
+  width: 100%;
+  background: radial-gradient(ellipse at 50% 15%, #0f1a30 0%, #060913 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(1rem, 2vw, 1.75rem) clamp(1.25rem, 3.5vw, 3rem);
+  box-sizing: border-box;
+  z-index: 10;
+  border-top: 1px solid var(--pilot-border);
+  border-bottom: 1px solid var(--pilot-border);
+}
+
+@media (min-width: 1024px) {
+  .jobpilot-theater-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+  }
+}
+
+/* 1. Tactical HUD Header */
+.jobpilot-hud-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: .55rem;
-  margin: 0;
-  color: color-mix(in srgb, var(--color-ink) 48%, transparent);
-  font: 10px var(--font-mono);
-  letter-spacing: .18em;
-  text-transform: uppercase;
-}
-
-.jobpilot-pulse {
-  width: 7px;
-  height: 7px;
-  flex: 0 0 auto;
-  border-radius: 50%;
-  background: var(--color-accent);
-  box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-accent) 18%, transparent);
-}
-
-.jobpilot-story-body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: start;
-  gap: clamp(2rem, 4vw, 5rem);
-}
-
-.jobpilot-chapters {
-  position: relative;
-  min-width: 0;
-}
-
-.jobpilot-story-rail {
-  position: absolute;
-  top: 3.1rem;
-  bottom: 3.1rem;
-  left: 1.48rem;
-  width: 1px;
-  background: color-mix(in srgb, var(--color-ink) 13%, transparent);
-  pointer-events: none;
-}
-
-.jobpilot-story-rail span {
-  position: absolute;
-  top: 0;
-  left: -1px;
-  display: block;
-  width: 3px;
-  height: 100%;
-  border-radius: 999px;
-  background: var(--color-accent);
-  transform: scaleY(0);
-  transform-origin: 50% 0;
-  will-change: transform;
-}
-
-.jobpilot-chapter {
-  display: grid;
-  grid-template-columns: 3rem minmax(0, 1fr);
-  align-items: start;
   gap: 1.5rem;
-  min-height: 0;
-  padding: 3rem 0;
-  scroll-margin-top: 7rem;
-  border-radius: .8rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.65rem;
 }
 
-.jobpilot-chapter:focus-visible { outline: 2px solid var(--color-ink); outline-offset: .8rem; }
-
-.jobpilot-chapter-marker {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  place-items: center;
-  align-self: start;
-  grid-row: 1 / span 2;
-  width: 3rem;
-  height: 3rem;
-  border: 1px solid color-mix(in srgb, var(--color-ink) 16%, transparent);
-  border-radius: .9rem;
-  background: var(--color-paper);
-  color: var(--color-ink);
-  box-shadow: 0 12px 28px -18px color-mix(in srgb, var(--color-ink) 60%, transparent);
-  transition: background-color .35s ease, border-color .35s ease, color .35s ease, box-shadow .35s ease;
-}
-
-.jobpilot-chapter-marker::after {
-  position: absolute;
-  inset: -7px;
-  border: 1px solid var(--color-accent-2);
-  border-radius: inherit;
-  opacity: 0;
-  transform: rotate(-12deg) scale(.85);
-  transition: opacity .3s ease, transform .4s ease;
-  content: "";
-}
-.jobpilot-chapter.is-active .jobpilot-chapter-marker::after,
-.jobpilot-chapter:hover .jobpilot-chapter-marker::after,
-.jobpilot-chapter:focus-within .jobpilot-chapter-marker::after { opacity: 1; transform: rotate(0deg) scale(1); }
-
-.jobpilot-chapter-marker span {
-  position: absolute;
-  top: 3.25rem;
-  color: color-mix(in srgb, var(--color-ink) 34%, transparent);
-  font: 9px var(--font-mono);
-}
-
-.jobpilot-chapter.is-active .jobpilot-chapter-marker {
-  border-color: var(--color-accent);
-  background: var(--color-accent);
-  box-shadow: 0 0 0 7px color-mix(in srgb, var(--color-accent) 18%, transparent), 0 16px 30px -18px color-mix(in srgb, var(--color-ink) 70%, transparent);
-}
-
-.jobpilot-chapter-copy { min-width: 0; }
-
-.jobpilot-chapter-copy h3 {
-  max-width: 450px;
-  margin: .9rem 0 1rem;
-  color: var(--color-ink);
-  font-size: clamp(2rem, 3.3vw, 3.8rem);
-  font-weight: 600;
-  letter-spacing: -.065em;
-  line-height: .94;
-}
-
-.jobpilot-chapter-copy > p:not(.jobpilot-kicker) {
-  max-width: 430px;
-  margin: 0;
-  color: color-mix(in srgb, var(--color-ink) 64%, transparent);
-  line-height: 1.7;
-}
-
-.jobpilot-chapter-copy ul {
-  display: grid;
-  gap: .55rem;
-  margin: 1.5rem 0 0;
-  padding: 0;
-  color: color-mix(in srgb, var(--color-ink) 55%, transparent);
-  font: 10px var(--font-mono);
-  letter-spacing: .08em;
-  list-style: none;
-  text-transform: uppercase;
-}
-
-.jobpilot-chapter-copy li { display: flex; align-items: center; gap: .5rem; }
-.jobpilot-chapter-copy li svg { color: var(--color-accent); }
-
-.jobpilot-boundary-route {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: center;
-  gap: .65rem;
-  margin-top: 1.6rem;
-  padding: .65rem 0 1.05rem;
-  color: color-mix(in srgb, var(--color-ink) 64%, transparent);
-  font: 9px / 1.6 var(--font-mono);
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-.jobpilot-boundary-route > strong { padding: .35rem .5rem; border-radius: .25rem; background: var(--color-accent-2); color: var(--color-ink); font-weight: 500; }
-.jobpilot-boundary-route > svg { color: var(--color-ink); transition: transform .3s ease; }
-.jobpilot-chapter:hover .jobpilot-boundary-route > svg,
-.jobpilot-chapter:focus-within .jobpilot-boundary-route > svg { transform: translateX(3px); }
-.jobpilot-boundary-route > i { position: absolute; right: 0; bottom: 0; left: 0; height: 2px; background: color-mix(in srgb, var(--color-ink) 13%, transparent); }
-.jobpilot-boundary-route > i > span { display: block; width: 100%; height: 100%; background: var(--color-accent); transform: scaleX(0); transform-origin: 0 50%; }
-
-.jobpilot-story-stage {
-  position: sticky;
-  top: clamp(5rem, 8vh, 6rem);
-  z-index: 2;
-  align-self: start;
-  min-width: 0;
-}
-
-.jobpilot-experience:not([data-jobpilot-layout="desktop"]) .jobpilot-story-stage {
-  position: relative;
-  top: auto;
-}
-
-.jobpilot-progress-nav {
-  margin-bottom: 0;
-  padding: .7rem 1.1rem .55rem;
-  border: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
-  border-radius: 0 0 1.25rem 1.25rem;
-  background: color-mix(in srgb, var(--color-paper) 88%, white);
-  box-shadow: 0 22px 50px -40px color-mix(in srgb, var(--color-ink) 70%, transparent);
-}
-
-.jobpilot-progress-heading {
+.jobpilot-hud-left {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  color: color-mix(in srgb, var(--color-ink) 47%, transparent);
-  font: 10px var(--font-mono);
-  letter-spacing: .14em;
-  text-transform: uppercase;
+  gap: 0.85rem;
 }
 
-.jobpilot-progress-heading span:last-child { color: var(--color-ink); }
-
-.jobpilot-progress-track {
-  height: 3px;
-  margin: .7rem 0 .55rem;
-  overflow: hidden;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-ink) 11%, transparent);
-}
-
-.jobpilot-progress-track span {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--color-accent-2), var(--color-accent));
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-}
-
-.jobpilot-progress-nav ol {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: .35rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.jobpilot-progress-step {
-  display: grid;
-  gap: .22rem;
-  min-width: 0;
-  padding: .45rem .35rem .35rem;
-  border-radius: .65rem;
-  color: color-mix(in srgb, var(--color-ink) 42%, transparent);
-  font: 9px var(--font-mono);
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  transition: background-color .35s ease, color .35s ease;
-}
-
-.jobpilot-progress-step > span { display: flex; align-items: center; justify-content: space-between; gap: .25rem; font-size: 8px; }
-.jobpilot-progress-step > span > svg { flex: 0 0 auto; opacity: 0; transform: translateX(-4px); transition: opacity .3s ease, transform .3s ease; }
-.jobpilot-progress-step strong { overflow: hidden; font-weight: 500; text-overflow: ellipsis; transition: transform .3s ease; }
-.jobpilot-progress-step:hover > span > svg,
-.jobpilot-progress-step:focus-visible > span > svg,
-.jobpilot-progress-step.is-active > span > svg { opacity: 1; transform: translateX(0); }
-.jobpilot-progress-step:hover strong,
-.jobpilot-progress-step:focus-visible strong { transform: translateY(-1px); }
-.jobpilot-progress-step:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 2px; }
-.jobpilot-progress-step:hover,
-.jobpilot-progress-step:focus-visible,
-.jobpilot-progress-step.is-active,
-.jobpilot-progress-step[aria-current="step"] {
-  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
-  color: var(--color-ink);
-}
-
-.jobpilot-stage-figure {
-  position: relative;
-  min-width: 0;
-  margin: 0;
-  padding: .65rem;
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
-  border-radius: 0 0 1.8rem 1.8rem;
-  background: color-mix(in srgb, var(--color-paper) 76%, white);
-  box-shadow: 0 34px 75px -50px color-mix(in srgb, var(--color-ink) 78%, transparent);
-}
-
-[data-jobpilot-stage-figure][hidden],
-[data-jobpilot-inline-figure][hidden] { display: none; }
-
-.jobpilot-inline-figure { grid-column: 2; border-radius: 1.8rem; }
-
-.jobpilot-stage-viewport {
-  position: relative;
-  aspect-ratio: 1920 / 968;
-  min-height: 0;
-  overflow: hidden;
-  border-radius: 1.1rem;
-  background: var(--color-paper);
-  border: 1px solid color-mix(in srgb, var(--color-ink) 14%, transparent);
-  box-shadow: 0 16px 40px -20px rgba(0, 0, 0, 0.7);
-  isolation: isolate;
-}
-
-.jobpilot-stage-media-stack {
-  position: relative;
-  z-index: 1;
-  display: grid;
-}
-
-.jobpilot-stage-media {
-  grid-area: 1 / 1;
-  min-width: 0;
-  margin: 0;
-}
-
-.jobpilot-stage-plane { opacity: 0; visibility: hidden; transform-origin: 50% 50%; }
-.jobpilot-stage-media:first-child .jobpilot-stage-plane { opacity: 1; visibility: visible; }
-.jobpilot-stage-media img,
-.jobpilot-inline-media img {
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover !important;
-  object-position: top center !important;
-  display: block;
-}
-.jobpilot-inline-media {
-  position: absolute;
-  inset: 0;
-}
-
-.jobpilot-stage-caption {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: .65rem;
-  padding: .65rem 1rem;
-  border: 1px solid color-mix(in srgb, var(--color-paper) 22%, transparent);
-  border-radius: .9rem;
-  background: color-mix(in srgb, var(--color-ink) 78%, transparent);
-  color: var(--color-paper);
-  font: 11px / 1.5 var(--font-mono);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-
-.jobpilot-stage-caption > span { min-width: 0; overflow-wrap: anywhere; }
-.jobpilot-stage-caption svg { flex: 0 0 auto; color: var(--color-accent); }
-.jobpilot-stage-caption[data-jobpilot-caption] { visibility: hidden; }
-.jobpilot-stage-caption[data-jobpilot-caption].is-active { visibility: visible; }
-
-.jobpilot-stage-note {
-  display: flex;
-  align-items: center;
-  gap: .6rem;
-  padding: .65rem .35rem .15rem;
-  color: color-mix(in srgb, var(--color-ink) 45%, transparent);
-  font: 9px var(--font-mono);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-
-.jobpilot-stage-note .jobpilot-pulse { width: 5px; height: 5px; box-shadow: none; }
-
-.jobpilot-story-close {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  max-width: 650px;
-  margin: 5rem auto 0;
-  padding: 1rem 1.25rem;
-  border: 1px solid color-mix(in srgb, var(--color-ink) 12%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-paper) 70%, white);
-  color: var(--color-ink);
-  box-shadow: 0 20px 40px -32px color-mix(in srgb, var(--color-ink) 70%, transparent);
-}
-
-.jobpilot-story-close p { margin: 0; }
-.jobpilot-story-close > div:nth-child(2) { flex: 1; }
-.jobpilot-story-close > div:nth-child(2) > p:last-child { margin-top: .25rem; font-size: .95rem; }
-.jobpilot-close-icon { display: grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: var(--color-accent); color: var(--color-ink); }
-.jobpilot-story-close > svg { color: var(--color-accent-2); }
-
-.jobpilot-console-heading {
-  display: flex;
-  align-items: center;
-  gap: .8rem;
-  padding: .6rem 1.1rem;
-  border-radius: 1.4rem 1.4rem 0 0;
-  background: var(--color-ink);
-  color: var(--color-paper);
-}
-.jobpilot-console-heading > div:nth-child(2) { display: grid; gap: .2rem; min-width: 0; }
-.jobpilot-console-heading > div:nth-child(2) > span,
-.jobpilot-console-heading > p { margin: 0; color: color-mix(in srgb, var(--color-paper) 62%, transparent); font: 8px / 1.6 var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
-.jobpilot-console-heading strong { font-size: 1rem; font-weight: 600; letter-spacing: -.03em; }
-.jobpilot-console-heading > p { margin-left: auto; text-align: right; }
-.jobpilot-console-heading > p > span { color: var(--color-accent); }
-.jobpilot-console-heading .jobpilot-motion-toggle { margin-left: auto; border-color: var(--color-accent-2); }
-.jobpilot-signal-orbit { position: relative; flex: 0 0 2.5rem; width: 2.5rem; height: 2.5rem; }
-.jobpilot-signal-orbit > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.jobpilot-signal-rings { stroke: var(--color-accent-2); stroke-width: .7; opacity: .4; }
-.jobpilot-signal-runner { stroke: var(--color-accent); stroke-width: 1.5; transform-origin: 50% 50%; }
-.jobpilot-signal-runner > circle { fill: var(--color-accent); stroke: none; }
-.jobpilot-console-boundary { position: relative; z-index: 1; display: flex; justify-content: space-between; gap: .8rem; padding: .3rem .35rem .65rem; color: color-mix(in srgb, var(--color-ink) 62%, transparent); font: 8px / 1.5 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
-.jobpilot-console-boundary > span:last-child { color: var(--color-ink); text-align: right; }
-.jobpilot-console-grid { position: absolute; inset: 0; pointer-events: none; opacity: .12; background-image: linear-gradient(var(--color-accent-2) 1px, transparent 1px), linear-gradient(90deg, var(--color-accent-2) 1px, transparent 1px); background-size: 24px 24px; }
-.jobpilot-depth-stack { display: none; }
-.jobpilot-command-line { position: relative; z-index: 1; display: flex; align-items: center; gap: .5rem; min-height: 2rem; margin-top: .5rem; padding: .5rem .7rem; border-radius: .45rem; background: var(--color-ink); color: var(--color-paper); font: 9px / 1.5 var(--font-mono); }
-.jobpilot-command-line > span { color: var(--color-accent); }
-.jobpilot-command-line > code { min-width: 0; overflow-wrap: anywhere; font: inherit; }
-.jobpilot-command-line > i { width: .4rem; height: .8rem; flex: 0 0 auto; margin-left: auto; background: var(--color-accent); }
-.jobpilot-data-rail { overflow: hidden; margin: 0 0 2.5rem; padding: .85rem 0; border-top: 1px solid color-mix(in srgb, var(--color-ink) 13%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 13%, transparent); pointer-events: none; mask-image: linear-gradient(90deg, transparent, var(--color-ink) 5%, var(--color-ink) 95%, transparent); }
-.jobpilot-data-flow { display: flex; width: max-content; }
-.jobpilot-data-run { display: flex; align-items: center; gap: 2.5rem; padding-right: 2.5rem; }
-.jobpilot-data-run > span { display: flex; align-items: center; gap: .65rem; white-space: nowrap; color: color-mix(in srgb, var(--color-ink) 62%, transparent); font: 9px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
-.jobpilot-data-run i { width: 5px; height: 5px; border-radius: 50%; background: var(--color-accent); }
-.jobpilot-data-run > span:nth-child(even) i { background: var(--color-accent-2); }
-.jobpilot-story-body + .jobpilot-data-rail { margin: 3rem 0 0; }
-.jobpilot-console-data-rail { position: relative; z-index: 1; margin: .65rem 0 0; padding: .55rem 0; }
-.jobpilot-console-data-rail .jobpilot-data-run > span { font-size: 8px; }
-.jobpilot-motion-toggle { display: inline-flex; align-items: center; gap: .45rem; flex: 0 0 auto; padding: .5rem .6rem; border: 1px solid color-mix(in srgb, var(--color-ink) 16%, transparent); border-radius: .45rem; background: var(--color-paper); color: var(--color-ink); font: 9px var(--font-mono); cursor: pointer; transition: background-color .25s ease; }
-.jobpilot-motion-toggle:hover { background: var(--color-accent-2); }
-.jobpilot-motion-toggle:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 3px; }
-.jobpilot-play-icon { display: none; }
-.jobpilot-motion-toggle[aria-pressed="true"] .jobpilot-pause-icon { display: none; }
-.jobpilot-motion-toggle[aria-pressed="true"] .jobpilot-play-icon { display: block; }
-[data-jobpilot-motion-toggle][hidden] { display: none; }
-
-@keyframes jobpilot-data-transit { to { transform: translateX(-50%); } }
-@keyframes jobpilot-signal-orbit { to { transform: rotate(360deg); } }
-@keyframes jobpilot-signal-pulse { 50% { transform: scale(1.18); } }
-@keyframes jobpilot-command-clock { 50% { transform: scaleY(.45); } }
-
-@media (prefers-reduced-motion: no-preference) {
-  [data-jobpilot-motion="enabled"] .jobpilot-data-flow { animation: jobpilot-data-transit 28s linear infinite; animation-play-state: paused; }
-  [data-jobpilot-motion="enabled"] .jobpilot-signal-runner { animation: jobpilot-signal-orbit 12s linear infinite; animation-play-state: paused; }
-  [data-jobpilot-motion="enabled"] .jobpilot-pulse { animation: jobpilot-signal-pulse 3.5s ease-in-out infinite; animation-play-state: paused; }
-  [data-jobpilot-motion="enabled"] .jobpilot-command-line > i { animation: jobpilot-command-clock 2.5s ease-in-out infinite; animation-play-state: paused; }
-  [data-jobpilot-ambient="running"] .jobpilot-data-flow,
-  [data-jobpilot-ambient="running"] .jobpilot-signal-runner,
-  [data-jobpilot-ambient="running"] .jobpilot-pulse,
-  [data-jobpilot-ambient="running"] .jobpilot-command-line > i { animation-play-state: running; }
-  [data-jobpilot-motion="enabled"] .jobpilot-inline-media { will-change: transform; }
-}
-
-@media (min-width: 901px) and (min-height: 800px) and (prefers-reduced-motion: no-preference) {
-  [data-jobpilot-layout="desktop"] .jobpilot-story-body { grid-template-columns: minmax(280px, .8fr) minmax(420px, 1.2fr); }
-  [data-jobpilot-layout="desktop"] .jobpilot-chapters { grid-column: 1; grid-row: 1; }
-  [data-jobpilot-layout="desktop"] .jobpilot-story-stage { grid-column: 2; grid-row: 1; }
-  [data-jobpilot-layout="desktop"] .jobpilot-chapter { align-items: center; min-height: clamp(34rem, 78vh, 48rem); padding: 0; }
-  [data-jobpilot-layout="desktop"] .jobpilot-chapter-marker { grid-row: auto; }
-  [data-jobpilot-layout="desktop"] .jobpilot-progress-nav { border-bottom: 0; border-radius: 0; }
-  [data-jobpilot-layout="desktop"] .jobpilot-stage-plane { will-change: transform, opacity; }
-}
-
-@media (max-width: 1100px) {
-  .jobpilot-story-body { gap: 3rem; }
-  .jobpilot-progress-nav ol { gap: .1rem; }
-}
-
-@media (max-width: 900px) {
-  .jobpilot-story { padding-right: 1.25rem; padding-left: 1.25rem; }
-  .jobpilot-story-intro { grid-template-columns: 1fr; gap: 1.5rem; }
-  .jobpilot-story-lead { margin-left: 0; }
-  .jobpilot-story-body { grid-template-columns: 1fr; gap: 2.8rem; }
-  .jobpilot-story-stage { position: relative; top: auto; }
-  .jobpilot-progress-nav { margin-bottom: 0; }
-  .jobpilot-stage-viewport { min-height: 0; background: transparent; }
-  .jobpilot-stage-note { padding-top: .8rem; }
-  .jobpilot-story-rail { left: 1.48rem; }
-}
-
-@media (max-width: 560px) {
-  .jobpilot-story { padding-top: 6rem; padding-bottom: 5rem; }
-  .jobpilot-story-intro { margin-bottom: 3rem; }
-  .jobpilot-story-intro h2 { font-size: clamp(2.8rem, 14vw, 5rem); }
-  .jobpilot-reel-heading { align-items: flex-start; }
-  .jobpilot-reel-heading > .jobpilot-kicker { max-width: 14rem; font-size: 8px; letter-spacing: .1em; }
-  .jobpilot-motion-toggle { font-size: 8px; padding: .4rem; }
-  .jobpilot-console-heading > p { display: none; }
-  .jobpilot-reel-index { max-width: 19rem; font-size: 8px; line-height: 1.8; }
-  .jobpilot-progress-nav { padding: .8rem .75rem .65rem; }
-  .jobpilot-progress-step { padding-right: .18rem; padding-left: .18rem; letter-spacing: .06em; }
-  .jobpilot-stage-figure { padding: .4rem; border-radius: 1.2rem; }
-  .jobpilot-stage-viewport { border-radius: .9rem; }
-  .jobpilot-stage-caption { margin-top: .55rem; padding: .7rem .75rem; border-radius: .72rem; font-size: 10px; }
-  .jobpilot-chapter { grid-template-columns: 2.75rem minmax(0, 1fr); gap: .75rem; min-height: 0; padding: 4rem 0; }
-  .jobpilot-chapter-marker { width: 2.75rem; height: 2.75rem; }
-  .jobpilot-chapter-marker span { display: none; }
-  .jobpilot-chapter-copy h3 { font-size: 2.1rem; }
-  .jobpilot-inline-figure { grid-column: 1 / -1; }
-  .jobpilot-boundary-route { gap: .4rem; font-size: 8px; }
-  .jobpilot-data-rail { margin-bottom: 1.6rem; }
-  .jobpilot-story-close { align-items: flex-start; border-radius: 1.5rem; padding: .9rem; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .jobpilot-story-body { grid-template-columns: 1fr; }
-  .jobpilot-story-stage { position: relative; top: auto; }
-  .jobpilot-stage-viewport { min-height: 0; background: transparent; }
-  .jobpilot-stage-plane,
-  .jobpilot-inline-media {
-    opacity: 1 !important;
-    clip-path: none !important;
-    transform: none !important;
-  }
-  .jobpilot-stage-caption { position: relative; inset: auto; opacity: 1 !important; transform: none !important; }
-  .jobpilot-chapter,
-  .jobpilot-chapter-copy,
-  .jobpilot-chapter-marker { opacity: 1 !important; transform: none !important; }
-  .jobpilot-progress-track span { transform: scaleX(1) !important; }
-  .jobpilot-story-rail span { transform: scaleY(1) !important; }
-  .jobpilot-boundary-route > i > span { transform: scaleX(1) !important; }
-  .jobpilot-data-flow,
-  .jobpilot-signal-orbit,
-  .jobpilot-signal-runner,
-  .jobpilot-pulse,
-  .jobpilot-command-line > i { animation: none !important; transform: none !important; }
-  .jobpilot-chapter-marker,
-  .jobpilot-chapter-marker::after,
-  .jobpilot-boundary-route > svg,
-  .jobpilot-progress-step,
-  .jobpilot-progress-step > span > svg,
-  .jobpilot-progress-step strong,
-  .jobpilot-motion-toggle { transition: none; }
-}
-
-/* The runtime beam is deliberately layered below the ordered trace.  It is
-   decorative progress, so the nodes remain the source of truth for no-JS and
-   narrow layouts. */
-.jobpilot-runtime-trace-shell {
-  position: relative;
-  min-width: 0;
-}
-
-.jobpilot-runtime-trace-shell .jobpilot-runtime-trace {
-  position: relative;
-  z-index: 1;
-}
-
-.jobpilot-runtime-trace-fill[data-jobpilot-runtime-fill] {
-  position: absolute;
-  z-index: 0;
-  top: 1.35rem;
-  right: 0;
-  left: 0;
-  height: .38rem;
-  border-radius: 999px;
-  background: var(--color-accent);
-  box-shadow: 0 0 .8rem color-mix(in srgb, var(--color-accent) 72%, transparent);
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  will-change: transform;
-}
-
-.jobpilot-runtime-trace-fill[data-jobpilot-runtime-fill]::after {
-  position: absolute;
-  top: 50%;
-  right: -.25rem;
-  width: .7rem;
-  height: .7rem;
+.jobpilot-radar-beacon {
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: var(--color-paper);
-  box-shadow: 0 0 .4rem .15rem var(--color-accent);
-  content: "";
-  transform: translateY(-50%);
+  background: var(--pilot-cyan);
+  box-shadow: 0 0 12px var(--pilot-cyan);
+  animation: pilot-beacon-pulse 1.8s infinite;
 }
 
-.jobpilot-stage-sweep[data-jobpilot-stage-sweep] {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  bottom: 0;
-  left: -18%;
-  width: 18%;
-  border-right: 2px solid var(--color-accent);
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-accent-2) 42%, transparent), transparent);
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(0);
+@keyframes pilot-beacon-pulse {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 18px var(--pilot-cyan); }
+  100% { transform: scale(0.9); opacity: 0.6; }
 }
 
-@keyframes jobpilot-runtime-packet-transit {
-  to { transform: translateX(calc(100% - .38rem)); }
+.jobpilot-hud-title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  [data-jobpilot-motion="enabled"] .jobpilot-runtime-trace-packet {
-    animation: jobpilot-runtime-packet-transit 2.8s linear infinite;
-    animation-play-state: paused;
+.jobpilot-hud-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pilot-cyan);
+}
+
+.jobpilot-hud-heading {
+  font-size: clamp(1.05rem, 1.6vw, 1.4rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin: 0;
+}
+
+.jobpilot-hud-meta {
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .jobpilot-hud-meta {
+    display: flex;
   }
-  [data-jobpilot-ambient="running"] .jobpilot-runtime-trace-packet { animation-play-state: running; }
 }
 
-@media (max-width: 700px) {
-  .jobpilot-runtime-trace-fill[data-jobpilot-runtime-fill] { display: none; }
+.jobpilot-meta-chip {
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  background: rgba(14, 21, 38, 0.75);
+  border: 1px solid var(--pilot-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .jobpilot-runtime-trace-fill[data-jobpilot-runtime-fill] { transform: scaleX(1); }
-  .jobpilot-runtime-trace-packet { animation: none !important; }
-  .jobpilot-stage-sweep[data-jobpilot-stage-sweep] { opacity: 0 !important; transform: none !important; }
+.jobpilot-meta-kicker {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-/* Runtime dashboard: a deliberately different, full-width command surface for the system trace. */
-.jobpilot-runtime-panel {
+.jobpilot-meta-val {
+  font-weight: 600;
+  font-size: 11px;
+}
+
+/* 2. Mode Navigation & Scrub Bar */
+.jobpilot-mode-nav {
   position: relative;
   width: 100%;
-  margin: clamp(2.5rem, 6vw, 5rem) 0 clamp(3rem, 7vw, 6rem);
-  padding: clamp(1.25rem, 3.4vw, 2.6rem);
-  overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--color-paper) 20%, transparent);
-  border-radius: 1.6rem;
-  background: var(--color-ink);
-  color: var(--color-paper);
-  box-shadow: 0 34px 80px -52px color-mix(in srgb, var(--color-ink) 90%, transparent);
-  isolation: isolate;
+  margin-bottom: 0.5rem;
 }
 
-.jobpilot-runtime-panel::before {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image: linear-gradient(color-mix(in srgb, var(--color-paper) 9%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--color-paper) 9%, transparent) 1px, transparent 1px);
-  background-size: 2.5rem 2.5rem;
-  content: "";
-  opacity: .42;
-  pointer-events: none;
-}
-
-.jobpilot-runtime-head {
+.jobpilot-mode-tabs {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 2rem;
-  padding-bottom: 1.7rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-paper) 20%, transparent);
-}
-
-.jobpilot-runtime-kicker {
-  margin: .15rem 0 0;
-  color: var(--color-accent);
-  font: 10px / 1.5 var(--font-mono);
-  letter-spacing: .18em;
-  text-transform: uppercase;
-}
-
-.jobpilot-runtime-state {
-  display: grid;
-  grid-template-columns: auto auto;
   align-items: center;
-  column-gap: .65rem;
-  flex: 0 0 auto;
-  text-align: right;
+  gap: 0.5rem;
+  width: 100%;
+  border-bottom: 1px solid var(--pilot-border);
+  overflow-x: auto;
 }
 
-.jobpilot-runtime-signal {
-  width: .65rem;
-  height: .65rem;
-  border-radius: 50%;
-  background: var(--color-accent);
-  box-shadow: 0 0 0 .35rem color-mix(in srgb, var(--color-accent) 18%, transparent);
-}
-
-.jobpilot-runtime-state h3 {
-  margin: 0;
-  color: var(--color-paper);
-  font-size: clamp(2.8rem, 7vw, 6.5rem);
-  font-weight: 600;
-  letter-spacing: -.09em;
-  line-height: .8;
-}
-
-.jobpilot-runtime-state > span:last-child {
-  grid-column: 2;
-  margin-top: .55rem;
-  color: var(--color-accent-2);
-  font: 9px / 1.5 var(--font-mono);
-  letter-spacing: .12em;
-  text-transform: uppercase;
-}
-
-.jobpilot-runtime-metrics {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: .7rem;
-  margin: 1.4rem 0 2.4rem;
-  padding: 0;
-  list-style: none;
-}
-
-.jobpilot-runtime-metric {
-  display: grid;
-  gap: .65rem;
-  min-width: 0;
-  padding: 1rem 1.05rem;
-  border: 1px solid color-mix(in srgb, var(--color-paper) 18%, transparent);
-  border-radius: .75rem;
-  background: color-mix(in srgb, var(--color-paper) 8%, transparent);
-}
-
-.jobpilot-runtime-metric > span {
-  overflow: hidden;
-  color: color-mix(in srgb, var(--color-paper) 58%, transparent);
-  font: 9px / 1.4 var(--font-mono);
-  letter-spacing: .12em;
-  text-overflow: ellipsis;
-  text-transform: uppercase;
+.jobpilot-mode-tab {
+  flex: 1;
+  min-width: 140px;
+  padding: 0.55rem 0.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  transition: all 0.25s ease;
   white-space: nowrap;
 }
 
-.jobpilot-runtime-metric > strong {
-  overflow-wrap: anywhere;
-  color: var(--color-accent);
-  font-size: clamp(1.15rem, 2vw, 1.65rem);
-  font-weight: 500;
-  letter-spacing: -.045em;
-  line-height: 1;
+.jobpilot-mode-tab:hover {
+  color: #fff;
 }
 
-.jobpilot-runtime-trace {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.jobpilot-mode-tab.is-active {
+  color: #fff;
+  border-bottom-color: var(--pilot-cyan);
+  background: rgba(56, 189, 248, 0.05);
 }
 
-.jobpilot-runtime-trace-step {
+.jobpilot-tab-num {
+  color: var(--pilot-cyan);
+  font-weight: 600;
+}
+
+.jobpilot-tab-code {
+  letter-spacing: 0.08em;
+}
+
+.jobpilot-scrub-bar {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.06);
   position: relative;
-  min-width: 0;
-  padding: .25rem .9rem 0 0;
-  color: color-mix(in srgb, var(--color-paper) 62%, transparent);
-  transition: color .3s ease;
+  overflow: hidden;
+  margin-top: -2px;
 }
 
-.jobpilot-runtime-trace-node {
-  display: grid;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  margin-bottom: 1rem;
-  border: 1px solid color-mix(in srgb, var(--color-paper) 30%, transparent);
-  border-radius: .7rem;
-  background: color-mix(in srgb, var(--color-paper) 10%, transparent);
-  color: var(--color-accent-2);
-  transition: background-color .3s ease, border-color .3s ease, color .3s ease, transform .3s ease;
+.jobpilot-scrub-fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--pilot-cyan), var(--pilot-lime));
+  transform-origin: left;
+  transform: scaleX(0);
 }
 
-.jobpilot-runtime-trace-copy { min-width: 0; }
-
-.jobpilot-runtime-trace-copy h4 {
-  margin: 0 0 .45rem;
-  color: var(--color-paper);
-  font: 600 12px / 1 var(--font-mono);
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  transition: color .3s ease;
+/* 3. Central Panoramic Viewport */
+.jobpilot-viewport-housing {
+  flex: 1;
+  min-height: 380px;
+  position: relative;
+  margin: 0.5rem 0;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 12px;
+  background: rgba(8, 12, 22, 0.88);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8), 0 14px 40px rgba(0, 0, 0, 0.5);
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.03) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
-.jobpilot-runtime-trace-copy p {
+.jobpilot-bracket {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--pilot-cyan);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.jobpilot-bracket.top-left { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+.jobpilot-bracket.top-right { top: 8px; right: 8px; border-left: none; border-bottom: none; }
+.jobpilot-bracket.bottom-left { bottom: 8px; left: 8px; border-right: none; border-top: none; }
+.jobpilot-bracket.bottom-right { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+
+/* Screen Panes */
+.jobpilot-screen-pane {
+  position: absolute;
+  inset: 0;
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: .35rem;
-  min-height: 2.8rem;
-  margin: 0;
-  color: color-mix(in srgb, var(--color-paper) 54%, transparent);
-  font: 10px / 1.5 var(--font-mono);
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
 }
 
-.jobpilot-runtime-trace-copy p > svg { flex: 0 0 auto; color: var(--color-accent-2); }
-.jobpilot-runtime-trace-copy strong { color: var(--color-paper); font-weight: 500; }
-
-.jobpilot-runtime-trace-line {
-  position: absolute;
-  top: 1.5rem;
-  right: .7rem;
-  left: 3.2rem;
-  height: 1px;
-  background: color-mix(in srgb, var(--color-paper) 28%, transparent);
-  transition: background-color .3s ease;
+.jobpilot-screen-pane.is-visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
-.jobpilot-runtime-trace-packet {
+.jobpilot-screen-backdrop {
   position: absolute;
-  top: -.18rem;
-  left: 0;
-  width: .38rem;
-  height: .38rem;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SCREEN 01: Multi-Vector Recon Radar
+   ───────────────────────────────────────────────────────────── */
+.jobpilot-radar-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.jobpilot-radar-grid {
+  position: relative;
+  width: clamp(260px, 40vh, 460px);
+  height: clamp(260px, 40vh, 460px);
+}
+
+.jobpilot-radar-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.radar-ring {
+  fill: none;
+  stroke: rgba(56, 189, 248, 0.16);
+  stroke-width: 1.2px;
+  stroke-dasharray: 4 4;
+}
+
+.radar-axis {
+  stroke: rgba(56, 189, 248, 0.14);
+  stroke-width: 1px;
+}
+
+.radar-sweep-edge {
+  stroke: var(--pilot-cyan);
+  stroke-width: 2.2px;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 8px var(--pilot-cyan));
+}
+
+.radar-sweep-wedge {
+  fill: rgba(56, 189, 248, 0.18);
+}
+
+.jobpilot-blip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(12, 18, 34, 0.94);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 3;
+}
+
+.jobpilot-blip.b1 { top: 22%; left: 58%; }
+.jobpilot-blip.b2 { bottom: 25%; left: 22%; }
+.jobpilot-blip.b3 { top: 56%; right: 15%; }
+
+.jobpilot-crawler-stations {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.jobpilot-station {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(10, 16, 30, 0.92);
+  border: 1px solid var(--pilot-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.jobpilot-station.top-left { top: 16px; left: 16px; }
+.jobpilot-station.top-right { top: 16px; right: 16px; }
+.jobpilot-station.bottom-left { bottom: 16px; left: 16px; }
+.jobpilot-station.bottom-right { bottom: 16px; right: 16px; }
+
+.jobpilot-station strong {
+  display: block;
+  font-size: 11px;
+  color: #fff;
+}
+
+.jobpilot-station span {
+  display: block;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SCREEN 02: Tri-Vector Canonical Collision Reactor
+   ───────────────────────────────────────────────────────────── */
+.jobpilot-collider-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.jobpilot-collision-core {
+  position: relative;
+  width: 100%;
+  max-width: 660px;
+  height: clamp(260px, 42vh, 440px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jobpilot-core-ring {
+  position: absolute;
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
-  background: var(--color-accent);
-  box-shadow: 0 0 0 .2rem color-mix(in srgb, var(--color-accent) 15%, transparent);
-  transition: left .3s ease;
+  border: 2px dashed rgba(163, 230, 53, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  background: radial-gradient(circle, rgba(163, 230, 53, 0.08) 0%, transparent 70%);
 }
 
-.jobpilot-experience[data-jobpilot-active="discover"] .jobpilot-runtime-trace-step:nth-child(1) .jobpilot-runtime-trace-node,
-.jobpilot-experience[data-jobpilot-active="normalize"] .jobpilot-runtime-trace-step:nth-child(2) .jobpilot-runtime-trace-node,
-.jobpilot-experience[data-jobpilot-active="decide"] .jobpilot-runtime-trace-step:nth-child(3) .jobpilot-runtime-trace-node,
-.jobpilot-experience[data-jobpilot-active="operate"] .jobpilot-runtime-trace-step:nth-child(4) .jobpilot-runtime-trace-node {
-  border-color: var(--color-accent);
-  background: var(--color-accent);
-  color: var(--color-ink);
-  transform: translateY(-.6rem) scale(1.08);
+.jobpilot-ring-pulse {
+  position: absolute;
+  inset: -25px;
+  border-radius: 50%;
+  border: 2px solid var(--pilot-lime);
+  opacity: 0;
+  pointer-events: none;
 }
 
-.jobpilot-experience[data-jobpilot-active="discover"] .jobpilot-runtime-trace-step:nth-child(1) .jobpilot-runtime-trace-copy h4,
-.jobpilot-experience[data-jobpilot-active="normalize"] .jobpilot-runtime-trace-step:nth-child(2) .jobpilot-runtime-trace-copy h4,
-.jobpilot-experience[data-jobpilot-active="decide"] .jobpilot-runtime-trace-step:nth-child(3) .jobpilot-runtime-trace-copy h4,
-.jobpilot-experience[data-jobpilot-active="operate"] .jobpilot-runtime-trace-step:nth-child(4) .jobpilot-runtime-trace-copy h4 {
-  color: var(--color-accent);
+.jobpilot-hash-formula {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  color: var(--pilot-lime);
 }
 
-.jobpilot-experience[data-jobpilot-active="discover"] .jobpilot-runtime-trace-step:nth-child(1) .jobpilot-runtime-trace-line,
-.jobpilot-experience[data-jobpilot-active="normalize"] .jobpilot-runtime-trace-step:nth-child(2) .jobpilot-runtime-trace-line,
-.jobpilot-experience[data-jobpilot-active="decide"] .jobpilot-runtime-trace-step:nth-child(3) .jobpilot-runtime-trace-line {
-  background: color-mix(in srgb, var(--color-accent) 72%, transparent);
+.jobpilot-collision-card {
+  position: absolute;
+  width: 200px;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(12, 18, 34, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  font-family: var(--font-mono);
+  z-index: 3;
 }
 
-.jobpilot-experience:not([data-jobpilot-active]) .jobpilot-runtime-trace-step,
-.jobpilot-experience:not([data-jobpilot-active]) .jobpilot-runtime-trace-copy,
-.jobpilot-experience:not([data-jobpilot-active]) .jobpilot-runtime-trace-node { opacity: 1; }
+.jobpilot-collision-card strong {
+  display: block;
+  font-size: 12px;
+  color: #fff;
+  margin-top: 0.3rem;
+}
 
-@media (max-width: 700px) {
-  .jobpilot-runtime-head { gap: 1.25rem; }
-  .jobpilot-runtime-state h3 { font-size: clamp(2.4rem, 11vw, 4.5rem); }
-  .jobpilot-runtime-trace {
-    grid-template-columns: 1fr;
-    gap: 0;
+.jobpilot-collision-card p {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0.15rem 0;
+}
+
+.jobpilot-collision-card .card-loc {
+  font-size: 9px;
+  color: var(--pilot-cyan);
+}
+
+.card-tag {
+  display: inline-block;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.card-left { left: 4%; }
+.card-right { right: 4%; }
+.card-top { top: 6%; }
+
+.jobpilot-canonical-master {
+  position: absolute;
+  z-index: 4;
+  width: 300px;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  background: rgba(11, 22, 17, 0.97);
+  border: 1.5px solid var(--pilot-lime);
+  box-shadow: 0 0 35px rgba(163, 230, 53, 0.22);
+  text-align: left;
+}
+
+.master-header {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pilot-lime);
+  margin-bottom: 0.4rem;
+}
+
+.master-badge {
+  margin-left: auto;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(163, 230, 53, 0.2);
+  font-size: 9px;
+}
+
+.jobpilot-canonical-master h4 {
+  font-size: 13px;
+  color: #fff;
+  margin: 0 0 0.25rem;
+}
+
+.master-hash {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0 0 0.5rem;
+}
+
+.master-lineage {
+  display: flex;
+  gap: 0.65rem;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--pilot-cyan);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SCREEN 03: Fresher Laser Defense Perimeter
+   ───────────────────────────────────────────────────────────── */
+.jobpilot-defense-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.jobpilot-laser-gate {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, var(--pilot-cyan) 20%, var(--pilot-cyan) 80%, transparent);
+  box-shadow: 0 0 16px var(--pilot-cyan);
+  z-index: 3;
+}
+
+.laser-rule-hud {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  background: rgba(10, 16, 30, 0.95);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--pilot-cyan);
+  white-space: nowrap;
+}
+
+.jobpilot-sieve-card {
+  position: absolute;
+  width: 250px;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  background: rgba(12, 18, 34, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: var(--font-mono);
+  z-index: 4;
+}
+
+.card-senior {
+  left: 18%;
+  top: 30%;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.sieve-status.alert {
+  display: inline-block;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(239, 68, 68, 0.2);
+  color: var(--pilot-danger);
+  font-size: 9px;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.jobpilot-sieve-card strong {
+  display: block;
+  font-size: 12px;
+  color: #fff;
+}
+
+.jobpilot-sieve-card p {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0.25rem 0;
+}
+
+.sieve-action {
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.card-fresher {
+  left: 18%;
+  bottom: 22%;
+  border-color: rgba(163, 230, 53, 0.4);
+}
+
+.sieve-status.cleared {
+  display: inline-block;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(163, 230, 53, 0.2);
+  color: var(--pilot-lime);
+  font-size: 9px;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.vector-score-cluster {
+  margin-top: 0.65rem;
+}
+
+.vector-score-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+}
+
+.vector-score-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 0.25rem;
+}
+
+.vector-score-fill {
+  display: block;
+  height: 100%;
+  background: var(--pilot-lime);
+  width: 100%;
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SCREEN 04: Zero-Trust SSRF Gateway & OCI Launchpad
+   ───────────────────────────────────────────────────────────── */
+.jobpilot-launchpad-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.jobpilot-security-shield {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  padding: 1.5rem;
+  border-radius: 14px;
+  background: rgba(10, 16, 32, 0.94);
+  border: 1.5px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.12);
+  z-index: 3;
+}
+
+.shield-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.shield-header h3 {
+  font-size: 13px;
+  color: #fff;
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+.shield-header p {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0.15rem 0 0;
+  font-family: var(--font-mono);
+}
+
+.ssrf-probes-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.ssrf-probe-card {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 8px;
+  background: rgba(16, 24, 46, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.ssrf-probe-card strong {
+  display: block;
+  font-size: 11px;
+  color: #fff;
+}
+
+.ssrf-probe-card span {
+  display: block;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.ssrf-dispatch-beam {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 32px;
+}
+
+.beam-track {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+}
+
+.beam-laser {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--pilot-cyan), var(--pilot-lime));
+  border-radius: 16px;
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+.beam-target {
+  position: relative;
+  z-index: 2;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 12px;
+  background: rgba(10, 16, 30, 0.95);
+  border: 1px solid rgba(163, 230, 53, 0.4);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--pilot-lime);
+}
+
+/* 4. Bottom Tactical Console Footer */
+.jobpilot-console-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--pilot-border);
+}
+
+.jobpilot-footer-telemetry {
+  display: flex;
+  gap: 1.75rem;
+  font-family: var(--font-mono);
+}
+
+.telemetry-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.telemetry-label {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.telemetry-value {
+  font-size: 11px;
+  color: var(--pilot-cyan);
+  font-weight: 600;
+}
+
+.jobpilot-dive-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--pilot-lime);
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(163, 230, 53, 0.3);
+  background: rgba(163, 230, 53, 0.05);
+  transition: all 0.25s ease;
+}
+
+.jobpilot-dive-link:hover {
+  background: rgba(163, 230, 53, 0.15);
+  border-color: var(--pilot-lime);
+  transform: translateY(1px);
+}
+
+/* Mobile Responsive */
+@media (max-width: 1023px) {
+  .jobpilot-theater-stage {
+    padding: 1.25rem 1rem;
   }
-  .jobpilot-runtime-trace-step {
-    display: grid;
-    grid-template-columns: 2.5rem minmax(0, 1fr);
-    column-gap: .85rem;
-    min-height: 5.3rem;
-    padding: 0 0 1.2rem;
+
+  .jobpilot-viewport-housing {
+    min-height: 440px;
   }
-  .jobpilot-runtime-trace-node { grid-column: 1; grid-row: 1; margin: 0; }
-  .jobpilot-runtime-trace-copy { grid-column: 2; grid-row: 1; padding-top: .15rem; }
-  .jobpilot-runtime-trace-line {
-    top: 2.5rem;
-    right: auto;
-    bottom: 0;
-    left: 1.25rem;
-    width: 1px;
-    height: auto;
+
+  .jobpilot-screen-pane {
+    position: static;
+    opacity: 1;
+    pointer-events: auto;
+    min-height: 420px;
+    margin-bottom: 1.5rem;
   }
-  .jobpilot-runtime-trace-packet { top: 0; left: -.18rem; }
+
+  .jobpilot-screen-pane:not(.is-visible) {
+    display: none;
+  }
+
+  .jobpilot-station {
+    padding: 0.35rem 0.5rem;
+    font-size: 9px;
+  }
+
+  .jobpilot-collision-card {
+    width: 160px;
+  }
 }
 
-@media (max-width: 430px) {
-  .jobpilot-runtime-panel { padding: 1rem; border-radius: 1.15rem; }
-  .jobpilot-runtime-head { display: grid; gap: 1.4rem; }
-  .jobpilot-runtime-state { justify-self: start; text-align: left; }
-  .jobpilot-runtime-metrics { grid-template-columns: 1fr; margin-bottom: 2rem; }
-  .jobpilot-runtime-metric { grid-template-columns: 1fr auto; align-items: center; gap: .8rem; }
-  .jobpilot-runtime-metric > strong { text-align: right; }
+/* ==========================================================================
+   JobPilot Case Study Deep-Dive Styles
+   ========================================================================== */
+
+.jobpilot-embedded {
+  border-top: 1px solid var(--pilot-border);
+  background: rgba(6, 9, 19, 0.95);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .jobpilot-runtime-trace-step,
-  .jobpilot-runtime-trace-node,
-  .jobpilot-runtime-trace-copy h4,
-  .jobpilot-runtime-trace-line,
-  .jobpilot-runtime-trace-packet { transition: none; }
+.jobpilot-metric-card {
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: var(--pilot-surface);
+  border: 1px solid var(--pilot-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.jobpilot-metric-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.jobpilot-metric-val {
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  font-weight: 600;
+  color: #fff;
+}
+
+.jobpilot-metric-val.is-cyan {
+  color: var(--pilot-cyan);
+}
+
+.jobpilot-metric-val.is-lime {
+  color: var(--pilot-lime);
+}
+
+.jobpilot-metric-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.jobpilot-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--pilot-surface);
+  border: 1px solid var(--pilot-border);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.jobpilot-tab-btn:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.jobpilot-tab-btn.is-active {
+  color: var(--pilot-cyan);
+  border-color: var(--pilot-cyan);
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.jobpilot-code-window {
+  border-radius: 12px;
+  background: #04060c;
+  border: 1px solid var(--pilot-border);
+  overflow: hidden;
+}
+
+.jobpilot-code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--pilot-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.jobpilot-code-window pre {
+  margin: 0;
+  padding: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  overflow-x: auto;
+}
+
+/* Deduplication Flight Simulator Workbench */
+.jobpilot-workbench {
+  border-radius: 16px;
+  background: var(--pilot-surface);
+  border: 1px solid var(--pilot-border);
+  padding: 1.5rem;
+}
+
+.jobpilot-workbench-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.jobpilot-workbench-head h4 {
+  font-size: 1.1rem;
+  color: #fff;
+  margin: 0;
+}
+
+.jobpilot-workbench-head p {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0.25rem 0 0;
+}
+
+.jobpilot-workbench-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .jobpilot-workbench-grid {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+
+.jobpilot-workbench-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.jobpilot-stream-card {
+  padding: 1rem;
+  border-radius: 10px;
+  background: var(--pilot-elevated);
+  border: 1px solid var(--pilot-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.jobpilot-stream-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.jobpilot-stream-tag.is-cyan { color: var(--pilot-cyan); }
+.jobpilot-stream-tag.is-lime { color: var(--pilot-lime); }
+
+.jobpilot-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.jobpilot-control label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.jobpilot-text-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  background: #060913;
+  border: 1px solid var(--pilot-border);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.jobpilot-text-input:focus {
+  border-color: var(--pilot-cyan);
+}
+
+.jobpilot-hash-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.jobpilot-hash-preview span {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 9px;
+}
+
+.jobpilot-hash-preview code {
+  color: var(--pilot-cyan);
+  background: rgba(56, 189, 248, 0.08);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.jobpilot-slider-box {
+  padding: 1rem;
+  border-radius: 10px;
+  background: var(--pilot-elevated);
+  border: 1px solid var(--pilot-border);
+}
+
+.jobpilot-slider-header {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  margin-bottom: 0.5rem;
+}
+
+.jobpilot-range-slider {
+  width: 100%;
+  accent-color: var(--pilot-cyan);
+}
+
+.jobpilot-dedup-audit {
+  padding: 1.25rem;
+  border-radius: 10px;
+  background: #04060c;
+  border: 1px solid var(--pilot-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.jobpilot-audit-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--pilot-cyan);
+}
+
+.jobpilot-audit-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--pilot-border);
+  border-bottom: 1px solid var(--pilot-border);
+}
+
+.jobpilot-audit-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-family: var(--font-mono);
+}
+
+.jobpilot-audit-stat span {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.jobpilot-audit-stat strong {
+  font-size: 12px;
+}
+
+.jobpilot-audit-terminal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.jobpilot-terminal-line {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Match Scoring Matrix */
+.jobpilot-matrix-box {
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: var(--pilot-surface);
+  border: 1px solid var(--pilot-border);
+}
+
+.jobpilot-radar-dial {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: #04060c;
+  border: 1px solid var(--pilot-border);
+}
+
+/* SSRF Security Harness */
+.jobpilot-ssrf-box {
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: var(--pilot-surface);
+  border: 1px solid var(--pilot-border);
+}
+
+.jobpilot-url-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border-radius: 6px;
+  background: var(--pilot-elevated);
+  border: 1px solid var(--pilot-border);
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.jobpilot-url-btn:hover {
+  border-color: var(--pilot-cyan);
+}
+
+.jobpilot-url-btn.is-active {
+  border-color: var(--pilot-cyan);
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.jobpilot-rule-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.jobpilot-rule-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0.65rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Gallery & Lightbox */
+.jobpilot-gallery-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--pilot-border);
+  background: var(--pilot-surface);
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.jobpilot-gallery-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--pilot-cyan);
+}
+
+.jobpilot-lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.jobpilot-lightbox-content {
+  position: relative;
+  max-width: 1200px;
+  width: 100%;
+  max-height: 90vh;
 }

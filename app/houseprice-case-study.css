@@ -1,12 +1,14 @@
 /* ==========================================================================
-   AI House Price Estimator: The Hyperdimensional Inference Radar
+   AI House Price Estimator: Geospatial Regression & ML Cinematic Story
    Domain: Applied Machine Learning, 8D Spatial Regression, 200 Bagged Trees
-   Palette: Spatial Midnight (#07080d), Electric Cyan (#06b6d4), Neon Violet (#8b5cf6)
+   Palette: Spatial Midnight (#07080d), Electric Cyan (#06b6d4), Neon Violet (#8b5cf6), Vector Emerald (#10b981)
    ========================================================================== */
 
 :root {
   --ml-cyan: #06b6d4;
   --ml-cyan-glow: rgba(6, 182, 212, 0.25);
+  --ml-emerald: #10b981;
+  --ml-emerald-glow: rgba(16, 185, 129, 0.25);
   --ml-violet: #8b5cf6;
   --ml-violet-glow: rgba(139, 92, 246, 0.25);
   --ml-space: #07080d;
@@ -24,55 +26,30 @@
   color: var(--color-fg);
 }
 
-/* ── Pinned ML Radar Stage ── */
-.houseprice-stage-container {
+/* ── Story Header & Introduction ── */
+.houseprice-story {
   position: relative;
   width: 100%;
   max-width: 100%;
-  padding: 2.5rem 1.5rem;
+  padding: 2.5rem 1.5rem 6rem;
   box-sizing: border-box;
   overflow-x: clip;
 }
 
-.houseprice-radar-stage {
-  position: relative;
-  width: 100%;
+.houseprice-reel-heading {
   max-width: 1360px;
-  max-height: calc(100vh - 90px);
-  margin: 0 auto;
-  border-radius: 28px;
-  background: radial-gradient(130% 130% at 50% 0%, #111422 0%, var(--ml-space) 100%);
-  border: 1px solid var(--ml-border);
-  box-shadow: 0 30px 90px -40px rgba(0, 0, 0, 0.85), 0 0 50px -10px var(--ml-cyan-glow);
-  padding: clamp(1.25rem, 2vw, 2.25rem);
-  box-sizing: border-box;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  margin: 0 auto 1.5rem;
 }
 
-/* Radar Header Telemetry */
-.houseprice-radar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-  padding-bottom: 1.5rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--ml-border);
-}
-
-.houseprice-telemetry-pill {
+.houseprice-kicker {
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
   font-family: var(--font-mono);
   font-size: 11px;
-  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--color-fg-muted);
+  letter-spacing: 0.12em;
+  color: var(--ml-cyan);
 }
 
 .houseprice-radar-pulse {
@@ -80,7 +57,7 @@
   height: 8px;
   border-radius: 50%;
   background: var(--ml-cyan);
-  box-shadow: 0 0 12px var(--ml-cyan);
+  box-shadow: 0 0 10px var(--ml-cyan);
   animation: ml-radar-ping 2s infinite ease-in-out;
 }
 
@@ -89,189 +66,397 @@
   50% { opacity: 0.35; transform: scale(0.8); }
 }
 
-/* Dual Column Layout */
-.houseprice-radar-grid {
+.houseprice-story-intro {
+  max-width: 1360px;
+  margin: 0 auto 3rem;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2.5rem;
-  align-items: center;
+  gap: 1.5rem;
 }
 
 @media (min-width: 1024px) {
-  .houseprice-radar-grid {
-    grid-template-columns: 1.05fr 1.15fr;
-    gap: 3.5rem;
+  .houseprice-story-intro {
+    grid-template-columns: 1.2fr 1fr;
+    gap: 4rem;
+    align-items: end;
   }
 }
 
-/* ── Left: ML Coordinates Stepper ── */
-.houseprice-phase-stepper {
-  position: relative;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
+.houseprice-story-intro h2 {
+  font-size: clamp(2rem, 5vw, 4.25rem);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--color-fg);
 }
 
-.houseprice-stepper-btn {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.9rem;
-  padding: 0.75rem 1rem;
-  border-radius: 14px;
+.houseprice-story-intro h2 span {
+  color: var(--ml-cyan);
+}
+
+.houseprice-reel-index {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-fg-subtle);
+  margin-top: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.houseprice-story-lead {
+  font-size: clamp(1rem, 1.25vw, 1.2rem);
+  color: var(--color-fg-muted);
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+/* ── Horizontal Pipeline Trace Panel ── */
+.houseprice-runtime-panel {
+  max-width: 1360px;
+  margin: 0 auto 4rem;
+  padding: 1.5rem 1.75rem;
+  border-radius: 20px;
   background: var(--ml-surface);
   border: 1px solid var(--ml-border);
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.houseprice-stepper-btn:hover {
-  background: var(--ml-elevated);
-  border-color: rgba(255, 255, 255, 0.16);
+.houseprice-runtime-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--ml-border);
+  margin-bottom: 1.25rem;
 }
 
-.houseprice-stepper-btn.is-active {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(22, 25, 38, 0.9) 100%);
-  border-color: var(--ml-cyan);
-  box-shadow: 0 10px 30px -10px var(--ml-cyan-glow);
-}
-
-.houseprice-step-number {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
-  padding: 0.35rem 0.6rem;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--ml-border);
-  color: var(--color-fg-muted);
-  transition: all 0.25s ease;
-}
-
-.houseprice-stepper-btn.is-active .houseprice-step-number {
-  background: var(--ml-cyan);
-  border-color: var(--ml-cyan);
-  color: #000;
-}
-
-.houseprice-step-content {
-  flex: 1;
-}
-
-.houseprice-step-title {
+.houseprice-runtime-head h3 {
   font-size: 1.15rem;
   font-weight: 500;
   color: var(--color-fg);
-  margin-bottom: 0.35rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  margin-top: 0.2rem;
 }
 
-.houseprice-step-metric {
+.houseprice-runtime-head p {
   font-family: var(--font-mono);
-  font-size: 10px;
-  padding: 0.2rem 0.5rem;
-  border-radius: 6px;
-  background: rgba(6, 182, 212, 0.15);
-  color: var(--ml-cyan);
-  border: 1px solid rgba(6, 182, 212, 0.3);
+  font-size: 11px;
+  color: var(--color-fg-subtle);
 }
 
-.houseprice-step-desc {
-  font-size: 0.88rem;
-  color: var(--color-fg-muted);
-  line-height: 1.6;
-}
-
-/* Feature Vector Bars HUD */
-.houseprice-feature-matrix {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.5rem 0.85rem;
-  margin-top: 0.75rem;
-  padding: 0.75rem 0.9rem;
-  background: #040508;
-  border-radius: 12px;
-  border: 1px solid var(--ml-border);
-}
-
-.houseprice-feature-cell {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--color-fg-muted);
-}
-
-.houseprice-feature-cell strong {
-  color: var(--ml-cyan);
-}
-
-/* ── Right: Geospatial Telemetry & Valuation Dial ── */
-.houseprice-hud-container,
-.houseprice-stage-viewport {
+.houseprice-runtime-trace-shell {
   position: relative;
   width: 100%;
-  z-index: 2;
-  overflow: hidden;
-  isolation: isolate;
 }
 
-.houseprice-hud-shell {
+.houseprice-runtime-trace {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.25rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .houseprice-runtime-trace {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+.houseprice-runtime-trace-step {
   position: relative;
-  border-radius: 24px;
-  background: #0a0d16;
-  border: 1px solid var(--ml-border);
-  box-shadow: 0 25px 60px -25px rgba(0, 0, 0, 0.9);
-  padding: 1.25rem;
-  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
 }
 
-.houseprice-hud-topbar {
+.houseprice-runtime-trace-node {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ml-cyan);
+  flex-shrink: 0;
+}
+
+.houseprice-runtime-trace-copy h4 {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-fg);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.25rem;
+}
+
+.houseprice-runtime-trace-copy p {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--color-fg-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.houseprice-runtime-trace-copy strong {
+  color: var(--ml-cyan);
+}
+
+.houseprice-runtime-trace-line {
+  position: absolute;
+  top: 16px;
+  left: calc(100% + 0.5rem);
+  width: calc(1.5rem - 1rem);
+  height: 1px;
+  background: var(--ml-border);
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .houseprice-runtime-trace-line {
+    display: block;
+  }
+}
+
+.houseprice-runtime-trace-fill {
+  position: absolute;
+  bottom: -0.75rem;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--ml-cyan), var(--ml-emerald));
+  transform-origin: left center;
+  transform: scaleX(0);
+  border-radius: 999px;
+  box-shadow: 0 0 12px var(--ml-cyan-glow);
+}
+
+/* ── Story Body Layout ── */
+.houseprice-story-body {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (min-width: 901px) {
+  .houseprice-story-body {
+    grid-template-columns: minmax(0, 580px) minmax(0, 1fr);
+    gap: 4.5rem;
+  }
+}
+
+/* ── Left Column: Sticky Cinematic Stage Console ── */
+.houseprice-story-stage {
+  position: relative;
+  width: 100%;
+}
+
+@media (min-width: 901px) {
+  .houseprice-story-stage {
+    position: sticky;
+    top: 96px;
+    z-index: 20;
+    max-height: calc(100vh - 120px);
+  }
+}
+
+.houseprice-console-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  background: var(--ml-surface);
+  border: 1px solid var(--ml-border);
   margin-bottom: 1rem;
-  border-bottom: 1px solid var(--ml-border);
 }
 
-.houseprice-viewport-screen {
+.houseprice-signal-reticle {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.houseprice-reticle-rings {
+  width: 100%;
+  height: 100%;
+}
+
+.houseprice-r2-dial {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Progress Navigation Bar */
+.houseprice-progress-nav {
+  padding: 0.85rem 1.25rem;
+  border-radius: 14px;
+  background: rgba(15, 17, 26, 0.75);
+  border: 1px solid var(--ml-border);
+  margin-bottom: 1rem;
+}
+
+.houseprice-progress-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-fg-subtle);
+  margin-bottom: 0.5rem;
+}
+
+.houseprice-progress-track {
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.houseprice-progress-track span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--ml-cyan), var(--ml-emerald));
+  transform-origin: 0% 50%;
+  transform: scaleX(0);
+}
+
+.houseprice-progress-nav ol {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.houseprice-progress-step {
+  display: flex;
+  flex-direction: column;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.houseprice-progress-step span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--color-fg-subtle);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.houseprice-progress-step strong {
+  font-size: 10px;
+  color: var(--color-fg-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0.15rem;
+}
+
+.houseprice-progress-step.is-active {
+  background: rgba(6, 182, 212, 0.12);
+  border-color: rgba(6, 182, 212, 0.4);
+}
+
+.houseprice-progress-step.is-active strong {
+  color: var(--ml-cyan);
+}
+
+/* ── 3D Perspective Screen Viewport ── */
+.houseprice-stage-figure {
+  position: relative;
+  border-radius: 20px;
+  background: #05070e;
+  border: 1px solid var(--ml-border);
+  box-shadow: 0 25px 70px -30px rgba(0, 0, 0, 0.9), 0 0 40px -15px var(--ml-cyan-glow);
+  padding: 1.15rem;
+  overflow: hidden;
+}
+
+.houseprice-console-boundary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--ml-border);
+  color: var(--color-fg-subtle);
+}
+
+.houseprice-console-boundary strong {
+  color: var(--color-fg);
+  letter-spacing: 0.05em;
+}
+
+.houseprice-3d-viewport {
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 10;
-  border-radius: 16px;
+  border-radius: 14px;
   overflow: hidden;
   border: 1px solid var(--ml-border);
-  background: #040508;
+  background: #030407;
   contain: paint;
+  margin: 0.85rem 0;
+  perspective: 1400px;
+  transform-style: preserve-3d;
 }
 
-.houseprice-display-screen-layer {
+/* Laser Scan Line */
+.houseprice-laser-scan {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  opacity: 0;
-  visibility: hidden;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #06b6d4 20%, #38bdf8 50%, #06b6d4 80%, transparent);
+  box-shadow: 0 0 16px 2px #06b6d4;
+  z-index: 30;
   pointer-events: none;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  contain: paint;
+  opacity: 0;
 }
 
-.houseprice-display-screen-layer.is-active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+/* Anamorphic Stage Sweep Light Beam */
+.houseprice-stage-sweep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 120px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.35) 45%, rgba(255, 255, 255, 0.6) 50%, rgba(6, 182, 212, 0.35) 55%, transparent);
+  transform: skewX(-24deg);
+  pointer-events: none;
+  z-index: 31;
+  opacity: 0;
 }
 
-/* Topographic & Crosshair Overlay */
-.houseprice-crosshair-overlay {
+/* Topographic Contour Overlay */
+.houseprice-contour-overlay {
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -280,76 +465,351 @@
     radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 65%),
     linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 100% 100%, 30px 30px, 30px 30px;
+  background-size: 100% 100%, 28px 28px, 28px 28px;
 }
 
-/* Floating Valuation Hologram - Positioned at bottom-right inside viewport screen, avoiding topbar */
-.houseprice-valuation-badge {
+/* SVG Decision Tree Split Overlay */
+.houseprice-tree-svg {
   position: absolute;
-  bottom: 12px;
-  right: 12px;
-  background: rgba(11, 16, 29, 0.94);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 22;
+  opacity: 0.75;
+}
+
+/* 3D Perspective Plane Stack */
+.houseprice-stage-media-stack {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  perspective: 1400px;
+  transform-style: preserve-3d;
+}
+
+.houseprice-stage-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  margin: 0;
+}
+
+.houseprice-stage-media.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.houseprice-stage-plane {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.houseprice-plane-viewport {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  contain: paint;
+}
+
+.houseprice-stage-caption {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-fg-muted);
+  background: rgba(7, 10, 18, 0.92);
+  backdrop-filter: blur(8px);
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid var(--ml-border);
+  z-index: 25;
+}
+
+/* Floating Decision Rule Chip */
+.houseprice-hud-chip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(7, 10, 18, 0.94);
+  backdrop-filter: blur(10px);
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(6, 182, 212, 0.4);
+  box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.7);
+  z-index: 25;
+  font-family: var(--font-mono);
+}
+
+/* Floating Valuation Badge */
+.houseprice-hud-valuation {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(7, 10, 18, 0.94);
   backdrop-filter: blur(12px);
-  color: #fff;
   padding: 0.65rem 0.95rem;
   border-radius: 10px;
-  border: 1px solid var(--ml-cyan);
-  box-shadow: 0 10px 25px -5px var(--ml-cyan-glow);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.85);
+  z-index: 25;
   font-family: var(--font-mono);
-  font-size: 9.5px;
-  z-index: 10;
-  pointer-events: none;
 }
 
-@media (max-width: 1023px) {
-  .houseprice-valuation-badge {
-    position: relative;
-    bottom: auto;
-    right: auto;
-    margin-top: 1rem;
-    margin-bottom: 0;
-    width: 100%;
-    max-width: 260px;
-    pointer-events: auto;
-  }
-
-  .houseprice-experience,
-  .houseprice-stage-container,
-  .houseprice-radar-stage,
-  .houseprice-hud-container,
-  .houseprice-stage-viewport {
-    max-width: 100vw;
-    overflow-x: hidden;
-  }
-}
-
-.houseprice-valuation-amount {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--ml-cyan);
-  margin-top: 0.2rem;
-  letter-spacing: -0.02em;
-}
-
-/* ── Deep Dive Architecture Section ── */
-.houseprice-architecture-deck {
-  padding: clamp(4rem, 8vw, 8rem) 0;
+.houseprice-stage-note {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--color-fg-subtle);
+  padding-top: 0.75rem;
   border-top: 1px solid var(--ml-border);
 }
 
-.houseprice-node-card {
-  padding: 2.25rem;
-  border-radius: 20px;
-  background: var(--ml-surface);
+/* ── Right Column: Scrolling Narrative Chapters ── */
+.houseprice-chapters {
+  position: relative;
+  width: 100%;
+}
+
+.houseprice-story-rail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -2rem;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  display: none;
+}
+
+@media (min-width: 901px) {
+  .houseprice-story-rail {
+    display: block;
+  }
+}
+
+.houseprice-story-rail span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, var(--ml-cyan), var(--ml-emerald));
+  transform-origin: 50% 0%;
+  transform: scaleY(0);
+}
+
+.houseprice-chapter {
+  position: relative;
+  min-height: 70vh;
+  padding: 3rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.houseprice-chapter-marker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.houseprice-marker-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ml-cyan);
+  box-shadow: 0 0 8px var(--ml-cyan);
+}
+
+.houseprice-chapter-copy h3 {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 300;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-fg);
+  margin-bottom: 1rem;
+}
+
+/* Boundary Route Trace Box */
+.houseprice-boundary-route {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.15rem;
+  border-radius: 12px;
+  background: rgba(6, 182, 212, 0.06);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-fg-muted);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+
+.houseprice-boundary-route strong {
+  color: var(--color-fg);
+}
+
+.houseprice-boundary-route i {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.houseprice-boundary-route i span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--ml-cyan);
+  transform-origin: 0% 50%;
+  transform: scaleX(0);
+}
+
+.houseprice-contract-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.houseprice-contract-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--color-fg-subtle);
+}
+
+.houseprice-feature-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.houseprice-mini-chip {
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--ml-border);
-  transition: all 0.3s ease;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--color-fg-subtle);
 }
 
-.houseprice-node-card:hover {
-  border-color: var(--ml-border-strong);
-  transform: translateY(-3px);
+.houseprice-mini-chip strong {
+  color: var(--ml-cyan);
 }
 
+/* Mobile Inline Figure */
+.houseprice-inline-figure {
+  margin-top: 2rem;
+  display: block;
+}
+
+@media (min-width: 901px) {
+  .houseprice-inline-figure {
+    display: none;
+  }
+}
+
+/* ── Interactive Simulator Deck ── */
+.houseprice-preset-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--ml-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-fg-muted);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.houseprice-preset-chip:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.houseprice-preset-chip.is-active {
+  background: rgba(6, 182, 212, 0.12);
+  border-color: var(--ml-cyan);
+  color: var(--ml-cyan);
+}
+
+.houseprice-slider-row {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--ml-border);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+}
+
+.houseprice-range-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+  accent-color: var(--ml-cyan);
+  cursor: pointer;
+}
+
+.houseprice-vector-readout {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem 1rem;
+  padding: 0.75rem 1rem;
+  background: #040508;
+  border-radius: 10px;
+  border: 1px solid var(--ml-border);
+}
+
+.houseprice-vector-cell {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-fg-muted);
+}
+
+.houseprice-vector-cell strong {
+  color: var(--ml-cyan);
+}
+
+.houseprice-valuation-box {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  box-shadow: 0 10px 30px -10px var(--ml-cyan-glow);
+}
+
+/* ── Deep Dive Architecture & Case Study Section ── */
 .houseprice-benchmark-bar {
   height: 8px;
   border-radius: 999px;
@@ -366,7 +826,6 @@
   transition: width 1s ease-out;
 }
 
-/* ── Benchmark & Model Matrix ── */
 .houseprice-benchmark-card {
   padding: 1.5rem;
   border-radius: 16px;
