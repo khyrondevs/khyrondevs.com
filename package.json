@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --no-warnings --experimental-strip-types --test tests/crypto-security.test.ts tests/email-templates.test.ts tests/contact-validation.test.ts tests/route-crawler.test.ts",
     "email:sync": "node --no-warnings --experimental-strip-types scripts/sync-brevo-templates.ts",
     "email:test": "node --no-warnings --experimental-strip-types scripts/test-email-pipeline.ts"
   },
