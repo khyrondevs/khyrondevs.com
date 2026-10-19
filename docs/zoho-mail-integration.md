@@ -42,9 +42,29 @@ Reply-To: enquiries@khyrondevs.com    Reply-To: enquirer's email
 
 ---
 
-## 3. Occasion 3: Zoho Mail 1-Click Template Setup
+## 3. Replying to Inquiries: Two Simple Workflows
 
-To send beautifully styled responses directly from **Zoho Mail**:
+When a developer receives an inquiry in Zoho Mail, there are two ways to reply:
+
+### Workflow A (Recommended): 1-Click Branded Reply Studio
+Standard email clients (Zoho Mail, Gmail) cannot automatically wrap your raw typed replies in custom HTML templates. To make replying effortless:
+1. Open the inquiry in Zoho Mail.
+2. Click the prominent button at the bottom: **`⚡ Open 1-Click Reply Studio (Template 3)`**.
+3. A private Studio page opens with the client's information pre-filled.
+4. Select or enter your name and title (e.g., *Vittal Shenoy • Principal Systems Architect*).
+5. Pick a quick preset or type your response.
+6. Click **`Dispatch Branded Reply`**.
+7. The system calls Brevo API (`POST /v3/smtp/email`) and delivers **Template 3** directly to the client with your signature and their original inquiry dossier attached!
+
+---
+
+### Workflow B: Direct Reply inside Zoho Mail Webmail
+If you prefer to reply directly inside Zoho Mail:
+1. Open the inquiry in Zoho Mail and click **Reply**.
+2. Because Template 2 is designed with a **Quote-Safe Dossier**, the quoted text below your reply will cleanly display only the client's recorded project scope and budget (no internal developer telemetry or buttons).
+3. Optionally, you can insert the pre-saved **Zoho Mail Template** below to wrap your response in full branding:
+
+#### Setup: 1-Click Template in Zoho Mail
 
 ### Step 1: Create the Template in Zoho Mail
 1. Open [Zoho Mail](https://mail.zoho.com).

@@ -190,6 +190,21 @@ export function renderClientConfirmationEmail(payload: ContactPayload): string {
 // ─────────────────────────────────────────────────────────────────────────────
 // OCCASION 2: DEV TEAM INTAKE DOSSIER (ZOHO MAIL GROUP)
 // ─────────────────────────────────────────────────────────────────────────────
+function makeStudioUrl(p: ContactPayload): string {
+  if (p.name.includes('{{')) {
+    return 'https://khyrondevs.com/reply?name={{ params.CLIENT_NAME }}&email={{ params.CLIENT_EMAIL }}&company={{ params.CLIENT_COMPANY }}&budget={{ params.BUDGET }}&currency={{ params.CURRENCY }}&phone={{ params.CLIENT_PHONE }}&message={{ params.MESSAGE }}'
+  }
+  const params = new URLSearchParams()
+  if (p.name) params.set('name', p.name.trim())
+  if (p.email) params.set('email', p.email.trim())
+  if (p.company) params.set('company', p.company.trim())
+  if (p.budget) params.set('budget', p.budget.trim())
+  if (p.currency) params.set('currency', p.currency.trim())
+  if (p.phone) params.set('phone', p.phone.trim())
+  if (p.message) params.set('message', p.message.trim())
+  return `https://khyrondevs.com/reply?${params.toString()}`
+}
+
 export function renderTeamNotificationEmail(payload: ContactPayload): string {
   const safeName = escapeHtml(payload.name.trim())
   const safeEmail = escapeHtml(payload.email.trim())
@@ -202,6 +217,7 @@ export function renderTeamNotificationEmail(payload: ContactPayload): string {
   const safeCurrency = payload.currency?.trim() ? escapeHtml(payload.currency.trim()) : 'INR'
   const safeMessage = escapeHtml(payload.message.trim()).replace(/\n/g, '<br/>')
   const { istTime, gmtTime } = formatTimestamps()
+  const replyStudioUrl = makeStudioUrl(payload)
 
   return `<!DOCTYPE html>
 <html>
@@ -213,23 +229,28 @@ export function renderTeamNotificationEmail(payload: ContactPayload): string {
 <body style="margin: 0; padding: 24px 12px; background-color: #07080d; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #f1f5f9; -webkit-font-smoothing: antialiased;">
   <div style="max-width: 620px; margin: 0 auto; background: #0f121d; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);">
 
-    <!-- Header -->
-    <div style="background: linear-gradient(135deg, #0f172a 0%, #0369a1 100%); padding: 24px 32px; border-bottom: 1px solid rgba(255, 255, 255, 0.12);">
-      <div style="margin-bottom: 8px;">
-        <span style="font-family: monospace; font-size: 11px; font-weight: 700; background: rgba(56, 189, 248, 0.2); color: #38bdf8; padding: 4px 10px; border-radius: 4px; border: 1px solid rgba(56, 189, 248, 0.35); text-transform: uppercase; letter-spacing: 0.08em;">
-          KHYRON DEVS &bull; INTAKE RADAR
-        </span>
-        <span style="font-family: monospace; font-size: 11px; color: #bae6fd; margin-left: 10px;">
-          PRIORITY: HIGH
-        </span>
-      </div>
-      <h1 style="font-size: 21px; font-weight: 700; color: #ffffff; margin: 8px 0 0 0; letter-spacing: -0.01em;">
-        New Client Inquiry: ${safeName}
-      </h1>
-      <div style="font-size: 12px; color: #93c5fd; font-family: monospace; margin-top: 4px;">
-        Entity: ${safeCompany} &bull; Budget: ${safeBudget} (${safeCurrency})
-      </div>
-    </div>
+    <!-- Header: Solid, high-contrast, bulletproof across all email clients including Zoho Mail -->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#090e17" style="background-color: #090e17 !important; border-bottom: 2px solid #0284c7;">
+      <tr>
+        <td style="padding: 26px 32px; background-color: #090e17 !important;">
+          <div style="margin-bottom: 8px;">
+            <span style="font-family: monospace; font-size: 11px; font-weight: 700; background-color: #0284c7 !important; color: #ffffff !important; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.08em; display: inline-block;">
+              KHYRON DEVS &bull; CLIENT ADMISSIONS
+            </span>
+          </div>
+          <h1 style="margin: 6px 0 0 0; font-size: 21px; font-weight: 700; line-height: 1.3;">
+            <span style="color: #ffffff !important; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+              Client Project Brief: ${safeName}
+            </span>
+          </h1>
+          <div style="margin-top: 6px; font-size: 13px; font-family: monospace;">
+            <span style="color: #38bdf8 !important;">
+              Entity: ${safeCompany} &bull; Budget: ${safeBudget} (${safeCurrency})
+            </span>
+          </div>
+        </td>
+      </tr>
+    </table>
 
     <!-- Content Table -->
     <div style="padding: 28px 32px; background-color: #0f121d;">
@@ -245,9 +266,9 @@ export function renderTeamNotificationEmail(payload: ContactPayload): string {
           </td>
         </tr>
         <tr>
-          <td style="padding: 9px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.06em; color: #94a3b8;">Phone / WhatsApp:</td>
+          <td style="padding: 9px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.06em; color: #94a3b8;">Phone / Contact:</td>
           <td style="padding: 9px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); font-size: 14px; color: #ffffff;">
-            ${safePhone ? `<a href="tel:${cleanPhone}" style="color: #38bdf8; text-decoration: underline; font-weight: 600;">${safePhone}</a> &bull; <a href="https://wa.me/${waNumber}" target="_blank" style="display: inline-block; background: #22c55e; color: #ffffff; text-decoration: none; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-left: 6px;">💬 Chat on WhatsApp</a>` : '<span style="color: #64748b;">Not provided</span>'}
+            ${safePhone ? `<a href="tel:${cleanPhone}" style="color: #38bdf8; text-decoration: underline; font-weight: 600;">${safePhone}</a>` : '<span style="color: #64748b;">Not provided</span>'}
           </td>
         </tr>
         <tr>
@@ -269,24 +290,40 @@ export function renderTeamNotificationEmail(payload: ContactPayload): string {
       </table>
 
       <!-- Project Scope Section -->
-      <div style="margin-bottom: 22px;">
-        <div style="font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.06em; color: #94a3b8; margin-bottom: 6px;">
+      <div style="margin-bottom: 24px;">
+        <div style="font-size: 11px; font-family: monospace; text-transform: uppercase; letter-spacing: 0.06em; color: #94a3b8; margin-bottom: 8px;">
           Submitted Project Scope &amp; Brief:
         </div>
-        <div style="background: #07090e; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 3px solid #38bdf8; border-radius: 8px; padding: 18px; font-size: 14px; line-height: 1.6; color: #e2e8f0;">
+        <div style="background-color: #07090e; border: 1px solid rgba(255, 255, 255, 0.1); border-left: 3px solid #38bdf8; border-radius: 8px; padding: 18px; font-size: 14px; line-height: 1.6; color: #e2e8f0;">
           ${safeMessage}
         </div>
       </div>
 
-      <!-- Quick Action Instructions for Devs -->
-      <div style="background: rgba(56, 189, 248, 0.06); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 8px; padding: 14px; font-size: 12px; color: #bae6fd; line-height: 1.5;">
-        <strong>⚡ Team Reply Action:</strong> Hitting <strong>&ldquo;Reply&rdquo;</strong> in Zoho Mail will address your response directly to <code style="color: #38bdf8; font-family: monospace;">${safeEmail}</code>. The client has already received their automated Template 01 confirmation.
+      <!-- Developer Actions: 1-Click Template 3 Studio -->
+      <div style="background-color: #060912; border: 1px solid rgba(56, 189, 248, 0.28); border-radius: 10px; padding: 20px; text-align: center; margin-top: 24px;">
+        <div style="font-family: monospace; font-size: 11px; font-weight: 700; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;">
+          ⚡ KHYRON DEVS &bull; DISPATCH ACTIONS
+        </div>
+        <div style="font-size: 13px; color: #cbd5e1; margin-bottom: 16px; line-height: 1.5;">
+          Dispatch an official response wrapped in <strong>Template 3</strong> with the inquiry dossier attached:
+        </div>
+        <div>
+          <a href="${replyStudioUrl}" target="_blank" style="display: inline-block; background-color: #0284c7; color: #ffffff !important; text-decoration: none; font-weight: 600; font-size: 13px; padding: 12px 24px; border-radius: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);">
+            ⚡ Open 1-Click Reply Studio (Template 3) &rarr;
+          </a>
+        </div>
+        ${safePhone ? `
+        <div style="margin-top: 14px; font-size: 12px;">
+          <a href="https://wa.me/${waNumber}" target="_blank" style="color: #22c55e; text-decoration: underline; font-family: monospace;">
+            💬 Or Chat on WhatsApp with ${safeName} &rarr;
+          </a>
+        </div>` : ''}
       </div>
     </div>
 
     <!-- Footer -->
-    <div style="padding: 18px 32px; background: #07090e; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 11px; color: #64748b; font-family: monospace;">
-      Delivered via Brevo REST API &bull; Destination: Zoho Mail (${safeCurrency} Pipeline) &bull; Khyron Devs
+    <div style="padding: 18px 32px; background-color: #060810; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 11px; color: #64748b; font-family: monospace; text-align: center;">
+      Khyron Devs &bull; High-Performance Web &amp; Distributed Systems Studio &bull; <a href="https://khyrondevs.com" style="color: #38bdf8; text-decoration: none;">khyrondevs.com</a>
     </div>
   </div>
 </body>

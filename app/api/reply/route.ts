@@ -1,0 +1,115 @@
+import { NextResponse } from 'next/server'
+import { renderDeveloperReplyEmail } from '@/lib/email-templates'
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+}
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const {
+      clientName,
+      clientEmail,
+      clientPhone,
+      clientCompany,
+      budget,
+      currency,
+      message,
+      replyMessage,
+      devName = 'Vittal Shenoy',
+      devRole = 'Principal Systems Architect',
+    } = body
+
+    if (!clientEmail || !isValidEmail(clientEmail.trim())) {
+      return NextResponse.json({ error: 'Valid client email is required.' }, { status: 400 })
+    }
+    if (!replyMessage || replyMessage.trim().length < 5) {
+      return NextResponse.json({ error: 'Please enter a reply message of at least 5 characters.' }, { status: 400 })
+    }
+
+    const apiKey = process.env.BREVO_API_KEY
+    const senderEmail = process.env.BREVO_SENDER_EMAIL || 'enquiries@khyrondevs.com'
+    const teamRecipient = process.env.CONTACT_RECIPIENT_EMAIL || 'enquiries@khyrondevs.com'
+    const trimmedDevName = (devName || 'Khyron Devs Lead').trim()
+    const trimmedDevRole = (devRole || 'Principal Systems Architect').trim()
+
+    const subject = `Re: Project Brief Discussion // Khyron Devs`
+    const replyPayload: Record<string, unknown> = {
+      sender: { name: `${trimmedDevName} // Khyron Devs`, email: senderEmail },
+      to: [{ email: clientEmail.trim(), name: (clientName || 'Valued Client').trim() }],
+      replyTo: { email: teamRecipient, name: 'Khyron Devs Team' },
+      subject,
+    }
+
+    const replyTemplateId = Number(process.env.BREVO_REPLY_TEMPLATE_ID)
+    if (!Number.isNaN(replyTemplateId) && replyTemplateId > 0) {
+      replyPayload.templateId = replyTemplateId
+      replyPayload.params = {
+        CLIENT_NAME: (clientName || 'Valued Client').trim(),
+        CLIENT_EMAIL: clientEmail.trim(),
+        CLIENT_PHONE: clientPhone?.trim() || 'Not provided',
+        CLIENT_COMPANY: clientCompany?.trim() || 'Direct / Individual',
+        CURRENCY: currency || 'INR',
+        BUDGET: budget || 'Flexible',
+        ORIGINAL_MESSAGE: message || 'N/A',
+        REPLY_MESSAGE: replyMessage.trim().replace(/\n/g, '<br/>'),
+        DEV_NAME: trimmedDevName,
+        DEV_ROLE: trimmedDevRole,
+      }
+    } else {
+      replyPayload.htmlContent = renderDeveloperReplyEmail(
+        {
+          name: clientName || 'Valued Client',
+          email: clientEmail,
+          phone: clientPhone,
+          company: clientCompany,
+          budget,
+          currency,
+          message: message || '',
+        },
+        replyMessage,
+        trimmedDevName,
+        trimmedDevRole
+      )
+    }
+
+    if (!apiKey) {
+      console.warn('[REPLY API] BREVO_API_KEY not configured. Simulating reply dispatch.')
+      return NextResponse.json({
+        success: true,
+        simulated: true,
+        message: 'Reply simulated (no Brevo API key configured).',
+      })
+    }
+
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'api-key': apiKey,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify(replyPayload),
+    })
+
+    if (!res.ok) {
+      const errorText = await res.text()
+      console.error('[REPLY API] Brevo dispatch failed:', res.status, errorText)
+      return NextResponse.json(
+        { error: `Brevo dispatch failed: ${res.statusText}`, detail: errorText },
+        { status: 502 }
+      )
+    }
+
+    const resData = (await res.json()) as { messageId?: string }
+    return NextResponse.json({
+      success: true,
+      messageId: resData.messageId,
+      message: 'Branded developer reply (Template 3) successfully delivered.',
+    })
+  } catch (err) {
+    console.error('[REPLY API] Unhandled exception:', err)
+    return NextResponse.json({ error: 'Failed to dispatch reply.' }, { status: 500 })
+  }
+}
