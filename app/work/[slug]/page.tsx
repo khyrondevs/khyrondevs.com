@@ -19,7 +19,11 @@ export async function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }))
 }
 
-export async function generateMetadata(props: PageProps<'/work/[slug]'>): Promise<Metadata> {
+interface CaseStudyPageProps {
+  params: Promise<{ slug: string }>
+}
+
+export async function generateMetadata(props: CaseStudyPageProps): Promise<Metadata> {
   const { slug } = await props.params
   const project = getProjectBySlug(slug)
   return {
@@ -28,7 +32,7 @@ export async function generateMetadata(props: PageProps<'/work/[slug]'>): Promis
   }
 }
 
-export default async function CaseStudyPage(props: PageProps<'/work/[slug]'>) {
+export default async function CaseStudyPage(props: CaseStudyPageProps) {
   const { slug } = await props.params
   const project = getProjectBySlug(slug)
 
