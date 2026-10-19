@@ -10,16 +10,123 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
+import { checkRateLimit, resetRateLimits } from '@/lib/rate-limiter'
+
+export { checkRateLimit as checkContactRateLimit, resetRateLimits as resetContactRateLimits }
+
+function getClientIp(request: Request): string {
+  const forwarded = request.headers.get('x-forwarded-for')
+  if (forwarded) {
+    const first = forwarded.split(',')[0].trim()
+    if (first) return first
+  }
+  const realIp = request.headers.get('x-real-ip')
+  if (realIp?.trim()) return realIp.trim()
+  const cfIp = request.headers.get('cf-connecting-ip')
+  if (cfIp?.trim()) return cfIp.trim()
+  return '127.0.0.1'
+}
+
 export async function POST(request: Request) {
   try {
     const body: ContactPayload = await request.json()
 
-    // 1. Validation
+    // 1. Invisible Honeypot check (zero-friction bot neutralization)
+    if (body.hp_source && body.hp_source.trim().length > 0) {
+      console.log('🤖 [CONTACT API] Bot trapped in invisible honeypot. Dropped silently.')
+      return NextResponse.json(
+        {
+          success: true,
+          message: 'Message received. We will be in touch within 2 business days.',
+          telemetry: {
+            teamDispatched: false,
+            clientDispatched: false,
+          },
+        },
+        { status: 200 }
+      )
+    }
+
+    // 2. Sliding-Window IP Rate Limiting (3 requests per 10 mins)
+    const clientIp = getClientIp(request)
+    const rateLimit = checkRateLimit(clientIp)
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        {
+          error: 'Too many requests. Please try again later.',
+          retryAfter: rateLimit.retryAfter || 600,
+        },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rateLimit.retryAfter || 600),
+          },
+        }
+      )
+    }
+
+    // 3. Cloudflare Turnstile Verification (if configured)
+    const turnstileSecret = process.env.TURNSTILE_SECRET_KEY
+    if (turnstileSecret) {
+      if (!body.turnstileToken) {
+        return NextResponse.json(
+          { error: 'Security verification failed. Please complete the verification challenge.' },
+          { status: 403 }
+        )
+      }
+
+      try {
+        const verifyFormData = new URLSearchParams()
+        verifyFormData.append('secret', turnstileSecret)
+        verifyFormData.append('response', body.turnstileToken)
+        verifyFormData.append('remoteip', clientIp)
+
+        const verifyRes = await fetch(
+          'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: verifyFormData,
+          }
+        )
+
+        const verifyData = (await verifyRes.json()) as {
+          success: boolean
+          'error-codes'?: string[]
+        }
+        if (!verifyData.success) {
+          console.warn('[CONTACT API] Turnstile verification failed:', verifyData['error-codes'])
+          return NextResponse.json(
+            { error: 'Security verification failed. Please try again.' },
+            { status: 403 }
+          )
+        }
+      } catch (verifyErr) {
+        console.error('[CONTACT API] Turnstile siteverify network error:', verifyErr)
+        return NextResponse.json(
+          { error: 'Unable to verify challenge. Please try again later.' },
+          { status: 503 }
+        )
+      }
+    }
+
+    // 4. Payload Validation & Upper Bound Length Guards (Anti-DoS)
     if (!body.name || body.name.trim().length < 2) {
       return NextResponse.json({ error: 'Name must be at least 2 characters.' }, { status: 400 })
     }
+    if (body.name.trim().length > 100) {
+      return NextResponse.json({ error: 'Name cannot exceed 100 characters.' }, { status: 400 })
+    }
     if (!body.email || !isValidEmail(body.email.trim())) {
       return NextResponse.json({ error: 'A valid email address is required.' }, { status: 400 })
+    }
+    if (body.email.trim().length > 100) {
+      return NextResponse.json(
+        { error: 'Email address cannot exceed 100 characters.' },
+        { status: 400 }
+      )
     }
     if (!body.message || body.message.trim().length < 20) {
       return NextResponse.json(
@@ -27,14 +134,41 @@ export async function POST(request: Request) {
         { status: 400 }
       )
     }
+    if (body.message.trim().length > 3000) {
+      return NextResponse.json(
+        { error: 'Project description cannot exceed 3,000 characters.' },
+        { status: 400 }
+      )
+    }
+    if (body.company && body.company.trim().length > 100) {
+      return NextResponse.json(
+        { error: 'Company name cannot exceed 100 characters.' },
+        { status: 400 }
+      )
+    }
+    if (body.budget && body.budget.trim().length > 50) {
+      return NextResponse.json(
+        { error: 'Budget specification cannot exceed 50 characters.' },
+        { status: 400 }
+      )
+    }
     if (body.phone && body.phone.trim().length > 0) {
       const trimmedPhone = body.phone.trim()
+      if (trimmedPhone.length > 25) {
+        return NextResponse.json(
+          { error: 'Phone number cannot exceed 25 characters.' },
+          { status: 400 }
+        )
+      }
       const cleanDigits = trimmedPhone.replace(/\D/g, '')
       if (trimmedPhone.startsWith('+91')) {
         // '+91' followed by 10 digits = 12 total digits
         if (cleanDigits.length !== 12) {
           return NextResponse.json(
-            { error: 'Indian phone number (+91) must be exactly 10 digits excluding country code.' },
+            {
+              error:
+                'Indian phone number (+91) must be exactly 10 digits excluding country code.',
+            },
             { status: 400 }
           )
         }
@@ -54,7 +188,7 @@ export async function POST(request: Request) {
     let teamDispatched = false
     let clientDispatched = false
 
-    // 2. Dispatch via Brevo REST API (Hybrid: Template ID or High-Fidelity Custom HTML)
+    // 5. Dispatch via Brevo REST API (Hybrid: Template ID or High-Fidelity Custom HTML)
     if (apiKey) {
       const brevoHeaders = {
         'api-key': apiKey,
@@ -85,7 +219,9 @@ export async function POST(request: Request) {
         subject: teamSubject,
       }
 
-      const teamTemplateId = Number(process.env.BREVO_TEAM_TEMPLATE_ID || process.env.BREVO_TEMPLATE_ID)
+      const teamTemplateId = Number(
+        process.env.BREVO_TEAM_TEMPLATE_ID || process.env.BREVO_TEMPLATE_ID
+      )
       if (!Number.isNaN(teamTemplateId) && teamTemplateId > 0) {
         teamPayload.templateId = teamTemplateId
         teamPayload.params = clientParams
@@ -149,7 +285,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // 3. Fallback / Dev Telemetry Log
+    // 6. Fallback / Dev Telemetry Log
     if (!teamDispatched || !clientDispatched) {
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
       console.log('📬 [CONTACT INQUIRY PROCESSED]')
@@ -180,6 +316,9 @@ export async function POST(request: Request) {
     )
   } catch (err) {
     console.error('[CONTACT API] Unhandled exception:', err)
-    return NextResponse.json({ error: 'Failed to process inquiry. Please try again.' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Failed to process inquiry. Please try again.' },
+      { status: 500 }
+    )
   }
 }

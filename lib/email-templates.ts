@@ -19,6 +19,8 @@ export interface ContactPayload {
   message: string
   budget?: string
   currency?: string
+  hp_source?: string
+  turnstileToken?: string
 }
 
 export function escapeHtml(str: string): string {

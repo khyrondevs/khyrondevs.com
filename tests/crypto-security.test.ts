@@ -1,6 +1,7 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert'
 import {
+  getSigningSecret,
   generateReplyToken,
   verifyReplyToken,
   generateReplyStudioUrl,
@@ -101,6 +102,62 @@ describe('Cryptographic Security & Token Integrity', () => {
       token: extractedToken,
     }, secret)
     assert.strictEqual(isVerified, true)
+  })
+
+  test('enforces REPLY_SIGNING_SECRET requirement strictly in production', () => {
+    const originalEnv = process.env.NODE_ENV
+    const originalSecret = process.env.REPLY_SIGNING_SECRET
+    const originalBrevo = process.env.BREVO_API_KEY
+
+    const envRecord = process.env as Record<string, string | undefined>
+    try {
+      delete process.env.REPLY_SIGNING_SECRET
+      delete process.env.BREVO_API_KEY
+      envRecord.NODE_ENV = 'production'
+
+      assert.throws(
+        () => getSigningSecret(),
+        /CRITICAL SECURITY CONFIGURATION ERROR: REPLY_SIGNING_SECRET is not configured in production/
+      )
+
+      envRecord.NODE_ENV = 'development'
+      assert.strictEqual(getSigningSecret(), 'khyron-devs-airgap-internal-fallback-secret')
+
+      process.env.REPLY_SIGNING_SECRET = 'configured-secret-value'
+      assert.strictEqual(getSigningSecret(), 'configured-secret-value')
+    } finally {
+      envRecord.NODE_ENV = originalEnv
+      if (originalSecret) process.env.REPLY_SIGNING_SECRET = originalSecret
+      else delete process.env.REPLY_SIGNING_SECRET
+      if (originalBrevo) process.env.BREVO_API_KEY = originalBrevo
+      else delete process.env.BREVO_API_KEY
+    }
+  })
+
+  test('bounds query parameter lengths to prevent HTTP 414 URI Too Long DoS (< 1,200 bytes)', () => {
+    const massiveMessage = 'Z'.repeat(5000)
+    const longName = 'N'.repeat(200)
+    const longCompany = 'C'.repeat(200)
+
+    const urlStr = generateReplyStudioUrl({
+      name: longName,
+      email: 'client@example.com',
+      company: longCompany,
+      budget: '₹50,00,000+',
+      currency: 'INR',
+      message: massiveMessage,
+    }, 'https://khyrondevs.com', secret)
+
+    const url = new URL(urlStr)
+    const messageParam = url.searchParams.get('message') || ''
+    const nameParam = url.searchParams.get('name') || ''
+    const companyParam = url.searchParams.get('company') || ''
+
+    assert.ok(urlStr.length < 1200, `Expected URL length < 1200 bytes, got ${urlStr.length}`)
+    assert.strictEqual(messageParam.length, 500)
+    assert.ok(messageParam.endsWith('...'))
+    assert.strictEqual(nameParam.length, 100)
+    assert.strictEqual(companyParam.length, 100)
   })
 })
 

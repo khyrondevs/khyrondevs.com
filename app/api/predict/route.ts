@@ -18,14 +18,36 @@ export async function POST(req: Request) {
     const start = performance.now();
     const body = (await req.json()) as Partial<HousePricePredictionRequest>;
 
-    const medInc = typeof body.medInc === "number" ? body.medInc : 8.32;
-    const houseAge = typeof body.houseAge === "number" ? body.houseAge : 41.0;
-    const aveRooms = typeof body.aveRooms === "number" ? body.aveRooms : 6.98;
-    const aveBedrms = typeof body.aveBedrms === "number" ? body.aveBedrms : 1.02;
-    const population = typeof body.population === "number" ? body.population : 840;
-    const aveOccup = typeof body.aveOccup === "number" ? body.aveOccup : 2.45;
-    const lat = typeof body.latitude === "number" ? body.latitude : 37.88;
-    const lng = typeof body.longitude === "number" ? body.longitude : -122.23;
+    const checkFeature = (val: unknown, name: string) => {
+      if (val !== undefined && (typeof val !== 'number' || !Number.isFinite(val))) {
+        return `Feature '${name}' must be a finite number.`;
+      }
+      return null;
+    };
+
+    const validationError =
+      checkFeature(body.medInc, 'medInc') ||
+      checkFeature(body.houseAge, 'houseAge') ||
+      checkFeature(body.aveRooms, 'aveRooms') ||
+      checkFeature(body.aveBedrms, 'aveBedrms') ||
+      checkFeature(body.population, 'population') ||
+      checkFeature(body.aveOccup, 'aveOccup') ||
+      checkFeature(body.latitude, 'latitude') ||
+      checkFeature(body.longitude, 'longitude');
+
+    if (validationError) {
+      return NextResponse.json({ error: validationError }, { status: 400 });
+    }
+
+    // Clamped to physical & demographic envelope for California census tracts
+    const medInc = Math.max(0.1, Math.min(25.0, body.medInc ?? 8.32));
+    const houseAge = Math.max(1, Math.min(100, body.houseAge ?? 41.0));
+    const aveRooms = Math.max(1, Math.min(50, body.aveRooms ?? 6.98));
+    const aveBedrms = Math.max(0.5, Math.min(20, body.aveBedrms ?? 1.02));
+    const population = Math.max(1, Math.min(50000, body.population ?? 840));
+    const aveOccup = Math.max(0.5, Math.min(50, body.aveOccup ?? 2.45));
+    const lat = Math.max(32.0, Math.min(42.0, body.latitude ?? 37.88));
+    const lng = Math.max(-124.5, Math.min(-114.0, body.longitude ?? -122.23));
 
     // Feature normalization (StandardScaler parameters from California dataset)
     const zMedInc = (medInc - 3.87) / 1.90;

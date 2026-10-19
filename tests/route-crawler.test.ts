@@ -165,6 +165,87 @@ describe('Zero-Dead-Link Route Crawler & Security Cloaking Suite', async () => {
     })
   })
 
+  describe('Enterprise HTTP Security Headers Invariants', () => {
+    it('enforces strict HSTS and Content-Security-Policy headers on responses', async () => {
+      const res = await fetch(`${BASE_URL}/`)
+      assert.equal(res.status, 200)
+
+      const hsts = res.headers.get('strict-transport-security') || ''
+      assert.ok(hsts.includes('max-age=63072000'), 'HSTS missing 2-year max-age')
+      assert.ok(hsts.includes('includeSubDomains'), 'HSTS missing includeSubDomains')
+      assert.ok(hsts.includes('preload'), 'HSTS missing preload')
+
+      const csp = res.headers.get('content-security-policy') || ''
+      assert.ok(csp.includes("default-src 'self'"), "CSP missing default-src 'self'")
+      assert.ok(csp.includes('https://challenges.cloudflare.com'), 'CSP missing Turnstile domain')
+      assert.ok(csp.includes("frame-src 'self' https://challenges.cloudflare.com"), 'CSP missing Turnstile iframe permission')
+
+      assert.equal(res.headers.get('x-frame-options'), 'DENY')
+      assert.equal(res.headers.get('x-content-type-options'), 'nosniff')
+      assert.equal(res.headers.get('referrer-policy'), 'strict-origin-when-cross-origin')
+    })
+  })
+
+  describe('API Hardening & Finite Numeric Guard Invariants', () => {
+    it('POST /api/predict rejects non-finite values (NaN / Infinity / strings) with HTTP 400', async () => {
+      const payloads = [
+        { medInc: 'invalid' },
+        { medInc: null },
+      ]
+
+      for (const payload of payloads) {
+        const res = await fetch(`${BASE_URL}/api/predict`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+        assert.equal(res.status, 400, `Expected 400 for payload: ${JSON.stringify(payload)}`)
+        const data = await res.json()
+        assert.ok(data.error)
+      }
+    })
+
+    it('POST /api/predict accepts valid features and returns calibrated prediction', async () => {
+      const res = await fetch(`${BASE_URL}/api/predict`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          medInc: 8.32,
+          houseAge: 41.0,
+          aveRooms: 6.98,
+          latitude: 37.88,
+          longitude: -122.23,
+        }),
+      })
+
+      assert.equal(res.status, 200)
+      const data = await res.json()
+      assert.equal(data.status, 'success')
+      assert.ok(typeof data.predicted_price === 'number')
+      assert.ok(data.predicted_price >= 50000 && data.predicted_price <= 750000)
+      assert.equal(data.currency, 'USD')
+    })
+
+    it('POST /api/contact neutralizes bots via honeypot without dispatching emails', async () => {
+      const res = await fetch(`${BASE_URL}/api/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'Automated Scraper',
+          email: 'scraper@botnet.org',
+          message: 'Buy high quality leads today only 99 dollars per thousand',
+          hp_source: 'bot-injected-field',
+        }),
+      })
+
+      assert.equal(res.status, 200)
+      const data = await res.json()
+      assert.equal(data.success, true)
+      assert.equal(data.telemetry?.teamDispatched, false)
+      assert.equal(data.telemetry?.clientDispatched, false)
+    })
+  })
+
   describe('Recursive Zero-Dead-Link Crawler', () => {
     it('crawls all internal links across the site and detects 0 broken links', async () => {
       const queue = ['/', '/about', '/services', '/process', '/contact', '/work']

@@ -1,5 +1,12 @@
-import { describe, it } from 'node:test'
+import { describe, it, beforeEach } from 'node:test'
 import assert from 'node:assert/strict'
+import {
+  checkRateLimit,
+  resetRateLimits,
+  RATE_LIMIT_WINDOW_MS,
+  MAX_REQUESTS_PER_WINDOW,
+  formatCooldownTime,
+} from '../lib/rate-limiter.ts'
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -13,18 +20,40 @@ function validateContactPayload(body: {
   message?: string
   budget?: string
   currency?: string
-}): { valid: boolean; error?: string } {
+  hp_source?: string
+}): { valid: boolean; error?: string; isHoneypot?: boolean } {
+  if (body.hp_source && body.hp_source.trim().length > 0) {
+    return { valid: true, isHoneypot: true }
+  }
   if (!body.name || body.name.trim().length < 2) {
     return { valid: false, error: 'Name must be at least 2 characters.' }
+  }
+  if (body.name.trim().length > 100) {
+    return { valid: false, error: 'Name cannot exceed 100 characters.' }
   }
   if (!body.email || !isValidEmail(body.email.trim())) {
     return { valid: false, error: 'A valid email address is required.' }
   }
+  if (body.email.trim().length > 100) {
+    return { valid: false, error: 'Email address cannot exceed 100 characters.' }
+  }
   if (!body.message || body.message.trim().length < 20) {
     return { valid: false, error: 'Please describe your project in at least 20 characters.' }
   }
+  if (body.message.trim().length > 3000) {
+    return { valid: false, error: 'Project description cannot exceed 3,000 characters.' }
+  }
+  if (body.company && body.company.trim().length > 100) {
+    return { valid: false, error: 'Company name cannot exceed 100 characters.' }
+  }
+  if (body.budget && body.budget.trim().length > 50) {
+    return { valid: false, error: 'Budget specification cannot exceed 50 characters.' }
+  }
   if (body.phone && body.phone.trim().length > 0) {
     const trimmedPhone = body.phone.trim()
+    if (trimmedPhone.length > 25) {
+      return { valid: false, error: 'Phone number cannot exceed 25 characters.' }
+    }
     const cleanDigits = trimmedPhone.replace(/\D/g, '')
     if (trimmedPhone.startsWith('+91')) {
       if (cleanDigits.length !== 12) {
@@ -44,14 +73,23 @@ function validateContactPayload(body: {
 }
 
 function validateClientForm(
-  formData: { name: string; email: string; phone: string; message: string },
+  formData: { name: string; email: string; phone: string; message: string; company?: string },
   countryCode: string
 ): { valid: boolean; error?: string } {
   if (formData.name.trim().length < 2) {
     return { valid: false, error: 'Name must be at least 2 characters.' }
   }
+  if (formData.name.trim().length > 100) {
+    return { valid: false, error: 'Name cannot exceed 100 characters.' }
+  }
   if (!isValidEmail(formData.email.trim())) {
     return { valid: false, error: 'Please enter a valid email address.' }
+  }
+  if (formData.email.trim().length > 100) {
+    return { valid: false, error: 'Email address cannot exceed 100 characters.' }
+  }
+  if (formData.company && formData.company.trim().length > 100) {
+    return { valid: false, error: 'Company name cannot exceed 100 characters.' }
   }
   if (formData.phone.trim().length > 0) {
     if (countryCode === '+91' && formData.phone.trim().length !== 10) {
@@ -66,6 +104,9 @@ function validateClientForm(
   }
   if (formData.message.trim().length < 20) {
     return { valid: false, error: 'Please describe your project in at least 20 characters.' }
+  }
+  if (formData.message.trim().length > 3000) {
+    return { valid: false, error: 'Project description cannot exceed 3,000 characters.' }
   }
   return { valid: true }
 }
@@ -333,6 +374,187 @@ describe('Contact Form & Input Validation Suite', () => {
       const shortMessage = validateReplyPayload('client@example.com', 'hi')
       assert.equal(shortMessage.valid, false)
       assert.match(shortMessage.error || '', /at least 5 characters/i)
+    })
+  })
+
+  describe('Invisible Honeypot Bot Trap', () => {
+    it('silently traps bot when hp_source is filled', () => {
+      const result = validateContactPayload({
+        name: 'Spam Bot',
+        email: 'spambot@automated.xyz',
+        message: 'Cheap SEO services buy now discount code 1234567890',
+        hp_source: 'automated_lead_generation_script',
+      })
+      assert.equal(result.valid, true)
+      assert.equal(result.isHoneypot, true)
+    })
+
+    it('passes normal submission through when hp_source is absent or empty', () => {
+      const resultEmpty = validateContactPayload({
+        name: 'Real Human',
+        email: 'human@corp.com',
+        message: 'Looking for a bespoke cloud platform with high reliability.',
+        hp_source: '',
+      })
+      assert.equal(resultEmpty.valid, true)
+      assert.equal(resultEmpty.isHoneypot, undefined)
+    })
+  })
+
+  describe('Payload Upper Bound Limits (Anti-DoS)', () => {
+    it('rejects name exceeding 100 characters', () => {
+      const longName = 'A'.repeat(101)
+      const result = validateContactPayload({
+        name: longName,
+        email: 'client@example.com',
+        message: 'Valid project description that meets min length requirement.',
+      })
+      assert.equal(result.valid, false)
+      assert.match(result.error || '', /Name cannot exceed 100 characters/i)
+    })
+
+    it('rejects email exceeding 100 characters', () => {
+      const longEmail = `${'a'.repeat(90)}@example.com` // > 100 chars
+      const result = validateContactPayload({
+        name: 'Valid Name',
+        email: longEmail,
+        message: 'Valid project description that meets min length requirement.',
+      })
+      assert.equal(result.valid, false)
+      assert.match(result.error || '', /Email address cannot exceed 100 characters/i)
+    })
+
+    it('rejects company name exceeding 100 characters', () => {
+      const longCompany = 'C'.repeat(101)
+      const result = validateContactPayload({
+        name: 'Valid Name',
+        email: 'client@example.com',
+        company: longCompany,
+        message: 'Valid project description that meets min length requirement.',
+      })
+      assert.equal(result.valid, false)
+      assert.match(result.error || '', /Company name cannot exceed 100 characters/i)
+    })
+
+    it('rejects budget description exceeding 50 characters', () => {
+      const longBudget = 'B'.repeat(51)
+      const result = validateContactPayload({
+        name: 'Valid Name',
+        email: 'client@example.com',
+        budget: longBudget,
+        message: 'Valid project description that meets min length requirement.',
+      })
+      assert.equal(result.valid, false)
+      assert.match(result.error || '', /Budget specification cannot exceed 50 characters/i)
+    })
+
+    it('rejects phone number exceeding 25 characters', () => {
+      const longPhone = '+1 1234567890123456789012345'
+      const result = validateContactPayload({
+        name: 'Valid Name',
+        email: 'client@example.com',
+        phone: longPhone,
+        message: 'Valid project description that meets min length requirement.',
+      })
+      assert.equal(result.valid, false)
+      assert.match(result.error || '', /Phone number cannot exceed 25 characters/i)
+    })
+
+    it('rejects message exceeding 3,000 characters', () => {
+      const massiveMessage = 'M'.repeat(3001)
+      const result = validateContactPayload({
+        name: 'Valid Name',
+        email: 'client@example.com',
+        message: massiveMessage,
+      })
+      assert.equal(result.valid, false)
+      assert.match(result.error || '', /cannot exceed 3,000 characters/i)
+    })
+
+    it('accepts message of exactly 3,000 characters', () => {
+      const boundaryMessage = 'M'.repeat(3000)
+      const result = validateContactPayload({
+        name: 'Valid Name',
+        email: 'client@example.com',
+        message: boundaryMessage,
+      })
+      assert.equal(result.valid, true)
+    })
+  })
+
+  describe('Sliding-Window IP Rate Limiter', () => {
+    beforeEach(() => {
+      resetRateLimits()
+    })
+
+    it('allows up to 3 requests within the sliding window', () => {
+      const testIp = '198.51.100.42'
+      const baseTime = 1700000000000
+
+      assert.equal(MAX_REQUESTS_PER_WINDOW, 3)
+
+      for (let i = 1; i <= MAX_REQUESTS_PER_WINDOW; i++) {
+        const check = checkRateLimit(testIp, MAX_REQUESTS_PER_WINDOW, RATE_LIMIT_WINDOW_MS, baseTime + i * 1000)
+        assert.equal(check.allowed, true, `Request #${i} should be allowed`)
+        assert.equal(check.retryAfter, undefined)
+      }
+    })
+
+    it('blocks the 4th request within window with HTTP 429 Retry-After', () => {
+      const testIp = '198.51.100.42'
+      const baseTime = 1700000000000
+
+      for (let i = 1; i <= MAX_REQUESTS_PER_WINDOW; i++) {
+        checkRateLimit(testIp, MAX_REQUESTS_PER_WINDOW, RATE_LIMIT_WINDOW_MS, baseTime + i * 1000)
+      }
+
+      // 4th request at +4 seconds
+      const blocked = checkRateLimit(testIp, MAX_REQUESTS_PER_WINDOW, RATE_LIMIT_WINDOW_MS, baseTime + 4000)
+      assert.equal(blocked.allowed, false)
+      assert.ok(blocked.retryAfter && blocked.retryAfter > 0)
+    })
+
+    it('allows requests again once the oldest request expires outside the window', () => {
+      const testIp = '198.51.100.42'
+      const baseTime = 1700000000000
+
+      for (let i = 1; i <= MAX_REQUESTS_PER_WINDOW; i++) {
+        checkRateLimit(testIp, MAX_REQUESTS_PER_WINDOW, RATE_LIMIT_WINDOW_MS, baseTime + i * 1000)
+      }
+
+      // After 10 minutes + 2 seconds, the 1st request has expired
+      const postWindowTime = baseTime + RATE_LIMIT_WINDOW_MS + 2000
+      const allowedAfterWindow = checkRateLimit(testIp, MAX_REQUESTS_PER_WINDOW, RATE_LIMIT_WINDOW_MS, postWindowTime)
+      assert.equal(allowedAfterWindow.allowed, true)
+    })
+
+    it('isolates rate limits between distinct IP addresses', () => {
+      const ip1 = '192.0.2.1'
+      const ip2 = '192.0.2.2'
+      const baseTime = 1700000000000
+
+      // Exhaust limit for IP 1
+      for (let i = 1; i <= MAX_REQUESTS_PER_WINDOW; i++) {
+        checkRateLimit(ip1, MAX_REQUESTS_PER_WINDOW, RATE_LIMIT_WINDOW_MS, baseTime + i * 1000)
+      }
+      assert.equal(checkRateLimit(ip1, MAX_REQUESTS_PER_WINDOW, RATE_LIMIT_WINDOW_MS, baseTime + 4000).allowed, false)
+
+      // IP 2 is unaffected
+      const ip2Check = checkRateLimit(ip2, MAX_REQUESTS_PER_WINDOW, RATE_LIMIT_WINDOW_MS, baseTime + 4000)
+      assert.equal(ip2Check.allowed, true)
+    })
+  })
+
+  describe('Human-Readable Cooldown Time Formatter', () => {
+    it('formats seconds into clean countdown strings', () => {
+      assert.equal(formatCooldownTime(0), '0 sec')
+      assert.equal(formatCooldownTime(-5), '0 sec')
+      assert.equal(formatCooldownTime(10), '10 sec')
+      assert.equal(formatCooldownTime(45), '45 sec')
+      assert.equal(formatCooldownTime(60), '1 min')
+      assert.equal(formatCooldownTime(125), '2 min 5 sec')
+      assert.equal(formatCooldownTime(180), '3 min')
+      assert.equal(formatCooldownTime(600), '10 min')
     })
   })
 })

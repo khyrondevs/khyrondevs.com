@@ -3,12 +3,19 @@ import type { ContactPayload } from './email-templates'
 
 const DEFAULT_EXP_SECONDS = 14 * 24 * 60 * 60 // 14 days TTL
 
-function getSigningSecret(customSecret?: string): string {
+export function getSigningSecret(customSecret?: string): string {
   const secret =
     customSecret ||
     process.env.REPLY_SIGNING_SECRET ||
-    process.env.BREVO_API_KEY ||
-    'khyron-devs-airgap-internal-fallback-secret'
+    process.env.BREVO_API_KEY
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(
+        'CRITICAL SECURITY CONFIGURATION ERROR: REPLY_SIGNING_SECRET is not configured in production.'
+      )
+    }
+    return 'khyron-devs-airgap-internal-fallback-secret'
+  }
   return secret
 }
 
@@ -82,6 +89,7 @@ export function verifyReplyToken(
 
 /**
  * Generates an authenticated magic link for the 1-Click Reply Studio.
+ * Bounds query parameter length to guarantee URLs stay well under the HTTP 414 limit (< 1,200 bytes).
  */
 export function generateReplyStudioUrl(
   payload: ContactPayload,
@@ -92,13 +100,18 @@ export function generateReplyStudioUrl(
   const token = generateReplyToken(payload.email, payload.name, exp, customSecret)
 
   const params = new URLSearchParams()
-  params.set('name', payload.name.trim())
-  params.set('email', payload.email.trim())
-  if (payload.company?.trim()) params.set('company', payload.company.trim())
-  if (payload.budget?.trim()) params.set('budget', payload.budget.trim())
-  if (payload.currency?.trim()) params.set('currency', payload.currency.trim())
-  if (payload.phone?.trim()) params.set('phone', payload.phone.trim())
-  if (payload.message?.trim()) params.set('message', payload.message.trim())
+  params.set('name', payload.name.trim().slice(0, 100))
+  params.set('email', payload.email.trim().slice(0, 100))
+  if (payload.company?.trim()) params.set('company', payload.company.trim().slice(0, 100))
+  if (payload.budget?.trim()) params.set('budget', payload.budget.trim().slice(0, 50))
+  if (payload.currency?.trim()) params.set('currency', payload.currency.trim().slice(0, 10))
+  if (payload.phone?.trim()) params.set('phone', payload.phone.trim().slice(0, 25))
+  if (payload.message?.trim()) {
+    const trimmedMessage = payload.message.trim()
+    const boundedMessage =
+      trimmedMessage.length > 500 ? `${trimmedMessage.slice(0, 497)}...` : trimmedMessage
+    params.set('message', boundedMessage)
+  }
   params.set('exp', String(exp))
   params.set('token', token)
 

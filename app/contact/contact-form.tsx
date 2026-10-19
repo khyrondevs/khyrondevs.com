@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import * as Accordion from '@radix-ui/react-accordion'
 import { ChevronDown } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,26 @@ import {
   useCurrency,
   type CurrencyCode,
 } from '@/lib/currency'
+import { formatCooldownTime } from '@/lib/rate-limiter'
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        container: HTMLElement | string,
+        params: {
+          sitekey: string
+          callback?: (token: string) => void
+          'error-callback'?: () => void
+          'expired-callback'?: () => void
+          theme?: 'light' | 'dark' | 'auto'
+        }
+      ) => string
+      reset: (widgetId?: string) => void
+      remove: (widgetId: string) => void
+    }
+  }
+}
 
 interface Faq {
   question: string
@@ -51,6 +71,8 @@ export function ContactForm({ faqs }: ContactFormProps) {
   const [errorMsg, setErrorMsg] = useState('')
   const [currency, setCurrency] = useCurrency()
   const [countryCode, setCountryCode] = useState('+91')
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [cooldownSeconds, setCooldownSeconds] = useState(0)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -58,7 +80,87 @@ export function ContactForm({ faqs }: ContactFormProps) {
     company: '',
     message: '',
     budget: '',
+    hp_source: '',
   })
+
+  const turnstileContainerRef = useRef<HTMLDivElement>(null)
+  const turnstileWidgetId = useRef<string | null>(null)
+  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY
+
+  useEffect(() => {
+    if (cooldownSeconds <= 0) return
+
+    const timer = setInterval(() => {
+      setCooldownSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer)
+          setErrorMsg('')
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [cooldownSeconds])
+
+  useEffect(() => {
+    if (!siteKey || !turnstileContainerRef.current) return
+
+    const renderWidget = () => {
+      if (window.turnstile && turnstileContainerRef.current && !turnstileWidgetId.current) {
+        try {
+          turnstileWidgetId.current = window.turnstile.render(turnstileContainerRef.current, {
+            sitekey: siteKey,
+            callback: (token: string) => {
+              setTurnstileToken(token)
+            },
+            'expired-callback': () => {
+              setTurnstileToken('')
+            },
+            theme: 'dark',
+          })
+        } catch (e) {
+          console.error('Turnstile render error:', e)
+        }
+      }
+    }
+
+    if (window.turnstile) {
+      renderWidget()
+    } else {
+      let script = document.querySelector(
+        'script[src*="turnstile/v0/api.js"]'
+      ) as HTMLScriptElement | null
+      if (!script) {
+        script = document.createElement('script')
+        script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
+        script.async = true
+        script.defer = true
+        document.head.appendChild(script)
+      }
+      const checkTurnstileInterval = setInterval(() => {
+        if (window.turnstile) {
+          clearInterval(checkTurnstileInterval)
+          renderWidget()
+        }
+      }, 100)
+      return () => {
+        clearInterval(checkTurnstileInterval)
+        if (turnstileWidgetId.current && window.turnstile) {
+          window.turnstile.remove(turnstileWidgetId.current)
+          turnstileWidgetId.current = null
+        }
+      }
+    }
+
+    return () => {
+      if (turnstileWidgetId.current && window.turnstile) {
+        window.turnstile.remove(turnstileWidgetId.current)
+        turnstileWidgetId.current = null
+      }
+    }
+  }, [siteKey])
 
   const handleCurrencyChange = (newCurrency: CurrencyCode) => {
     setCurrency(newCurrency)
@@ -77,12 +179,31 @@ export function ContactForm({ faqs }: ContactFormProps) {
     e.preventDefault()
     setErrorMsg('')
 
+    if (cooldownSeconds > 0) {
+      setErrorMsg(
+        `Submission rate limit reached. Please try again after ${formatCooldownTime(cooldownSeconds)}.`
+      )
+      return
+    }
+
     if (formData.name.trim().length < 2) {
       setErrorMsg('Name must be at least 2 characters.')
       return
     }
+    if (formData.name.trim().length > 100) {
+      setErrorMsg('Name cannot exceed 100 characters.')
+      return
+    }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
       setErrorMsg('Please enter a valid email address.')
+      return
+    }
+    if (formData.email.trim().length > 100) {
+      setErrorMsg('Email address cannot exceed 100 characters.')
+      return
+    }
+    if (formData.company.trim().length > 100) {
+      setErrorMsg('Company name cannot exceed 100 characters.')
       return
     }
     if (formData.phone.trim().length > 0) {
@@ -102,6 +223,14 @@ export function ContactForm({ faqs }: ContactFormProps) {
       setErrorMsg('Please describe your project in at least 20 characters.')
       return
     }
+    if (formData.message.trim().length > 3000) {
+      setErrorMsg('Project description cannot exceed 3,000 characters.')
+      return
+    }
+    if (siteKey && !turnstileToken) {
+      setErrorMsg('Please complete the security verification challenge.')
+      return
+    }
 
     setStatus('submitting')
     try {
@@ -112,16 +241,28 @@ export function ContactForm({ faqs }: ContactFormProps) {
           ...formData,
           phone: formData.phone.trim() ? `${countryCode} ${formData.phone.trim()}` : '',
           currency,
+          turnstileToken: turnstileToken || undefined,
         }),
       })
       const data = await res.json()
 
       if (!res.ok) {
+        if (res.status === 429 && typeof data.retryAfter === 'number') {
+          const waitSeconds = Math.max(1, data.retryAfter)
+          setCooldownSeconds(waitSeconds)
+          throw new Error(
+            `Submission limit reached. Please try again after ${formatCooldownTime(waitSeconds)}.`
+          )
+        }
         throw new Error(data.error || 'Something went wrong.')
       }
 
       setStatus('success')
     } catch (err: unknown) {
+      if (siteKey && window.turnstile && turnstileWidgetId.current) {
+        window.turnstile.reset(turnstileWidgetId.current)
+        setTurnstileToken('')
+      }
       const message = err instanceof Error ? err.message : 'An unexpected error occurred.'
       setErrorMsg(message)
       setStatus('error')
@@ -138,6 +279,34 @@ export function ContactForm({ faqs }: ContactFormProps) {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Invisible Honeypot field for bot mitigation */}
+            <div
+              style={{
+                opacity: 0,
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                height: 0,
+                width: 0,
+                zIndex: -1,
+                overflow: 'hidden',
+                pointerEvents: 'none',
+              }}
+              aria-hidden="true"
+              tabIndex={-1}
+            >
+              <label htmlFor="hp_source">Leave this field blank</label>
+              <input
+                id="hp_source"
+                name="hp_source"
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                value={formData.hp_source}
+                onChange={(e) => setFormData({ ...formData, hp_source: e.target.value })}
+              />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="name" className="text-sm text-fg-muted mb-1.5 block font-medium">Name <span className="text-accent">*</span></label>
@@ -145,6 +314,7 @@ export function ContactForm({ faqs }: ContactFormProps) {
                   id="name"
                   type="text"
                   required
+                  maxLength={100}
                   aria-required="true"
                   className="bg-surface border border-border rounded-lg px-4 py-3 text-fg w-full placeholder:text-fg-subtle focus:border-border-strong focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors"
                   value={formData.name}
@@ -157,6 +327,7 @@ export function ContactForm({ faqs }: ContactFormProps) {
                   id="email"
                   type="email"
                   required
+                  maxLength={100}
                   aria-required="true"
                   className="bg-surface border border-border rounded-lg px-4 py-3 text-fg w-full placeholder:text-fg-subtle focus:border-border-strong focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors"
                   value={formData.email}
@@ -222,6 +393,7 @@ export function ContactForm({ faqs }: ContactFormProps) {
                 <input
                   id="company"
                   type="text"
+                  maxLength={100}
                   placeholder="e.g. Acme Studio"
                   className="bg-surface border border-border rounded-lg px-4 py-3 text-fg w-full placeholder:text-fg-subtle focus:border-border-strong focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors"
                   value={formData.company}
@@ -255,6 +427,7 @@ export function ContactForm({ faqs }: ContactFormProps) {
               <textarea
                 id="message"
                 required
+                maxLength={3000}
                 aria-required="true"
                 rows={5}
                 className="bg-surface border border-border rounded-lg px-4 py-3 text-fg w-full placeholder:text-fg-subtle focus:border-border-strong focus:outline-none focus:ring-1 focus:ring-[var(--accent)] transition-colors resize-y"
@@ -263,19 +436,31 @@ export function ContactForm({ faqs }: ContactFormProps) {
               />
             </div>
 
+            {siteKey && (
+              <div className="pt-2">
+                <div ref={turnstileContainerRef} />
+              </div>
+            )}
+
             {errorMsg && (
               <div role="alert" className="text-red-400 text-sm bg-red-400/10 p-3 rounded-md border border-red-400/20">
-                {errorMsg}
+                {cooldownSeconds > 0
+                  ? `Submission limit reached. Please try again after ${formatCooldownTime(cooldownSeconds)}.`
+                  : errorMsg}
               </div>
             )}
 
             <Button
               type="submit"
               variant="primary"
-              disabled={status === 'submitting'}
+              disabled={status === 'submitting' || cooldownSeconds > 0}
               className="w-full md:w-auto h-12 px-8"
             >
-              {status === 'submitting' ? 'Sending...' : 'Send message'}
+              {status === 'submitting'
+                ? 'Sending...'
+                : cooldownSeconds > 0
+                  ? `Please wait (${formatCooldownTime(cooldownSeconds)})`
+                  : 'Send message'}
             </Button>
           </form>
         )}
