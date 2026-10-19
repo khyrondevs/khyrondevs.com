@@ -93,15 +93,17 @@ export function verifyReplyToken(
  */
 export function generateReplyStudioUrl(
   payload: ContactPayload,
-  baseUrl: string = 'https://khyrondevs.com',
+  baseUrl: string = 'https://www.khyrondevs.com',
   customSecret?: string
 ): string {
   const exp = Math.floor(Date.now() / 1000) + DEFAULT_EXP_SECONDS
-  const token = generateReplyToken(payload.email, payload.name, exp, customSecret)
+  const cleanName = payload.name.trim().slice(0, 100)
+  const cleanEmail = payload.email.trim().slice(0, 100)
+  const token = generateReplyToken(cleanEmail, cleanName, exp, customSecret)
 
   const params = new URLSearchParams()
-  params.set('name', payload.name.trim().slice(0, 100))
-  params.set('email', payload.email.trim().slice(0, 100))
+  params.set('name', cleanName)
+  params.set('email', cleanEmail)
   if (payload.company?.trim()) params.set('company', payload.company.trim().slice(0, 100))
   if (payload.budget?.trim()) params.set('budget', payload.budget.trim().slice(0, 50))
   if (payload.currency?.trim()) params.set('currency', payload.currency.trim().slice(0, 10))

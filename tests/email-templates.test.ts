@@ -96,7 +96,7 @@ describe('Email Template Engine & Sanitization Security', () => {
     assert.ok(clientConfirmation.htmlContent.includes('{{ params.CLIENT_NAME }}'))
     assert.ok(clientConfirmation.htmlContent.includes('{{ params.CLIENT_EMAIL }}'))
     assert.ok(clientConfirmation.htmlContent.includes('{{ params.MESSAGE | safe }}'))
-    assert.ok(teamNotification.htmlContent.includes('{{ params.REPLY_STUDIO_URL }}'))
+    assert.ok(teamNotification.htmlContent.includes('{{ params.REPLY_STUDIO_URL | safe }}'))
     assert.ok(teamNotification.htmlContent.includes('{{ params.MESSAGE | safe }}'))
     assert.ok(developerReply.htmlContent.includes('{{ params.REPLY_MESSAGE | safe }}'))
     assert.ok(developerReply.htmlContent.includes('{{ params.ORIGINAL_MESSAGE | safe }}'))

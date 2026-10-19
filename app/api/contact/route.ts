@@ -198,10 +198,15 @@ export async function POST(request: Request) {
       }
 
       const replyStudioUrl = generateReplyStudioUrl(body)
+      const rawPhone = body.phone?.trim()
+      const cleanPhone = rawPhone ? rawPhone.replace(/[^0-9+]/g, '') : ''
+      const waNumber = cleanPhone.replace(/^\+/, '')
       const clientParams = {
         CLIENT_NAME: body.name.trim(),
         CLIENT_EMAIL: body.email.trim(),
         CLIENT_PHONE: body.phone?.trim() || 'Not provided',
+        CLEAN_PHONE: cleanPhone,
+        WA_NUMBER: waNumber,
         CLIENT_COMPANY: body.company?.trim() || 'Direct / Individual',
         CURRENCY: body.currency || 'INR',
         BUDGET: body.budget || 'Flexible',

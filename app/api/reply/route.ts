@@ -17,14 +17,20 @@ export async function HEAD() {
 
 export async function POST(request: Request) {
   try {
-    // 1. Mandatory Security Gate: Authenticate via sealed HttpOnly session cookie
+    // 1. Mandatory Security Gate: Authenticate via sealed HttpOnly session cookie or x-reply-session header
     const cookieStore = await cookies()
     const sessionCookie = cookieStore.get(REPLY_SESSION_COOKIE_NAME)?.value
-    const session = unsealReplySession(sessionCookie)
+    let session = unsealReplySession(sessionCookie)
+
+    // Resilient fallback: If browser blocked/partitioned cookies, check sealed session header
+    if (!session) {
+      const headerToken = request.headers.get('x-reply-session')
+      session = unsealReplySession(headerToken)
+    }
 
     if (!session) {
       console.warn(
-        '[REPLY API] Stealth 404: Blocked unauthenticated attempt to /api/reply (missing or invalid session cookie).'
+        '[REPLY API] Stealth 404: Blocked unauthenticated attempt to /api/reply (missing or invalid session).'
       )
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
     }
@@ -109,7 +115,7 @@ export async function POST(request: Request) {
       simResponse.cookies.set(REPLY_SESSION_COOKIE_NAME, '', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        sameSite: 'lax',
         path: '/',
         maxAge: 0,
       })
@@ -146,7 +152,7 @@ export async function POST(request: Request) {
     successResponse.cookies.set(REPLY_SESSION_COOKIE_NAME, '', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax',
       path: '/',
       maxAge: 0,
     })

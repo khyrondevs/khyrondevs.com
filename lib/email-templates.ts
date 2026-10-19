@@ -196,18 +196,23 @@ export function renderClientConfirmationEmail(payload: ContactPayload): string {
 // ─────────────────────────────────────────────────────────────────────────────
 function makeStudioUrl(p: ContactPayload): string {
   if (p.name.includes('{{')) {
-    return '{{ params.REPLY_STUDIO_URL }}'
+    return '{{ params.REPLY_STUDIO_URL | safe }}'
   }
   return generateReplyStudioUrl(p)
 }
 
 export function renderTeamNotificationEmail(payload: ContactPayload): string {
+  const isJinja = payload.name.includes('{{')
   const safeName = escapeHtml(payload.name.trim())
   const safeEmail = escapeHtml(payload.email.trim())
   const rawPhone = payload.phone?.trim()
   const safePhone = rawPhone ? escapeHtml(rawPhone) : null
-  const cleanPhone = rawPhone ? rawPhone.replace(/[^0-9+]/g, '') : ''
-  const waNumber = cleanPhone.replace(/^\+/, '')
+  const cleanPhone = isJinja
+    ? '{{ params.CLEAN_PHONE }}'
+    : (rawPhone ? rawPhone.replace(/[^0-9+]/g, '') : '')
+  const waNumber = isJinja
+    ? '{{ params.WA_NUMBER }}'
+    : cleanPhone.replace(/^\+/, '')
   const safeCompany = payload.company?.trim() ? escapeHtml(payload.company.trim()) : 'Direct / Individual'
   const safeBudget = payload.budget?.trim() ? escapeHtml(payload.budget.trim()) : 'Not specified'
   const safeCurrency = payload.currency?.trim() ? escapeHtml(payload.currency.trim()) : 'INR'

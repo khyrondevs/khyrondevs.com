@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { CheckCircle2, AlertCircle, Send, ArrowLeft, RefreshCw, MessageSquare } from 'lucide-react'
 import Link from 'next/link'
 import type { ReplySession } from '@/lib/crypto'
@@ -36,9 +36,10 @@ const TEAM_MEMBERS = [
 
 interface ReplyClientProps {
   session: ReplySession
+  sessionToken?: string
 }
 
-export function ReplyClient({ session }: ReplyClientProps) {
+export function ReplyClient({ session, sessionToken }: ReplyClientProps) {
   const clientName = session.clientName || ''
   const clientEmail = session.clientEmail || ''
   const clientPhone = session.clientPhone || ''
@@ -65,6 +66,13 @@ export function ReplyClient({ session }: ReplyClientProps) {
     error?: string
   } | null>(null)
 
+  // Clean address bar and browser history without an expensive or fragile server redirect
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.search) {
+      window.history.replaceState(null, '', window.location.pathname)
+    }
+  }, [])
+
   const handleApplyPreset = (preset: Preset) => {
     setReplyMessage(preset.generate(clientName, clientCompany))
   }
@@ -84,9 +92,14 @@ export function ReplyClient({ session }: ReplyClientProps) {
     setResult(null)
 
     try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+      if (sessionToken) {
+        headers['x-reply-session'] = sessionToken
+      }
+
       const res = await fetch('/api/reply', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           replyMessage,
           devName: activeDevName,
