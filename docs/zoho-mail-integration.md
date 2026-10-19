@@ -51,7 +51,7 @@ Standard email clients (Zoho Mail, Gmail) cannot automatically wrap your raw typ
 1. Open the inquiry in Zoho Mail.
 2. Click the prominent button at the bottom: **`⚡ Open 1-Click Reply Studio (Template 3)`**.
 3. A private Studio page opens with the client's information pre-filled.
-4. Select or enter your name and title (e.g., *Vittal Shenoy • Principal Systems Architect*).
+4. Select or enter your name and title (e.g., *Vittal • Lead Systems & Full-Stack Architect*).
 5. Pick a quick preset or type your response.
 6. Click **`Dispatch Branded Reply`**.
 7. The system calls Brevo API (`POST /v3/smtp/email`) and delivers **Template 3** directly to the client with your signature and their original inquiry dossier attached!
@@ -104,7 +104,7 @@ If you prefer to reply directly inside Zoho Mail:
       <!-- Engineer Signature Card -->
       <div style="padding: 16px 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; margin-bottom: 32px;">
         <div style="font-weight: 700; color: #ffffff; font-size: 14px;">[ENGINEER_NAME]</div>
-        <div style="font-size: 12px; color: #818cf8; font-family: monospace; margin-top: 2px;">Principal Software Architect &bull; Khyron Devs</div>
+        <div style="font-size: 12px; color: #818cf8; font-family: monospace; margin-top: 2px;">Lead Systems & Full-Stack Architect &bull; Khyron Devs</div>
         <div style="font-size: 12px; color: #94a3b8; margin-top: 8px; font-family: monospace;">
           Web: <a href="https://khyrondevs.com" style="color: #38bdf8; text-decoration: none;">khyrondevs.com</a> &bull; Email: <a href="mailto:enquiries@khyrondevs.com" style="color: #38bdf8; text-decoration: none;">enquiries@khyrondevs.com</a>
         </div>

@@ -166,16 +166,16 @@ async function testPipeline() {
       ...clientParams,
       REPLY_MESSAGE: replySampleText.replace(/\n/g, '<br/>'),
       ORIGINAL_MESSAGE: samplePayload.message,
-      DEV_NAME: 'Vittal Shenoy',
-      DEV_ROLE: 'Principal Systems Architect',
+      DEV_NAME: 'Vittal',
+      DEV_ROLE: 'Lead Systems & Full-Stack Architect',
     }
     console.log(`   Using Brevo Template ID: ${replyTemplateId}`)
   } else {
     replyPayload.htmlContent = renderDeveloperReplyEmail(
       samplePayload,
       replySampleText,
-      'Vittal Shenoy',
-      'Principal Systems Architect'
+      'Vittal',
+      'Lead Systems & Full-Stack Architect'
     )
     console.log('   Using Embedded Resilient HTML Fallback')
   }

@@ -49,7 +49,7 @@ describe('Cryptographic Security & Token Integrity', () => {
 
   test('rejects tampered signature / bit-flipped token', () => {
     const token = generateReplyToken(email, name, futureExp, secret)
-    const tampered = token.slice(0, -2) + (token.slice(-1) === 'a' ? 'b' : 'a') + token.slice(-1)
+    const tampered = (token[0] === '0' ? '1' : '0') + token.slice(1)
     const isValid = verifyReplyToken({ clientEmail: email, clientName: name, exp: futureExp, token: tampered }, secret)
     assert.strictEqual(isValid, false)
   })

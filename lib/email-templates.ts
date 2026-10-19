@@ -333,7 +333,7 @@ export function renderDeveloperReplyEmail(
   payload: ContactPayload,
   replyMessage: string,
   devName: string = 'Khyron Devs Lead',
-  devRole: string = 'Principal Software Architect'
+  devRole: string = 'Lead Systems & Full-Stack Architect'
 ): string {
   const safeClientName = escapeHtml(payload.name.trim())
   const safeDevName = escapeHtml(devName.trim())

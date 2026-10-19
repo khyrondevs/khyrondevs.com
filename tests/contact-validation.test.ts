@@ -129,7 +129,7 @@ describe('Contact Form & Input Validation Suite', () => {
     it('accepts standard compliant emails', () => {
       const validEmails = [
         'contact@khyrondevs.com',
-        'vittal.shenoy@khyrondevs.com',
+        'vittal.s@khyrondevs.com',
         'lead+project@client.co.uk',
         'info@subdomain.enterprise.org',
         'user_name@domain.tech',
@@ -338,7 +338,7 @@ describe('Contact Form & Input Validation Suite', () => {
   describe('Full Payload & Developer Reply Validation', () => {
     it('accepts valid complete contact payload with all optional fields', () => {
       const result = validateContactPayload({
-        name: 'Vittal Shenoy',
+        name: 'Vittal',
         email: 'vittal@khyrondevs.com',
         phone: '+91 9876543210',
         company: 'Khyron Devs',

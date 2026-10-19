@@ -42,8 +42,8 @@ export async function POST(request: Request) {
     const body = await request.json()
     const {
       replyMessage,
-      devName = 'Vittal Shenoy',
-      devRole = 'Principal Systems Architect',
+      devName = 'Vittal',
+      devRole = 'Lead Systems & Full-Stack Architect',
     } = body
 
     if (!clientEmail || !isValidEmail(clientEmail.trim())) {
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     const senderEmail = process.env.BREVO_SENDER_EMAIL || 'enquiries@khyrondevs.com'
     const teamRecipient = process.env.CONTACT_RECIPIENT_EMAIL || 'enquiries@khyrondevs.com'
     const trimmedDevName = (devName || 'Khyron Devs Lead').trim()
-    const trimmedDevRole = (devRole || 'Principal Systems Architect').trim()
+    const trimmedDevRole = (devRole || 'Lead Systems & Full-Stack Architect').trim()
 
     const subject = `Re: Project Brief Discussion // Khyron Devs`
     const replyPayload: Record<string, unknown> = {

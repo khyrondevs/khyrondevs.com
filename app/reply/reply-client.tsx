@@ -29,9 +29,9 @@ const PRESETS: Preset[] = [
 ]
 
 const TEAM_MEMBERS = [
-  { name: 'Vittal Shenoy', role: 'Principal Systems Architect' },
-  { name: 'Gowtham R', role: 'Principal Platform Engineer' },
-  { name: 'Pavan Kalyan', role: 'Principal Frontend Architect' },
+  { name: 'Vittal', role: 'Lead Systems & Full-Stack Architect' },
+  { name: 'Gowtham R', role: 'Lead Compute & Distributed Backend Engineer' },
+  { name: 'Gurupavan BR', role: 'Business Intelligence & Data Strategist' },
 ]
 
 interface ReplyClientProps {
@@ -143,20 +143,20 @@ export function ReplyClient({ session }: ReplyClientProps) {
                 Replying Engineer / Signature
               </label>
               {!isCustomDev ? (
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                   {TEAM_MEMBERS.map((dev, i) => (
                     <button
                       key={dev.name}
                       type="button"
                       onClick={() => setDevIndex(i)}
-                      className={`p-2.5 text-left rounded-lg border text-xs transition-all ${
+                      className={`p-2.5 text-left rounded-lg border text-xs transition-all flex flex-col justify-between ${
                         devIndex === i
                           ? 'border-accent bg-accent/10 text-fg shadow-sm'
                           : 'border-border/60 bg-bg/40 text-fg-muted hover:border-border'
                       }`}
                     >
                       <div className="font-semibold text-fg">{dev.name}</div>
-                      <div className="text-[10px] text-accent font-mono truncate">{dev.role.split(' ')[0]}</div>
+                      <div className="text-[10px] text-accent font-mono leading-tight mt-1 break-words">{dev.role}</div>
                     </button>
                   ))}
                 </div>
