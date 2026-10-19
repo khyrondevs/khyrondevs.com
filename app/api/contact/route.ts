@@ -3,6 +3,7 @@ import {
   type ContactPayload,
   renderClientConfirmationEmail,
   renderTeamNotificationEmail,
+  escapeHtml,
 } from '@/lib/email-templates'
 import { generateReplyStudioUrl } from '@/lib/crypto'
 
@@ -204,7 +205,7 @@ export async function POST(request: Request) {
         CLIENT_COMPANY: body.company?.trim() || 'Direct / Individual',
         CURRENCY: body.currency || 'INR',
         BUDGET: body.budget || 'Flexible',
-        MESSAGE: body.message.trim(),
+        MESSAGE: escapeHtml(body.message.trim()).replace(/\n/g, '<br/>'),
         REPLY_STUDIO_URL: replyStudioUrl,
       }
 

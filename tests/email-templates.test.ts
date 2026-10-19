@@ -91,12 +91,15 @@ describe('Email Template Engine & Sanitization Security', () => {
     assert.ok(html.includes('Line 1<br/>Line 2<br/>Line 3'))
   })
 
-  test('BREVO_TEMPLATE_DEFINITIONS contain valid Jinja parameter placeholders', () => {
+  test('BREVO_TEMPLATE_DEFINITIONS contain valid Jinja parameter placeholders with | safe', () => {
     const { clientConfirmation, teamNotification, developerReply } = BREVO_TEMPLATE_DEFINITIONS
     assert.ok(clientConfirmation.htmlContent.includes('{{ params.CLIENT_NAME }}'))
     assert.ok(clientConfirmation.htmlContent.includes('{{ params.CLIENT_EMAIL }}'))
+    assert.ok(clientConfirmation.htmlContent.includes('{{ params.MESSAGE | safe }}'))
     assert.ok(teamNotification.htmlContent.includes('{{ params.REPLY_STUDIO_URL }}'))
-    assert.ok(developerReply.htmlContent.includes('{{ params.REPLY_MESSAGE }}'))
+    assert.ok(teamNotification.htmlContent.includes('{{ params.MESSAGE | safe }}'))
+    assert.ok(developerReply.htmlContent.includes('{{ params.REPLY_MESSAGE | safe }}'))
+    assert.ok(developerReply.htmlContent.includes('{{ params.ORIGINAL_MESSAGE | safe }}'))
     assert.ok(developerReply.htmlContent.includes('{{ params.DEV_NAME }}'))
   })
 })

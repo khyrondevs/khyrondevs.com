@@ -438,7 +438,7 @@ export const BREVO_TEMPLATE_DEFINITIONS = {
       company: '{{ params.CLIENT_COMPANY }}',
       budget: '{{ params.BUDGET }}',
       currency: '{{ params.CURRENCY }}',
-      message: '{{ params.MESSAGE }}',
+      message: '{{ params.MESSAGE | safe }}',
     }),
   },
   teamNotification: {
@@ -451,7 +451,7 @@ export const BREVO_TEMPLATE_DEFINITIONS = {
       company: '{{ params.CLIENT_COMPANY }}',
       budget: '{{ params.BUDGET }}',
       currency: '{{ params.CURRENCY }}',
-      message: '{{ params.MESSAGE }}',
+      message: '{{ params.MESSAGE | safe }}',
     }),
   },
   developerReply: {
@@ -465,9 +465,9 @@ export const BREVO_TEMPLATE_DEFINITIONS = {
         company: '{{ params.CLIENT_COMPANY }}',
         budget: '{{ params.BUDGET }}',
         currency: '{{ params.CURRENCY }}',
-        message: '{{ params.ORIGINAL_MESSAGE }}',
+        message: '{{ params.ORIGINAL_MESSAGE | safe }}',
       },
-      '{{ params.REPLY_MESSAGE }}',
+      '{{ params.REPLY_MESSAGE | safe }}',
       '{{ params.DEV_NAME }}',
       '{{ params.DEV_ROLE }}'
     ),

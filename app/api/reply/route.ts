@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { renderDeveloperReplyEmail } from '@/lib/email-templates'
+import { renderDeveloperReplyEmail, escapeHtml } from '@/lib/email-templates'
 import { unsealReplySession, REPLY_SESSION_COOKIE_NAME } from '@/lib/crypto'
 
 function isValidEmail(email: string): boolean {
@@ -77,8 +77,8 @@ export async function POST(request: Request) {
         CLIENT_COMPANY: clientCompany?.trim() || 'Direct / Individual',
         CURRENCY: currency || 'INR',
         BUDGET: budget || 'Flexible',
-        ORIGINAL_MESSAGE: message || 'N/A',
-        REPLY_MESSAGE: replyMessage.trim().replace(/\n/g, '<br/>'),
+        ORIGINAL_MESSAGE: escapeHtml(message || 'N/A').replace(/\n/g, '<br/>'),
+        REPLY_MESSAGE: escapeHtml(replyMessage.trim()).replace(/\n/g, '<br/>'),
         DEV_NAME: trimmedDevName,
         DEV_ROLE: trimmedDevRole,
       }
