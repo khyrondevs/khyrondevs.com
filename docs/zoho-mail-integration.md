@@ -36,9 +36,9 @@ Reply-To: enquiries@khyrondevs.com    Reply-To: enquirer's email
 
 | Occasion | Purpose | Recipient | Sender | Brevo Template ID |
 |---|---|---|---|---|
-| **1. Client Auto-Confirmation** | Immediate reassurance, project recap, SLA roadmap (24–48h) | Enquirer (`body.email`) | `Khyron Devs <enquiries@khyrondevs.com>` | `BREVO_CLIENT_TEMPLATE_ID=2` |
-| **2. Dev Team Intake Dossier** | High-density brief, WhatsApp 1-click link, structured scope | `enquiries@khyrondevs.com` | `Khyron Devs Inquiries <enquiries@khyrondevs.com>` | `BREVO_TEAM_TEMPLATE_ID=3` |
-| **3. Developer Reply with Dossier** | Architect's response, signature, preserving original inquiry | Enquirer | `Khyron Devs <enquiries@khyrondevs.com>` | `BREVO_REPLY_TEMPLATE_ID=4` / Zoho Mail Template |
+| **1. Client Auto-Confirmation** | Immediate reassurance, project recap, SLA roadmap (24–48h) | Enquirer (`body.email`) | `Khyron Devs <enquiries@khyrondevs.com>` | `BREVO_CLIENT_TEMPLATE_ID=1` |
+| **2. Dev Team Intake Dossier** | High-density brief, WhatsApp 1-click link, structured scope | `enquiries@khyrondevs.com` | `Khyron Devs Inquiries <enquiries@khyrondevs.com>` | `BREVO_TEAM_TEMPLATE_ID=2` |
+| **3. Developer Reply with Dossier** | Architect's response, signature, preserving original inquiry | Enquirer | `Khyron Devs <enquiries@khyrondevs.com>` | `BREVO_REPLY_TEMPLATE_ID=3` / Zoho Mail Template |
 
 ---
 
