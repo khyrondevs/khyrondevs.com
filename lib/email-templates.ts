@@ -9,6 +9,8 @@
  * Fully inline-styled, dark-mode cyberpunk luxury, cross-client compatible (Gmail, Apple Mail, Zoho, Outlook).
  */
 
+import { generateReplyStudioUrl } from './crypto.ts'
+
 export interface ContactPayload {
   name: string
   email: string
@@ -192,17 +194,9 @@ export function renderClientConfirmationEmail(payload: ContactPayload): string {
 // ─────────────────────────────────────────────────────────────────────────────
 function makeStudioUrl(p: ContactPayload): string {
   if (p.name.includes('{{')) {
-    return 'https://khyrondevs.com/reply?name={{ params.CLIENT_NAME }}&email={{ params.CLIENT_EMAIL }}&company={{ params.CLIENT_COMPANY }}&budget={{ params.BUDGET }}&currency={{ params.CURRENCY }}&phone={{ params.CLIENT_PHONE }}&message={{ params.MESSAGE }}'
+    return '{{ params.REPLY_STUDIO_URL }}'
   }
-  const params = new URLSearchParams()
-  if (p.name) params.set('name', p.name.trim())
-  if (p.email) params.set('email', p.email.trim())
-  if (p.company) params.set('company', p.company.trim())
-  if (p.budget) params.set('budget', p.budget.trim())
-  if (p.currency) params.set('currency', p.currency.trim())
-  if (p.phone) params.set('phone', p.phone.trim())
-  if (p.message) params.set('message', p.message.trim())
-  return `https://khyrondevs.com/reply?${params.toString()}`
+  return generateReplyStudioUrl(p)
 }
 
 export function renderTeamNotificationEmail(payload: ContactPayload): string {

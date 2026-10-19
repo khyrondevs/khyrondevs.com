@@ -1,21 +1,46 @@
 import { NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
 import { renderDeveloperReplyEmail } from '@/lib/email-templates'
+import { unsealReplySession, REPLY_SESSION_COOKIE_NAME } from '@/lib/crypto'
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
+export async function GET() {
+  return NextResponse.json({ error: 'Not found' }, { status: 404 })
+}
+
+export async function HEAD() {
+  return new Response(null, { status: 404 })
+}
+
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
+    // 1. Mandatory Security Gate: Authenticate via sealed HttpOnly session cookie
+    const cookieStore = await cookies()
+    const sessionCookie = cookieStore.get(REPLY_SESSION_COOKIE_NAME)?.value
+    const session = unsealReplySession(sessionCookie)
+
+    if (!session) {
+      console.warn(
+        '[REPLY API] Stealth 404: Blocked unauthenticated attempt to /api/reply (missing or invalid session cookie).'
+      )
+      return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    }
+
     const {
-      clientName,
       clientEmail,
+      clientName,
       clientPhone,
       clientCompany,
       budget,
       currency,
       message,
+    } = session
+
+    const body = await request.json()
+    const {
       replyMessage,
       devName = 'Vittal Shenoy',
       devRole = 'Principal Systems Architect',
@@ -76,11 +101,19 @@ export async function POST(request: Request) {
 
     if (!apiKey) {
       console.warn('[REPLY API] BREVO_API_KEY not configured. Simulating reply dispatch.')
-      return NextResponse.json({
+      const simResponse = NextResponse.json({
         success: true,
         simulated: true,
         message: 'Reply simulated (no Brevo API key configured).',
       })
+      simResponse.cookies.set(REPLY_SESSION_COOKIE_NAME, '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/',
+        maxAge: 0,
+      })
+      return simResponse
     }
 
     const res = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -103,11 +136,22 @@ export async function POST(request: Request) {
     }
 
     const resData = (await res.json()) as { messageId?: string }
-    return NextResponse.json({
+    const successResponse = NextResponse.json({
       success: true,
       messageId: resData.messageId,
       message: 'Branded developer reply (Template 3) successfully delivered.',
     })
+
+    // Single-use security enforcement: invalidate the session cookie upon successful reply
+    successResponse.cookies.set(REPLY_SESSION_COOKIE_NAME, '', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      path: '/',
+      maxAge: 0,
+    })
+
+    return successResponse
   } catch (err) {
     console.error('[REPLY API] Unhandled exception:', err)
     return NextResponse.json({ error: 'Failed to dispatch reply.' }, { status: 500 })

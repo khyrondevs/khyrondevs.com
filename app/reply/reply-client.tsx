@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { CheckCircle2, AlertCircle, Send, ArrowLeft, RefreshCw, MessageSquare } from 'lucide-react'
 import Link from 'next/link'
+import type { ReplySession } from '@/lib/crypto'
 
 interface Preset {
   title: string
@@ -34,16 +34,18 @@ const TEAM_MEMBERS = [
   { name: 'Pavan Kalyan', role: 'Principal Frontend Architect' },
 ]
 
-export function ReplyClient() {
-  const searchParams = useSearchParams()
+interface ReplyClientProps {
+  session: ReplySession
+}
 
-  const clientName = searchParams.get('name') || ''
-  const clientEmail = searchParams.get('email') || ''
-  const clientPhone = searchParams.get('phone') || ''
-  const clientCompany = searchParams.get('company') || ''
-  const budget = searchParams.get('budget') || ''
-  const currency = searchParams.get('currency') || 'INR'
-  const originalMessage = searchParams.get('message') || ''
+export function ReplyClient({ session }: ReplyClientProps) {
+  const clientName = session.clientName || ''
+  const clientEmail = session.clientEmail || ''
+  const clientPhone = session.clientPhone || ''
+  const clientCompany = session.clientCompany || ''
+  const budget = session.budget || ''
+  const currency = session.currency || 'INR'
+  const originalMessage = session.message || ''
 
   const [devIndex, setDevIndex] = useState(0)
   const [customDevName, setCustomDevName] = useState('')
@@ -70,7 +72,7 @@ export function ReplyClient() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!clientEmail) {
-      setResult({ success: false, error: 'Client email is missing from URL query parameters.' })
+      setResult({ success: false, error: 'Client email is missing from active session.' })
       return
     }
     if (!replyMessage.trim()) {
@@ -86,13 +88,6 @@ export function ReplyClient() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          clientName,
-          clientEmail,
-          clientPhone,
-          clientCompany,
-          budget,
-          currency,
-          message: originalMessage,
           replyMessage,
           devName: activeDevName,
           devRole: activeDevRole,

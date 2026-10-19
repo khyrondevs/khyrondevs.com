@@ -4,6 +4,7 @@ import {
   renderClientConfirmationEmail,
   renderTeamNotificationEmail,
 } from '@/lib/email-templates'
+import { generateReplyStudioUrl } from '@/lib/crypto'
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -61,6 +62,7 @@ export async function POST(request: Request) {
         'Accept': 'application/json',
       }
 
+      const replyStudioUrl = generateReplyStudioUrl(body)
       const clientParams = {
         CLIENT_NAME: body.name.trim(),
         CLIENT_EMAIL: body.email.trim(),
@@ -69,6 +71,7 @@ export async function POST(request: Request) {
         CURRENCY: body.currency || 'INR',
         BUDGET: body.budget || 'Flexible',
         MESSAGE: body.message.trim(),
+        REPLY_STUDIO_URL: replyStudioUrl,
       }
 
       // ───────────────────────────────────────────────────────────────────────
