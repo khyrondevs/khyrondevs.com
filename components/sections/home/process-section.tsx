@@ -2,6 +2,8 @@
 
 import { useRef } from 'react'
 import { motion, useScroll, useTransform, MotionValue } from 'motion/react'
+import { useMediaQuery } from '@/hooks/use-media-query'
+import { RevealOnScroll } from '@/components/ui/reveal-on-scroll'
 
 // ══════════════════════════════════════════════════════════════════════════════
 // THE CONCEPT: ONE SIGNAL THAT BECOMES A SYSTEM.
@@ -450,20 +452,42 @@ function MiniLines({ pattern }: { pattern: LinePattern }) {
         const turbDy   = isRogue ? 3 : 0
         const isSingle = pattern === 'single'
         const strokeC = isRogue
-          ? 'rgba(239,68,68,0.8)'
+          ? 'rgba(239,68,68,0.85)'
           : pattern === 'active'
-            ? 'rgba(59,130,246,0.48)'
+            ? 'rgba(59,130,246,0.55)'
             : isSingle
               ? 'rgba(34,211,238,1)'
               : pattern === 'turbulent'
-                ? 'rgba(34,211,238,0.35)'
-                : 'rgba(255,255,255,0.15)'
+                ? 'rgba(34,211,238,0.4)'
+                : 'rgba(255,255,255,0.2)'
         return (
-          <line key={li}
-            x1={0} y1={y + turbDy} x2={100} y2={y + turbDy}
-            stroke={strokeC}
-            strokeWidth={isSingle ? 0.6 : 0.22}
-          />
+          <g key={li}>
+            <line
+              x1={0} y1={y + turbDy} x2={100} y2={y + turbDy}
+              stroke={strokeC}
+              strokeWidth={isSingle ? 0.6 : 0.22}
+              opacity={0.35}
+            />
+            <motion.line
+              x1={0} y1={y + turbDy} x2={100} y2={y + turbDy}
+              stroke={isRogue ? 'rgba(239,68,68,1)' : isSingle ? 'rgba(34,211,238,1)' : strokeC}
+              strokeWidth={isSingle ? 0.9 : (isRogue ? 0.6 : 0.35)}
+              strokeDasharray={isSingle ? "25 75" : isRogue ? "10 30" : "15 45"}
+              animate={{ strokeDashoffset: isRogue ? [0, 40] : [0, -100] }}
+              transition={{
+                duration: isSingle ? 2.5 : isRogue ? 1.5 : (3 + (li % 3) * 0.8),
+                repeat: Infinity,
+                ease: 'linear',
+              }}
+              style={{
+                filter: isSingle
+                  ? 'drop-shadow(0 0 4px rgba(34,211,238,0.9))'
+                  : isRogue
+                    ? 'drop-shadow(0 0 4px rgba(239,68,68,0.8))'
+                    : undefined,
+              }}
+            />
+          </g>
         )
       })}
     </svg>
@@ -480,29 +504,36 @@ function ProcessStatic() {
             ph.isValidate ? 'border-red-500/20' : 'border-border/30'
           }`}
         >
-          {/* Phase-state line snapshot */}
-          <div className="absolute inset-0 pointer-events-none opacity-55">
+          {/* Phase-state line snapshot with live signal stream */}
+          <div className="absolute inset-0 pointer-events-none opacity-60">
             <MiniLines pattern={ph.pattern} />
           </div>
 
           {/* Content */}
           <div className="relative z-10 p-8 md:p-16">
-            <div className={`font-mono text-[10px] tracking-[0.3em] mb-5 uppercase ${ph.isValidate ? 'text-red-400' : 'text-accent'}`}>
-              {ph.num} / {ph.phase}
-            </div>
-            <h3 className="text-4xl md:text-5xl font-light text-fg tracking-tighter mb-5 uppercase">
-              {ph.title}
-            </h3>
-            <p className="text-base text-fg-muted font-light leading-relaxed max-w-xl">
-              {ph.desc}
-            </p>
+            <RevealOnScroll>
+              <div className={`font-mono text-[10px] tracking-[0.3em] mb-5 uppercase flex items-center gap-2 ${ph.isValidate ? 'text-red-400' : 'text-accent'}`}>
+                <span className={`w-1.5 h-1.5 rounded-full animate-ping ${ph.isValidate ? 'bg-red-400' : 'bg-cyan-400'}`} />
+                <span>{ph.num} / {ph.phase}</span>
+              </div>
+              <h3 className="text-4xl md:text-5xl font-light text-fg tracking-tighter mb-5 uppercase">
+                {ph.title}
+              </h3>
+              <p className="text-base text-fg-muted font-light leading-relaxed max-w-xl">
+                {ph.desc}
+              </p>
+            </RevealOnScroll>
           </div>
         </div>
       ))}
 
-      {/* Exit beam */}
+      {/* Exit beam with pulsing neon glow */}
       <div className="h-32 flex justify-center bg-base border-t border-border/30">
-        <div className="w-[2px] h-full bg-cyan-400/80 shadow-[0_0_15px_rgba(34,211,238,0.6)]" />
+        <motion.div
+          className="w-[2px] h-full bg-cyan-400 shadow-[0_0_15px_rgba(34,211,238,0.8)]"
+          animate={{ opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        />
       </div>
     </div>
   )
@@ -513,10 +544,12 @@ function ProcessStatic() {
 // ══════════════════════════════════════════════════════════════════════════════
 
 export function ProcessSection() {
+  const isDesktop = useMediaQuery('(min-width: 768px)')
+
   return (
     <>
       <div className="hidden md:block md:motion-reduce:hidden">
-        <ProcessCinematic />
+        {isDesktop && <ProcessCinematic />}
       </div>
       <div className="block md:hidden md:motion-reduce:block">
         <ProcessStatic />

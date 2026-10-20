@@ -2,6 +2,8 @@
 
 import { useRef } from 'react'
 import { motion, useScroll, useTransform, MotionValue } from 'motion/react'
+import { useMediaQuery } from '@/hooks/use-media-query'
+import { RevealOnScroll } from '@/components/ui/reveal-on-scroll'
 
 // ══════════════════════════════════════════════════════════════════════════════
 // THE CONCEPT: THE INTERROGATION
@@ -382,48 +384,69 @@ function TechStatic() {
   return (
     <div className="bg-base border-t border-border/30">
       <div className="px-8 md:px-20 pt-16 pb-6">
-        <span className="font-mono text-[10px] text-accent tracking-[0.4em] uppercase">
-          [ Technology ]
-        </span>
+        <RevealOnScroll>
+          <span className="font-mono text-[10px] text-accent tracking-[0.4em] uppercase border border-accent/20 px-3 py-1 bg-accent/5">
+            [ Technology ]
+          </span>
+        </RevealOnScroll>
       </div>
 
       {STATIC_PHASES.map((ph, i) => (
         <div
           key={i}
-          className={`px-8 md:px-20 py-14 border-t ${ph.rag ? 'border-cyan-400/20' : 'border-border/20'}`}
+          className={`px-8 md:px-20 py-14 border-t relative overflow-hidden ${
+            ph.rag
+              ? 'border-cyan-400/30 bg-gradient-to-b from-cyan-950/10 to-transparent'
+              : 'border-border/20'
+          }`}
         >
-          <h3
-            className={`text-3xl md:text-5xl font-light tracking-tighter uppercase leading-tight mb-8 ${
-              ph.rag ? 'text-cyan-300/90' : 'text-fg'
-            }`}
-          >
-            {ph.q}
-          </h3>
-          <div className="flex flex-wrap gap-3">
-            {ph.techs.map(t => (
-              <span
-                key={t}
-                className={`font-mono text-[10px] tracking-widest uppercase border px-3 py-1.5 ${
-                  ph.rag
-                    ? 'text-cyan-400/80 border-cyan-400/25'
-                    : 'text-fg-muted border-border/40'
-                }`}
-              >
-                {t}
-              </span>
-            ))}
-          </div>
+          <RevealOnScroll delay={0.08 * (i % 3)}>
+            {ph.rag && (
+              <div className="flex items-center gap-2 mb-4">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
+                </span>
+                <span className="font-mono text-[9px] text-cyan-400 tracking-widest uppercase font-semibold">
+                  NEURAL RAG PIPELINE
+                </span>
+              </div>
+            )}
+            <h3
+              className={`text-3xl md:text-5xl font-light tracking-tighter uppercase leading-tight mb-8 ${
+                ph.rag ? 'text-cyan-300/90' : 'text-fg'
+              }`}
+            >
+              {ph.q}
+            </h3>
+            <div className="flex flex-wrap gap-3">
+              {ph.techs.map(t => (
+                <span
+                  key={t}
+                  className={`font-mono text-[10px] tracking-widest uppercase border px-3 py-1.5 transition-all duration-300 active:scale-95 ${
+                    ph.rag
+                      ? 'text-cyan-300 bg-cyan-950/30 border-cyan-400/40 shadow-[0_0_12px_rgba(34,211,238,0.15)] active:border-cyan-300 active:bg-cyan-900/50'
+                      : 'text-fg-muted bg-surface/30 border-border/40 hover:border-fg-subtle active:border-cyan-400/60 active:text-fg'
+                  }`}
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          </RevealOnScroll>
         </div>
       ))}
 
       <div className="px-8 md:px-20 py-20 border-t border-border/30 text-center flex flex-col items-center gap-4">
-        <div className="w-16 h-px bg-fg-subtle/25 mb-6" />
-        <p className="text-3xl md:text-5xl font-light text-fg tracking-tighter uppercase leading-tight">
-          THE STACK IS NOT THE PRODUCT.
-        </p>
-        <p className="text-3xl md:text-5xl font-light text-cyan-400 tracking-tighter uppercase leading-tight">
-          THE SYSTEM IS.
-        </p>
+        <RevealOnScroll>
+          <div className="w-16 h-[2px] bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.8)] mb-6 mx-auto" />
+          <p className="text-3xl md:text-5xl font-light text-fg tracking-tighter uppercase leading-tight">
+            THE STACK IS NOT THE PRODUCT.
+          </p>
+          <p className="text-3xl md:text-5xl font-light text-cyan-400 tracking-tighter uppercase leading-tight mt-2">
+            THE SYSTEM IS.
+          </p>
+        </RevealOnScroll>
       </div>
     </div>
   )
@@ -434,10 +457,12 @@ function TechStatic() {
 // ══════════════════════════════════════════════════════════════════════════════
 
 export function TechStackSection() {
+  const isDesktop = useMediaQuery('(min-width: 768px)')
+
   return (
     <>
       <div className="hidden md:block md:motion-reduce:hidden">
-        <TechCinematic />
+        {isDesktop && <TechCinematic />}
       </div>
       <div className="block md:hidden md:motion-reduce:block">
         <TechStatic />

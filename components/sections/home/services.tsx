@@ -173,7 +173,17 @@ function AutomationVisual({ reducedMotion, forceStatic = false }: { reducedMotio
 }
 
 // Visual 4: Custom Software
-function CustomVisual({ scrollYProgress, reducedMotion, forceStatic = false }: { scrollYProgress: MotionValue<number>, reducedMotion: boolean, forceStatic?: boolean }) {
+function CustomVisual({
+  scrollYProgress,
+  reducedMotion,
+  forceStatic = false,
+  isMobileLayout = false,
+}: {
+  scrollYProgress: MotionValue<number>
+  reducedMotion: boolean
+  forceStatic?: boolean
+  isMobileLayout?: boolean
+}) {
   const rotate = useTransform(scrollYProgress, [0.60, 0.75], [-45, 0])
 
   const p1X = useTransform(scrollYProgress, [0.60, 0.75], [-80, 0])
@@ -192,32 +202,44 @@ function CustomVisual({ scrollYProgress, reducedMotion, forceStatic = false }: {
     <div className="relative w-64 h-64 md:w-80 md:h-80 flex items-center justify-center pointer-events-none">
       <motion.div
         className="relative w-40 h-40 md:w-48 md:h-48"
-        style={{ rotate: (reducedMotion || forceStatic) ? 0 : rotate }}
+        style={{ rotate: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : rotate) }}
       >
         {/* Center Core */}
         <div className="absolute inset-0 border-2 border-cyan-400/50 bg-cyan-950/20 backdrop-blur-md shadow-[0_0_50px_rgba(34,211,238,0.15)] flex items-center justify-center">
-          <div className="w-1/2 h-1/2 border border-accent/30 rotate-45" />
+          <motion.div
+            className="w-1/2 h-1/2 border border-accent/30 rotate-45"
+            animate={reducedMotion ? {} : { scale: [1, 1.06, 1], rotate: [45, 48, 45] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          />
         </div>
 
         {/* Fragment 1 */}
         <motion.div
           className="absolute -top-6 -left-6 w-16 h-16 border border-accent/60 bg-accent/10 backdrop-blur-sm"
-          style={{ x: (reducedMotion || forceStatic) ? 0 : p1X, y: (reducedMotion || forceStatic) ? 0 : p1Y }}
+          style={{ x: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p1X), y: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p1Y) }}
+          animate={isMobileLayout && !reducedMotion ? { y: [0, -3, 0] } : {}}
+          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
         />
         {/* Fragment 2 */}
         <motion.div
           className="absolute -top-6 -right-6 w-24 h-12 border border-accent/60 bg-accent/10 backdrop-blur-sm"
-          style={{ x: (reducedMotion || forceStatic) ? 0 : p2X, y: (reducedMotion || forceStatic) ? 0 : p2Y }}
+          style={{ x: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p2X), y: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p2Y) }}
+          animate={isMobileLayout && !reducedMotion ? { y: [0, -4, 0] } : {}}
+          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
         />
         {/* Fragment 3 */}
         <motion.div
           className="absolute -bottom-6 -left-6 w-12 h-24 border border-accent/60 bg-accent/10 backdrop-blur-sm"
-          style={{ x: (reducedMotion || forceStatic) ? 0 : p3X, y: (reducedMotion || forceStatic) ? 0 : p3Y }}
+          style={{ x: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p3X), y: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p3Y) }}
+          animate={isMobileLayout && !reducedMotion ? { y: [0, 3, 0] } : {}}
+          transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
         />
         {/* Fragment 4 */}
         <motion.div
           className="absolute -bottom-6 -right-6 w-16 h-16 border border-cyan-400 bg-cyan-400/15 backdrop-blur-sm shadow-[0_0_30px_rgba(34,211,238,0.3)] flex items-center justify-center"
-          style={{ x: (reducedMotion || forceStatic) ? 0 : p4X, y: (reducedMotion || forceStatic) ? 0 : p4Y }}
+          style={{ x: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p4X), y: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p4Y) }}
+          animate={isMobileLayout && !reducedMotion ? { scale: [1, 1.05, 1] } : {}}
+          transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
         >
           <div className="w-2 h-2 bg-cyan-300" />
         </motion.div>
@@ -231,10 +253,12 @@ function MobileVisual({
   scrollYProgress,
   reducedMotion,
   forceStatic = false,
+  isMobileLayout = false,
 }: {
   scrollYProgress: MotionValue<number>
   reducedMotion: boolean
   forceStatic?: boolean
+  isMobileLayout?: boolean
 }) {
   const deviceRotate = useTransform(scrollYProgress, [0.83, 0.96], [-12, 0])
   const deviceScale = useTransform(scrollYProgress, [0.83, 0.96], [0.88, 1])
@@ -244,8 +268,8 @@ function MobileVisual({
       <motion.div
         className="relative w-64 md:w-72 rounded-3xl border border-cyan-400/40 bg-surface/90 backdrop-blur-md p-4 shadow-[0_0_50px_rgba(34,211,238,0.15)] flex flex-col gap-4 overflow-hidden"
         style={{
-          rotateY: (reducedMotion || forceStatic) ? 0 : deviceRotate,
-          scale: (reducedMotion || forceStatic) ? 1 : deviceScale,
+          rotateY: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : deviceRotate),
+          scale: isMobileLayout ? 0.92 : ((reducedMotion || forceStatic) ? 1 : deviceScale),
           transformStyle: 'preserve-3d',
         }}
       >
@@ -502,11 +526,11 @@ export function ServicesSection() {
             {/* Mobile Visual */}
             <div className="w-full h-80 relative overflow-hidden bg-surface/30 mb-8 border-y border-border/50 flex items-center justify-center">
               <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
-              {index === 0 && <FullStackVisual scrollYProgress={scrollYProgress} reducedMotion={reducedMotion} forceStatic={true} />}
-              {index === 1 && <AiRagVisual reducedMotion={reducedMotion} forceStatic={true} />}
-              {index === 2 && <AutomationVisual reducedMotion={reducedMotion} forceStatic={true} />}
-              {index === 3 && <CustomVisual scrollYProgress={scrollYProgress} reducedMotion={reducedMotion} forceStatic={true} />}
-              {index === 4 && <MobileVisual scrollYProgress={scrollYProgress} reducedMotion={reducedMotion} forceStatic={true} />}
+              {index === 0 && <FullStackVisual scrollYProgress={scrollYProgress} reducedMotion={reducedMotion} forceStatic={false} />}
+              {index === 1 && <AiRagVisual reducedMotion={reducedMotion} forceStatic={false} />}
+              {index === 2 && <AutomationVisual reducedMotion={reducedMotion} forceStatic={false} />}
+              {index === 3 && <CustomVisual scrollYProgress={scrollYProgress} reducedMotion={reducedMotion} forceStatic={false} isMobileLayout={true} />}
+              {index === 4 && <MobileVisual scrollYProgress={scrollYProgress} reducedMotion={reducedMotion} forceStatic={false} isMobileLayout={true} />}
             </div>
 
             {/* Mobile Text */}

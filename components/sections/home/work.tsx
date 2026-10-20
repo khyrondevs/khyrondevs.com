@@ -254,7 +254,7 @@ function AutomationWorld({ project, reducedMotion }: { project: Project, reduced
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:4rem_4rem] [transform:rotateX(60deg)_rotateZ(-45deg)_scale(2)] origin-center opacity-50" />
 
         {/* Pipeline graphic */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-40 group-hover:opacity-100 transition-opacity duration-1000">
+        <div className="absolute inset-0 flex items-center justify-center opacity-80 md:opacity-40 md:group-hover:opacity-100 transition-opacity duration-1000">
            <svg className="w-full h-full max-w-2xl" viewBox="0 0 800 600">
               <path d="M 100,300 L 300,300 L 300,150 L 600,150 L 600,450 L 700,450" fill="none" stroke="rgba(59,130,246,0.3)" strokeWidth="2" />
               <path d="M 300,300 L 300,450 L 500,450" fill="none" stroke="rgba(59,130,246,0.2)" strokeWidth="2" strokeDasharray="4 4" />
@@ -300,7 +300,7 @@ function DashboardWorld({ project, reducedMotion }: { project: Project, reducedM
     <div className="w-full h-full relative flex flex-col group">
       {/* Visual Environment */}
       <div className="absolute inset-0 bg-surface/30 pointer-events-none overflow-hidden flex items-start justify-end p-8 lg:p-16">
-        <div className="w-full max-w-lg aspect-square relative opacity-50 group-hover:opacity-100 transition-opacity duration-1000 flex flex-col gap-4 perspective-[1000px]">
+        <div className="w-full max-w-lg aspect-square relative opacity-80 md:opacity-50 md:group-hover:opacity-100 transition-opacity duration-1000 flex flex-col gap-4 perspective-[1000px]">
            {/* Telemetry Pane */}
            <div className="w-full h-1/2 border border-border/30 bg-base/80 backdrop-blur-md p-6 flex flex-col justify-end gap-2 shadow-2xl" style={{ transform: 'rotateY(-15deg)' }}>
               <div className="font-mono text-[9px] text-accent uppercase tracking-widest absolute top-4 left-4 border border-accent/30 px-2 py-0.5">Live Metrics</div>
@@ -402,26 +402,54 @@ export function WorkSection() {
 
       {/* Mobile Fallback for Featured Project */}
       <div className="block lg:hidden w-full relative border-y border-border/50 bg-surface/20">
-         {/* Static visual representation for mobile */}
+         {/* Living visual representation for mobile */}
          <div className="w-full h-[60vh] relative overflow-hidden flex items-center justify-center p-6 bg-[radial-gradient(ellipse_at_center,rgba(34,211,238,0.06)_0%,rgba(17,19,24,1)_70%)] border-b border-border/50">
-            {/* Simple static UI element representing RAG */}
-            <div className="w-full max-w-sm bg-base/90 border border-border/50 shadow-2xl rounded-sm">
-               <div className="border-b border-border/50 p-3 flex gap-2">
+            {/* Ambient Background Node Identifiers */}
+            <div className="absolute top-6 left-6 font-mono text-[8px] text-cyan-400/30 tracking-widest pointer-events-none select-none">
+              VECTOR_SPACE_01 // ACTIVE
+            </div>
+            <div className="absolute bottom-6 right-6 font-mono text-[8px] text-accent/30 tracking-widest pointer-events-none select-none">
+              COSINE_SIM: 0.942
+            </div>
+
+            {/* Living Interactive RAG Terminal Box */}
+            <div className="w-full max-w-sm bg-base/95 border border-cyan-400/30 shadow-[0_0_35px_rgba(34,211,238,0.12)] rounded-sm relative overflow-hidden">
+               {/* Animated Scanning Beam */}
+               {!reducedMotion && (
+                 <motion.div
+                   className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_8px_rgba(34,211,238,0.8)] z-20 pointer-events-none"
+                   animate={{ top: ['0%', '100%', '0%'] }}
+                   transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+                 />
+               )}
+               <div className="border-b border-border/50 p-3 flex items-center gap-2 bg-surface/40">
+                 <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
                  <div className="w-2 h-2 rounded-full bg-border/80" />
-                 <div className="w-2 h-2 rounded-full bg-border/80" />
+                 <span className="font-mono text-[9px] text-cyan-300 tracking-wider ml-auto uppercase font-semibold">
+                   RAG INFERENCE CORE
+                 </span>
                </div>
                <div className="p-6">
-                 <div className="font-mono text-[9px] text-cyan-400 mb-2 uppercase tracking-widest">Query Input</div>
-                 <div className="border border-border/50 bg-surface/30 px-4 py-3 text-sm text-fg font-light mb-6">
+                 <div className="font-mono text-[9px] text-cyan-400 mb-2 uppercase tracking-widest flex items-center justify-between">
+                   <span>Query Input</span>
+                   <span className="text-fg-subtle text-[8px]">TOKEN_COUNT: 14</span>
+                 </div>
+                 <div className="border border-border/50 bg-surface/30 px-4 py-3 text-sm text-fg font-light mb-5">
                    Extract risk factors and summarize impact.
                  </div>
-                 <div className="font-mono text-[9px] text-accent mb-2 uppercase tracking-widest">Semantic Context</div>
-                 <div className="border border-cyan-400/30 bg-cyan-950/40 p-2 text-[10px] font-mono text-cyan-200 mb-6">
-                   DOC_Q3_COMPLIANCE_AUDIT
+                 <div className="font-mono text-[9px] text-accent mb-2 uppercase tracking-widest">
+                   Semantic Context Retrieved
                  </div>
-                 <div className="font-mono text-[9px] text-cyan-400 mb-2 uppercase tracking-widest">Generated Response</div>
-                 <div className="text-sm text-fg-muted font-light">
+                 <div className="border border-cyan-400/40 bg-cyan-950/40 p-2.5 text-[10px] font-mono text-cyan-200 mb-5 shadow-[0_0_15px_rgba(34,211,238,0.15)] flex items-center justify-between">
+                   <span>DOC_Q3_COMPLIANCE_AUDIT</span>
+                   <span className="text-[8px] text-cyan-400 font-bold">98.4% MATCH</span>
+                 </div>
+                 <div className="font-mono text-[9px] text-cyan-400 mb-2 uppercase tracking-widest">
+                   Synthesized Response
+                 </div>
+                 <div className="text-sm text-fg-muted font-light leading-relaxed">
                    Based on [DOC_Q3_COMPLIANCE_AUDIT], the primary regulatory impact involves...
+                   <span className="inline-block w-1.5 h-3.5 bg-cyan-400 animate-pulse ml-1.5 align-middle" />
                  </div>
                </div>
             </div>

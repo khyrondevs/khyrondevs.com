@@ -239,7 +239,6 @@
 .lms-theater-stage {
   position: relative;
   width: 100%;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -249,6 +248,23 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
   box-sizing: border-box;
+}
+
+@media (min-width: 1024px) {
+  .lms-theater-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    max-height: 100vh;
+  }
+}
+
+@media (max-width: 1023px) {
+  .lms-theater-stage {
+    height: auto;
+    min-height: 540px;
+    padding: 1.25rem 1rem;
+  }
 }
 
 .lms-hud-header {
@@ -271,6 +287,13 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.75rem;
+}
+
+@media (max-width: 639px) {
+  .lms-mode-tabs {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
 }
 
 .lms-mode-tab {
@@ -318,7 +341,7 @@
   position: relative;
   width: 100%;
   flex: 1;
-  min-height: 0;
+  min-height: 480px;
   border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: #060812;
@@ -333,4 +356,105 @@
   justify-content: center;
   padding: 1.5rem;
   box-sizing: border-box;
+}
+
+@media (max-width: 1023px) {
+  .lms-screen-pane {
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+    transform: translateX(12px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Speed up orbital rings on mobile for dynamic, lively visual feedback */
+  .lms-ring-admin {
+    animation-duration: 9s;
+  }
+  .lms-ring-admin .lms-orbit-badge {
+    animation-duration: 9s;
+  }
+  .lms-ring-instructor {
+    animation-duration: 14s;
+  }
+  .lms-ring-instructor .lms-orbit-badge {
+    animation-duration: 14s;
+  }
+  .lms-ring-student {
+    animation-duration: 20s;
+  }
+  .lms-ring-student .lms-orbit-badge {
+    animation-duration: 20s;
+  }
+
+  .lms-screen-pane.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  /* Screen 01: Central JWT Packet Float */
+  .lms-screen-pane.is-visible [data-jwt-packet] {
+    animation: lms-jwt-bounce 2s ease-in-out infinite;
+  }
+
+  /* Screen 02: Tenant Isolation Deflection */
+  .lms-screen-pane.is-visible [data-forbidden-deflect] {
+    opacity: 1;
+    animation: lms-clash-pulse 2.2s ease-in-out infinite;
+  }
+
+  /* Screen 03: Liquid Progress Flow & Certificate Badge */
+  .lms-screen-pane.is-visible [data-liquid-progress] {
+    background-size: 200% 100%;
+    animation: lms-liquid-shimmer 2.5s linear infinite;
+  }
+
+  .lms-screen-pane.is-visible [data-unlock-badge] {
+    animation: lms-badge-sparkle 2s ease-in-out infinite;
+  }
+
+  /* Screen 04: Continuous Cursive Signature Verification */
+  .lms-screen-pane.is-visible [data-sig-path] {
+    animation: lms-sig-draw 3.2s ease-in-out infinite;
+  }
+
+  .lms-screen-pane.is-visible [data-qr-seal] {
+    animation: lms-qr-pulse 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes lms-jwt-bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); box-shadow: 0 0 10px #22d3ee; }
+  }
+
+  @keyframes lms-clash-pulse {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); box-shadow: 0 0 28px rgba(225, 29, 72, 0.7); }
+  }
+
+  @keyframes lms-liquid-shimmer {
+    0% { background-position: 100% 0%; }
+    100% { background-position: -100% 0%; }
+  }
+
+  @keyframes lms-badge-sparkle {
+    0%, 100% { transform: scale(1); box-shadow: 0 4px 14px rgba(234, 179, 8, 0.25); }
+    50% { transform: scale(1.04); box-shadow: 0 6px 22px rgba(234, 179, 8, 0.5); }
+  }
+
+  @keyframes lms-sig-draw {
+    0% { stroke-dashoffset: 400; opacity: 0; }
+    20% { opacity: 1; }
+    70%, 90% { stroke-dashoffset: 0; opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 0.3; }
+  }
+
+  @keyframes lms-qr-pulse {
+    0% { box-shadow: 0 0 6px rgba(255, 255, 255, 0.2); }
+    100% { box-shadow: 0 0 14px rgba(34, 211, 238, 0.5); }
+  }
 }

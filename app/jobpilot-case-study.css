@@ -852,22 +852,138 @@
 @media (max-width: 1023px) {
   .jobpilot-theater-stage {
     padding: 1.25rem 1rem;
+    height: auto;
+    min-height: 540px;
   }
 
   .jobpilot-viewport-housing {
-    min-height: 440px;
+    min-height: 480px;
+    position: relative;
+    overflow: hidden;
   }
 
   .jobpilot-screen-pane {
-    position: static;
-    opacity: 1;
-    pointer-events: auto;
-    min-height: 420px;
-    margin-bottom: 1.5rem;
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+    transform: translateX(12px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    min-height: auto;
+    margin-bottom: 0;
   }
 
-  .jobpilot-screen-pane:not(.is-visible) {
-    display: none;
+  .jobpilot-screen-pane.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+    transform: translateX(0);
+  }
+
+  .jobpilot-screen-pane.is-visible [data-canonical-badge] {
+    opacity: 1;
+  }
+
+  /* Screen 01: Multi-Vector Recon Radar */
+  .jobpilot-screen-pane.is-visible [data-radar-ray] {
+    animation: jobpilot-radar-sweep 3.5s linear infinite;
+    transform-origin: 300px 300px;
+  }
+
+  .jobpilot-screen-pane.is-visible .jobpilot-blip.b1 {
+    animation: jobpilot-blip-pulse 2s ease-in-out infinite;
+  }
+
+  .jobpilot-screen-pane.is-visible .jobpilot-blip.b2 {
+    animation: jobpilot-blip-pulse 2s ease-in-out infinite 0.65s;
+  }
+
+  .jobpilot-screen-pane.is-visible .jobpilot-blip.b3 {
+    animation: jobpilot-blip-pulse 2s ease-in-out infinite 1.3s;
+  }
+
+  .jobpilot-screen-pane.is-visible .station-beam {
+    animation: jobpilot-station-beam 1.8s ease-in-out infinite alternate;
+  }
+
+  /* Screen 02: Tri-Vector Collision Reactor */
+  .jobpilot-screen-pane.is-visible [data-collision-pulse] {
+    animation: jobpilot-collision-pulse 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+
+  .jobpilot-screen-pane.is-visible .jobpilot-collision-card.card-left {
+    animation: jobpilot-float-left 3s ease-in-out infinite alternate;
+  }
+
+  .jobpilot-screen-pane.is-visible .jobpilot-collision-card.card-right {
+    animation: jobpilot-float-right 3.2s ease-in-out infinite alternate 0.5s;
+  }
+
+  /* Screen 03: Fresher Laser Defense Perimeter */
+  .jobpilot-screen-pane.is-visible .laser-beam {
+    animation: jobpilot-laser-sweep 1.6s ease-in-out infinite alternate;
+  }
+
+  .jobpilot-screen-pane.is-visible .vector-score-fill {
+    transform: scaleX(0.96);
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+  }
+
+  .jobpilot-screen-pane.is-visible .card-senior {
+    animation: jobpilot-card-deflect 2.5s ease-in-out infinite alternate;
+  }
+
+  /* Screen 04: Zero-Trust Gateway */
+  .jobpilot-screen-pane.is-visible .jobpilot-security-shield {
+    animation: jobpilot-shield-breathe 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes jobpilot-radar-sweep {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes jobpilot-blip-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.08); opacity: 1; box-shadow: 0 0 16px rgba(56, 189, 248, 0.6); }
+  }
+
+  @keyframes jobpilot-station-beam {
+    0% { opacity: 0.2; transform: scale(0.95); }
+    100% { opacity: 0.9; transform: scale(1.05); }
+  }
+
+  @keyframes jobpilot-collision-pulse {
+    0% { transform: scale(0.8); opacity: 0.9; }
+    100% { transform: scale(1.4); opacity: 0; }
+  }
+
+  @keyframes jobpilot-float-left {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-5px) scale(1.02); }
+  }
+
+  @keyframes jobpilot-float-right {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(5px) scale(0.98); }
+  }
+
+  @keyframes jobpilot-laser-sweep {
+    0% { opacity: 0.4; filter: drop-shadow(0 0 4px var(--pilot-cyan)); }
+    100% { opacity: 1; filter: drop-shadow(0 0 16px var(--pilot-cyan)); }
+  }
+
+  @keyframes jobpilot-card-deflect {
+    0% { transform: translateX(0); opacity: 0.85; }
+    100% { transform: translateX(-5px); opacity: 1; }
+  }
+
+  @keyframes jobpilot-shield-breathe {
+    0% { box-shadow: 0 0 25px rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.25); }
+    100% { box-shadow: 0 0 45px rgba(56, 189, 248, 0.3); border-color: rgba(56, 189, 248, 0.55); }
   }
 
   .jobpilot-station {
@@ -876,7 +992,20 @@
   }
 
   .jobpilot-collision-card {
-    width: 160px;
+    width: 140px;
+    font-size: 10px;
+    padding: 0.5rem;
+  }
+
+  .jobpilot-mode-tabs {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .jobpilot-mode-tabs {
+      grid-template-columns: repeat(4, 1fr);
+    }
   }
 }
 

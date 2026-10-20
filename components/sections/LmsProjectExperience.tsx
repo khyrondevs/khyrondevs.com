@@ -30,6 +30,37 @@ export default function LmsProjectExperience({
   const theaterStage = useRef<HTMLDivElement>(null);
   const scrollTrack = useRef<HTMLDivElement>(null);
   const [activePhaseIndex, setActivePhaseIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      if (deltaX < 0) {
+        setActivePhaseIndex((prev) => Math.min(prev + 1, LMS_PHASES.length - 1));
+      } else {
+        setActivePhaseIndex((prev) => Math.max(prev - 1, 0));
+      }
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
+  const handlePhaseSelect = (idx: number) => {
+    setActivePhaseIndex(idx);
+    if (typeof window !== "undefined" && scrollTrack.current && window.innerWidth >= 1024) {
+      const targetY =
+        scrollTrack.current.offsetTop + (idx / 4) * window.innerHeight * 2.8;
+      window.scrollTo({ top: targetY, behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
     registerGsap();
@@ -185,13 +216,7 @@ export default function LmsProjectExperience({
                     role="tab"
                     aria-selected={idx === activePhaseIndex}
                     className={`lms-mode-tab${idx === activePhaseIndex ? " is-active" : ""}`}
-                    onClick={() => {
-                      if (typeof window !== "undefined" && scrollTrack.current) {
-                        const targetY =
-                          scrollTrack.current.offsetTop + (idx / 4) * window.innerHeight * 2.8;
-                        window.scrollTo({ top: targetY, behavior: "smooth" });
-                      }
-                    }}
+                    onClick={() => handlePhaseSelect(idx)}
                   >
                     <div className="font-bold text-[#6366f1]">{phase.number}</div>
                     <div className="truncate text-white/80">{phase.codename}</div>
@@ -201,12 +226,25 @@ export default function LmsProjectExperience({
 
               {/* Progress Scrub Track */}
               <div className="lms-scrub-bar" aria-hidden="true">
-                <span className="lms-scrub-fill" data-theater-progress />
+                <span
+                  className="lms-scrub-fill"
+                  data-theater-progress
+                  style={{
+                    transform:
+                      typeof window !== "undefined" && window.innerWidth < 1024
+                        ? `scaleX(${(activePhaseIndex + 1) / LMS_PHASES.length})`
+                        : undefined,
+                  }}
+                />
               </div>
             </nav>
 
             {/* 3. Central Panoramic Viewport */}
-            <div className="lms-viewport-housing">
+            <div
+              className="lms-viewport-housing"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
               {/* ────────────────────────────────────────────────────────── */}
               {/* SCREEN 01: 3-Tier Orbital RBAC Hologram                   */}
               {/* ────────────────────────────────────────────────────────── */}
@@ -262,9 +300,9 @@ export default function LmsProjectExperience({
                 className={`lms-screen-pane${activePhaseIndex === 1 ? " is-visible" : ""}`}
                 data-theater-screen
               >
-                <div className="relative w-full max-w-4xl mx-auto flex items-center justify-between gap-8 font-mono text-xs">
+                <div className="relative w-full max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 font-mono text-xs">
                   {/* Instructor Course Owner Card */}
-                  <div data-instructor-card className="rounded-2xl border border-[#10b981]/40 bg-[#10b981]/10 p-6 w-64 shadow-2xl">
+                  <div data-instructor-card className="rounded-2xl border border-[#10b981]/40 bg-[#10b981]/10 p-4 sm:p-6 w-full max-w-xs md:w-64 shadow-2xl">
                     <div className="flex items-center gap-2 text-[#10b981] font-bold text-sm mb-2">
                       <GraduationCap size={16} />
                       <span>COURSE INSTRUCTOR</span>
@@ -274,16 +312,16 @@ export default function LmsProjectExperience({
                   </div>
 
                   {/* Center Tenant Isolation Shield */}
-                  <div className="relative flex flex-col items-center justify-center">
+                  <div className="relative flex flex-col items-center justify-center my-2 md:my-0">
                     <div
                       data-forbidden-deflect
-                      className="absolute bottom-[calc(100%+18px)] z-30 whitespace-nowrap rounded-full bg-gradient-to-r from-[#e11d48] to-[#be123c] px-4 py-1.5 font-mono text-[10px] text-white font-bold tracking-wider uppercase shadow-[0_0_24px_rgba(225,29,72,0.6)] border border-[#f43f5e]/80 opacity-0"
+                      className="md:absolute md:bottom-[calc(100%+18px)] mb-3 md:mb-0 z-30 whitespace-nowrap rounded-full bg-gradient-to-r from-[#e11d48] to-[#be123c] px-4 py-1.5 font-mono text-[10px] text-white font-bold tracking-wider uppercase shadow-[0_0_24px_rgba(225,29,72,0.6)] border border-[#f43f5e]/80 opacity-100 md:opacity-0"
                     >
                       403 FORBIDDEN DEFLECTED
                     </div>
 
-                    <div data-tenant-shield className="w-28 h-28 rounded-3xl border-2 border-[#6366f1] bg-black/80 flex flex-col items-center justify-center shadow-2xl">
-                      <ShieldCheck size={32} className="text-[#6366f1]" />
+                    <div data-tenant-shield className="w-24 h-24 md:w-28 md:h-28 rounded-3xl border-2 border-[#6366f1] bg-black/80 flex flex-col items-center justify-center shadow-2xl">
+                      <ShieldCheck size={30} className="text-[#6366f1]" />
                       <span className="font-mono text-[9px] text-[#6366f1] mt-1 font-bold text-center leading-tight">
                         OBJECT GATE<br />obj.instructor
                       </span>
@@ -291,7 +329,7 @@ export default function LmsProjectExperience({
                   </div>
 
                   {/* Peer Intruder Card */}
-                  <div data-intruder-card className="rounded-2xl border border-[#e11d48]/40 bg-[#e11d48]/10 p-6 w-64 shadow-2xl">
+                  <div data-intruder-card className="rounded-2xl border border-[#e11d48]/40 bg-[#e11d48]/10 p-4 sm:p-6 w-full max-w-xs md:w-64 shadow-2xl">
                     <div className="flex items-center gap-2 text-[#f43f5e] font-bold text-sm mb-2">
                       <ShieldAlert size={16} />
                       <span>PEER INTRUDER</span>
@@ -309,7 +347,7 @@ export default function LmsProjectExperience({
                 className={`lms-screen-pane${activePhaseIndex === 2 ? " is-visible" : ""}`}
                 data-theater-screen
               >
-                <div className="relative w-full max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-8 font-mono text-xs">
+                <div className="relative w-full max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8 font-mono text-xs">
                   {/* Cascading Module Cards */}
                   <div className="space-y-2 w-full sm:w-80">
                     {[
@@ -359,7 +397,7 @@ export default function LmsProjectExperience({
                 className={`lms-screen-pane${activePhaseIndex === 3 ? " is-visible" : ""}`}
                 data-theater-screen
               >
-                <div className="relative w-full max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-8">
+                <div className="relative w-full max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 sm:gap-8">
                   {/* Certificate Preview Canvas */}
                   <div data-cert-canvas className="lms-cert-canvas max-w-md w-full relative shadow-2xl">
                     <div className="lms-cert-outer-border" />

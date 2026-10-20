@@ -34,6 +34,37 @@ export default function JobPilotProjectExperience({
   const theaterStage = useRef<HTMLDivElement>(null);
   const scrollTrack = useRef<HTMLDivElement>(null);
   const [activePhaseIndex, setActivePhaseIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      if (deltaX < 0) {
+        setActivePhaseIndex((prev) => Math.min(prev + 1, JOBPILOT_PHASES.length - 1));
+      } else {
+        setActivePhaseIndex((prev) => Math.max(prev - 1, 0));
+      }
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
+  const handlePhaseSelect = (idx: number) => {
+    setActivePhaseIndex(idx);
+    if (typeof window !== "undefined" && scrollTrack.current && window.innerWidth >= 1024) {
+      const targetY =
+        scrollTrack.current.offsetTop + (idx / 4) * window.innerHeight * 2.8;
+      window.scrollTo({ top: targetY, behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
     registerGsap();
@@ -188,13 +219,7 @@ export default function JobPilotProjectExperience({
                     role="tab"
                     aria-selected={idx === activePhaseIndex}
                     className={`jobpilot-mode-tab${idx === activePhaseIndex ? " is-active" : ""}`}
-                    onClick={() => {
-                      if (typeof window !== "undefined" && scrollTrack.current) {
-                        const targetY =
-                          scrollTrack.current.offsetTop + (idx / 4) * window.innerHeight * 2.8;
-                        window.scrollTo({ top: targetY, behavior: "smooth" });
-                      }
-                    }}
+                    onClick={() => handlePhaseSelect(idx)}
                   >
                     <span className="jobpilot-tab-num">{phase.number}</span>
                     <span className="jobpilot-tab-code">{phase.codename}</span>
@@ -204,12 +229,25 @@ export default function JobPilotProjectExperience({
 
               {/* Progress Scrub Track */}
               <div className="jobpilot-scrub-bar" aria-hidden="true">
-                <span className="jobpilot-scrub-fill" data-theater-progress />
+                <span
+                  className="jobpilot-scrub-fill"
+                  data-theater-progress
+                  style={{
+                    transform:
+                      typeof window !== "undefined" && window.innerWidth < 1024
+                        ? `scaleX(${(activePhaseIndex + 1) / JOBPILOT_PHASES.length})`
+                        : undefined,
+                  }}
+                />
               </div>
             </nav>
 
             {/* 3. Central Panoramic Viewport */}
-            <div className="jobpilot-viewport-housing">
+            <div
+              className="jobpilot-viewport-housing"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
               {/* Corner Tactical Brackets */}
               <span className="jobpilot-bracket top-left" aria-hidden="true" />
               <span className="jobpilot-bracket top-right" aria-hidden="true" />

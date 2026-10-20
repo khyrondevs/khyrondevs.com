@@ -30,6 +30,37 @@ export default function CinemoraProjectExperience({
   const theaterStage = useRef<HTMLDivElement>(null);
   const scrollTrack = useRef<HTMLDivElement>(null);
   const [activePhaseIndex, setActivePhaseIndex] = useState(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    const deltaY = e.changedTouches[0].clientY - touchStartY.current;
+    if (Math.abs(deltaX) > 40 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
+      if (deltaX < 0) {
+        setActivePhaseIndex((prev) => Math.min(prev + 1, CINEMORA_PHASES.length - 1));
+      } else {
+        setActivePhaseIndex((prev) => Math.max(prev - 1, 0));
+      }
+    }
+    touchStartX.current = null;
+    touchStartY.current = null;
+  };
+
+  const handlePhaseSelect = (idx: number) => {
+    setActivePhaseIndex(idx);
+    if (typeof window !== "undefined" && scrollTrack.current && window.innerWidth >= 1024) {
+      const targetY =
+        scrollTrack.current.offsetTop + (idx / 4) * window.innerHeight * 2.8;
+      window.scrollTo({ top: targetY, behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
     registerGsap();
@@ -191,13 +222,7 @@ export default function CinemoraProjectExperience({
                     role="tab"
                     aria-selected={idx === activePhaseIndex}
                     className={`cinemora-mode-tab${idx === activePhaseIndex ? " is-active" : ""}`}
-                    onClick={() => {
-                      if (typeof window !== "undefined" && scrollTrack.current) {
-                        const targetY =
-                          scrollTrack.current.offsetTop + (idx / 4) * window.innerHeight * 2.8;
-                        window.scrollTo({ top: targetY, behavior: "smooth" });
-                      }
-                    }}
+                    onClick={() => handlePhaseSelect(idx)}
                   >
                     <div className="font-bold text-[#f59e0b]">{phase.number}</div>
                     <div className="truncate text-white/80">{phase.codename}</div>
@@ -207,12 +232,25 @@ export default function CinemoraProjectExperience({
 
               {/* Progress Scrub Track */}
               <div className="cinemora-scrub-bar" aria-hidden="true">
-                <span className="cinemora-scrub-fill" data-theater-progress />
+                <span
+                  className="cinemora-scrub-fill"
+                  data-theater-progress
+                  style={{
+                    transform:
+                      typeof window !== "undefined" && window.innerWidth < 1024
+                        ? `scaleX(${(activePhaseIndex + 1) / CINEMORA_PHASES.length})`
+                        : undefined,
+                  }}
+                />
               </div>
             </nav>
 
             {/* 3. Central Panoramic Viewport */}
-            <div className="cinemora-viewport-housing">
+            <div
+              className="cinemora-viewport-housing"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
               {/* ────────────────────────────────────────────────────────── */}
               {/* SCREEN 01: WebSocket Seat Fan-Out & Projector Ray        */}
               {/* ────────────────────────────────────────────────────────── */}
@@ -230,15 +268,15 @@ export default function CinemoraProjectExperience({
 
                   {/* 3D Seat Rows */}
                   <div className="cinemora-auditorium-stage w-full">
-                    <div className="cinemora-seat-grid-3d flex flex-col items-center gap-2">
+                    <div className="cinemora-seat-grid-3d flex flex-col items-center gap-1.5 sm:gap-2">
                       {["A", "B", "C", "D"].map((rowLabel) => (
-                        <div key={rowLabel} data-seat-row className="flex items-center gap-2">
-                          <span className="w-5 font-mono text-[10px] text-white/40">{rowLabel}</span>
-                          <div className="flex gap-2">
+                        <div key={rowLabel} data-seat-row className="flex items-center gap-1 sm:gap-2">
+                          <span className="w-4 sm:w-5 font-mono text-[9px] sm:text-[10px] text-white/40">{rowLabel}</span>
+                          <div className="flex gap-1 sm:gap-2">
                             {Array.from({ length: 10 }).map((_, i) => (
                               <div
                                 key={i}
-                                className="w-7 h-6 rounded bg-white/10 border border-white/20 flex items-center justify-center text-[9px] font-mono text-white/60"
+                                className="w-5 h-5 sm:w-7 sm:h-6 rounded bg-white/10 border border-white/20 flex items-center justify-center text-[8px] sm:text-[9px] font-mono text-white/60"
                               >
                                 {i + 1}
                               </div>
@@ -250,16 +288,16 @@ export default function CinemoraProjectExperience({
                   </div>
 
                   {/* Ingestion Beam Telemetry */}
-                  <div className="mt-6 flex items-center gap-6 font-mono text-xs text-white/60">
+                  <div className="mt-6 flex flex-wrap justify-center items-center gap-3 sm:gap-6 font-mono text-xs text-white/60">
                     <div className="flex items-center gap-2">
                       <Radio size={14} className="text-[#06b6d4] animate-pulse" />
                       <span>REDIS CHANNEL BUS // showtime_104</span>
-                      <span data-ws-beam className="w-12 h-0.5 bg-[#06b6d4] rounded" />
+                      <span data-ws-beam className="hidden sm:inline-block w-12 h-0.5 bg-[#06b6d4] rounded" />
                     </div>
                     <div className="flex items-center gap-2">
                       <Zap size={14} className="text-[#10b981]" />
                       <span>42 SUBSCRIBED CLIENTS</span>
-                      <span data-ws-beam className="w-12 h-0.5 bg-[#10b981] rounded" />
+                      <span data-ws-beam className="hidden sm:inline-block w-12 h-0.5 bg-[#10b981] rounded" />
                     </div>
                   </div>
                 </div>
@@ -272,9 +310,9 @@ export default function CinemoraProjectExperience({
                 className={`cinemora-screen-pane${activePhaseIndex === 1 ? " is-visible" : ""}`}
                 data-theater-screen
               >
-                <div className="relative w-full max-w-4xl mx-auto flex items-center justify-between gap-8">
+                <div className="relative w-full max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8">
                   {/* Tokyo Client Card */}
-                  <div data-user-tokyo className="rounded-2xl border border-[#10b981]/40 bg-[#10b981]/10 p-6 font-mono text-xs w-64 shadow-2xl">
+                  <div data-user-tokyo className="rounded-2xl border border-[#10b981]/40 bg-[#10b981]/10 p-4 sm:p-6 font-mono text-xs w-full max-w-xs md:w-64 shadow-2xl">
                     <div className="flex items-center gap-2 text-[#10b981] font-bold text-sm mb-2">
                       <Users size={16} />
                       <span>USER_TOKYO (TX#9841)</span>
@@ -284,25 +322,25 @@ export default function CinemoraProjectExperience({
                   </div>
 
                   {/* Center PostgreSQL Lock Core */}
-                  <div className="relative flex flex-col items-center justify-center">
-                    <div data-laser-tokyo className="absolute left-[-100px] top-1/2 w-28 h-1 bg-[#10b981] rounded shadow-[0_0_12px_#10b981]" />
-                    <div data-laser-london className="absolute right-[-100px] top-1/2 w-28 h-1 bg-[#e11d48] rounded shadow-[0_0_12px_#e11d48]" />
+                  <div className="relative flex flex-col items-center justify-center my-2 md:my-0">
+                    <div data-laser-tokyo className="hidden md:block absolute left-[-100px] top-1/2 w-28 h-1 bg-[#10b981] rounded shadow-[0_0_12px_#10b981]" />
+                    <div data-laser-london className="hidden md:block absolute right-[-100px] top-1/2 w-28 h-1 bg-[#e11d48] rounded shadow-[0_0_12px_#e11d48]" />
 
                     <div
                       data-conflict-clash
-                      className="absolute bottom-[calc(100%+18px)] z-30 whitespace-nowrap rounded-full bg-gradient-to-r from-[#e11d48] to-[#be123c] px-4 py-1.5 font-mono text-[10px] text-white font-bold tracking-wider uppercase shadow-[0_0_24px_rgba(225,29,72,0.6)] border border-[#f43f5e]/80 opacity-0"
+                      className="md:absolute md:bottom-[calc(100%+18px)] mb-3 md:mb-0 z-30 whitespace-nowrap rounded-full bg-gradient-to-r from-[#e11d48] to-[#be123c] px-4 py-1.5 font-mono text-[10px] text-white font-bold tracking-wider uppercase shadow-[0_0_24px_rgba(225,29,72,0.6)] border border-[#f43f5e]/80 opacity-100 md:opacity-0"
                     >
                       409 CONFLICT DEFLECTED
                     </div>
 
-                    <div data-row-lock-shield className="relative z-10 w-28 h-28 rounded-3xl border-2 border-[#f59e0b] bg-black/80 flex flex-col items-center justify-center shadow-2xl">
-                      <Lock size={32} className="text-[#f59e0b] animate-pulse" />
+                    <div data-row-lock-shield className="relative z-10 w-24 h-24 md:w-28 md:h-28 rounded-3xl border-2 border-[#f59e0b] bg-black/80 flex flex-col items-center justify-center shadow-2xl">
+                      <Lock size={28} className="text-[#f59e0b] animate-pulse" />
                       <span className="font-mono text-[9px] text-[#f59e0b] mt-1 font-bold">ROW EXCLUSIVE</span>
                     </div>
                   </div>
 
                   {/* London Client Card */}
-                  <div data-user-london className="rounded-2xl border border-[#e11d48]/40 bg-[#e11d48]/10 p-6 font-mono text-xs w-64 shadow-2xl">
+                  <div data-user-london className="rounded-2xl border border-[#e11d48]/40 bg-[#e11d48]/10 p-4 sm:p-6 font-mono text-xs w-full max-w-xs md:w-64 shadow-2xl">
                     <div className="flex items-center gap-2 text-[#f43f5e] font-bold text-sm mb-2">
                       <Users size={16} />
                       <span>USER_LONDON (TX#9842)</span>
@@ -320,7 +358,7 @@ export default function CinemoraProjectExperience({
                 className={`cinemora-screen-pane${activePhaseIndex === 2 ? " is-visible" : ""}`}
                 data-theater-screen
               >
-                <div className="relative w-full max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-10">
+                <div className="relative w-full max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10">
                   {/* Holographic QR Ticket */}
                   <div data-qr-ticket className="relative rounded-2xl border border-white/20 bg-black/70 p-6 shadow-2xl flex flex-col items-center">
                     <div data-qr-laser className="cinemora-laser-scanner" />

@@ -2,6 +2,7 @@
 
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'motion/react'
+import { RevealOnScroll } from '@/components/ui/reveal-on-scroll'
 
 function WhyUsCinematic() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -155,14 +156,16 @@ function WhyUsStatic() {
        
        {/* INTRO */}
        <div className="min-h-[70vh] flex flex-col items-center justify-center text-center p-8 md:p-12 border-b border-border/30">
-          <span className="font-mono text-[10px] md:text-xs text-accent tracking-[0.4em] uppercase mb-12 block border border-accent/20 px-4 py-2 bg-accent/5">
-             [ Manifesto ]
-          </span>
-          <h2 className="text-4xl md:text-6xl font-light text-fg leading-[1.05] tracking-[-0.04em]">
-             THE TECHNOLOGY<br/>
-             ISN&apos;T THE HARD PART.<br/><br/>
-             <span className="text-fg-muted italic">THE RIGHT DECISIONS ARE.</span>
-          </h2>
+          <RevealOnScroll>
+            <span className="font-mono text-[10px] md:text-xs text-accent tracking-[0.4em] uppercase mb-12 block border border-accent/20 px-4 py-2 bg-accent/5 mx-auto w-fit">
+               [ Manifesto ]
+            </span>
+            <h2 className="text-4xl md:text-6xl font-light text-fg leading-[1.05] tracking-[-0.04em]">
+               THE TECHNOLOGY<br/>
+               ISN&apos;T THE HARD PART.<br/><br/>
+               <span className="text-fg-muted italic">THE RIGHT DECISIONS ARE.</span>
+            </h2>
+          </RevealOnScroll>
        </div>
 
        {/* SCENE 01 */}
@@ -171,37 +174,41 @@ function WhyUsStatic() {
             01
           </div>
           <div className="relative z-10 w-full max-w-4xl">
-             <div className="font-mono text-[10px] text-accent tracking-[0.2em] uppercase mb-10 flex items-center gap-4">
-                <span className="w-8 h-px bg-accent/50" />
-                Principle 01 / 04
-             </div>
-             <h3 className="text-6xl md:text-8xl font-light text-fg mb-12 tracking-tighter leading-none">
-                ENGINEERING-<br/>FIRST.
-             </h3>
-             <div className="flex flex-col gap-8 border-t border-border/50 pt-10">
-                <p className="text-2xl md:text-4xl font-light text-fg-muted leading-tight">
-                  We think in systems,<br/>not isolated screens.
-                </p>
-                <p className="text-base md:text-xl font-light text-fg-subtle leading-relaxed">
-                  Architecture and technical decisions come before tools and aesthetics. We design systems that are correct before they are impressive.
-                </p>
-             </div>
+             <RevealOnScroll>
+               <div className="font-mono text-[10px] text-accent tracking-[0.2em] uppercase mb-10 flex items-center gap-4">
+                  <span className="w-8 h-px bg-accent/50" />
+                  Principle 01 / 04
+               </div>
+               <h3 className="text-6xl md:text-8xl font-light text-fg mb-12 tracking-tighter leading-none">
+                  ENGINEERING-<br/>FIRST.
+               </h3>
+               <div className="flex flex-col gap-8 border-t border-border/50 pt-10">
+                  <p className="text-2xl md:text-4xl font-light text-fg-muted leading-tight">
+                    We think in systems,<br/>not isolated screens.
+                  </p>
+                  <p className="text-base md:text-xl font-light text-fg-subtle leading-relaxed">
+                    Architecture and technical decisions come before tools and aesthetics. We design systems that are correct before they are impressive.
+                  </p>
+               </div>
+             </RevealOnScroll>
           </div>
        </div>
 
        {/* SCENE 02 */}
        <div className="relative flex flex-col items-start justify-center p-8 md:p-24 border-b border-border/30 min-h-[90vh] bg-surface/10">
           <div className="relative z-10 w-full max-w-5xl">
-             <div className="font-mono text-[10px] text-fg-subtle tracking-[0.2em] uppercase mb-8 block">
-                Principle 02
-             </div>
-             <h3 className="text-5xl md:text-7xl font-light text-fg mb-10 tracking-tighter uppercase leading-[1.0]">
-                BUILT AROUND<br/>THE PROBLEM.
-             </h3>
-             <div className="w-full max-w-2xl h-px bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] mb-10" />
-             <p className="text-xl md:text-3xl font-light text-fg-muted leading-relaxed">
-                The technology serves the problem — not the other way around. No template starts. We map the actual workflow, constraints, and edge cases before proposing a solution.
-             </p>
+             <RevealOnScroll>
+               <div className="font-mono text-[10px] text-fg-subtle tracking-[0.2em] uppercase mb-8 block">
+                  Principle 02
+               </div>
+               <h3 className="text-5xl md:text-7xl font-light text-fg mb-10 tracking-tighter uppercase leading-[1.0]">
+                  BUILT AROUND<br/>THE PROBLEM.
+               </h3>
+               <div className="w-full max-w-2xl h-px bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)] mb-10" />
+               <p className="text-xl md:text-3xl font-light text-fg-muted leading-relaxed">
+                  The technology serves the problem — not the other way around. No template starts. We map the actual workflow, constraints, and edge cases before proposing a solution.
+               </p>
+             </RevealOnScroll>
           </div>
        </div>
 
@@ -209,18 +216,20 @@ function WhyUsStatic() {
        <div className="relative flex flex-col items-start md:items-end justify-center p-8 md:p-24 border-b border-border/30 min-h-[90vh] text-left md:text-right overflow-hidden">
           <div className="absolute right-0 md:right-1/4 top-1/2 -translate-y-1/2 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-accent/10 rounded-full blur-[80px] md:blur-[120px] z-0 pointer-events-none" />
           <div className="relative z-10 w-full max-w-4xl">
-             <div className="font-mono text-[10px] text-accent tracking-[0.2em] uppercase mb-8 flex items-center md:justify-end gap-4">
-                Principle 03 <span className="w-8 h-px bg-accent/50 hidden md:block" />
-             </div>
-             <h3 className="text-6xl md:text-8xl font-light text-fg mb-12 tracking-tighter leading-none">
-                PRODUCTION-<br/>MINDED.
-             </h3>
-             <p className="text-3xl md:text-4xl font-light text-fg mb-8 leading-[1.1]">
-                A prototype that never survives contact with reality is not the finish line.
-             </p>
-             <p className="text-lg md:text-xl font-light text-fg-muted leading-relaxed md:ml-auto max-w-2xl">
-                What you get is production-quality code — tested, observed, documented, and owned by your team.
-             </p>
+             <RevealOnScroll>
+               <div className="font-mono text-[10px] text-accent tracking-[0.2em] uppercase mb-8 flex items-center md:justify-end gap-4">
+                  Principle 03 <span className="w-8 h-px bg-accent/50 hidden md:block" />
+               </div>
+               <h3 className="text-6xl md:text-8xl font-light text-fg mb-12 tracking-tighter leading-none">
+                  PRODUCTION-<br/>MINDED.
+               </h3>
+               <p className="text-3xl md:text-4xl font-light text-fg mb-8 leading-[1.1]">
+                  A prototype that never survives contact with reality is not the finish line.
+               </p>
+               <p className="text-lg md:text-xl font-light text-fg-muted leading-relaxed md:ml-auto max-w-2xl">
+                  What you get is production-quality code — tested, observed, documented, and owned by your team.
+               </p>
+             </RevealOnScroll>
           </div>
        </div>
 
@@ -233,27 +242,33 @@ function WhyUsStatic() {
                 </h3>
              </div>
              <div className="flex-1 md:border-l md:border-border/50 md:pl-16">
-                <div className="space-y-4 mb-12 font-mono text-[10px] md:text-xs text-cyan-400 uppercase tracking-[0.2em] leading-loose">
-                   <div className="flex items-center gap-3"><span className="w-1.5 h-1.5 bg-cyan-400 rounded-full" /> NO EXTRA LAYERS.</div>
-                   <div className="flex items-center gap-3"><span className="w-1.5 h-1.5 bg-cyan-400 rounded-full" /> NO EXTRA ABSTRACTIONS.</div>
-                   <div className="flex items-center gap-3"><span className="w-1.5 h-1.5 bg-cyan-400 rounded-full" /> NO TECH FOR ITS OWN SAKE.</div>
-                </div>
-                <div className="font-mono text-[10px] text-fg-subtle tracking-[0.2em] uppercase mb-4">
-                   Principle 04
-                </div>
-                <h4 className="text-3xl md:text-4xl font-light text-fg mb-6">
-                   No unnecessary complexity.
-                </h4>
-                <p className="text-lg md:text-xl font-light text-fg-muted leading-relaxed">
-                   Complexity should solve a problem. Never exist for its own sake. You do not pay for features you will not use or libraries that add weight without adding value.
-                </p>
+                <RevealOnScroll>
+                  <div className="space-y-4 mb-12 font-mono text-[10px] md:text-xs text-cyan-400 uppercase tracking-[0.2em] leading-loose">
+                     <div className="flex items-center gap-3"><span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" /> NO EXTRA LAYERS.</div>
+                     <div className="flex items-center gap-3"><span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" /> NO EXTRA ABSTRACTIONS.</div>
+                     <div className="flex items-center gap-3"><span className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse" /> NO TECH FOR ITS OWN SAKE.</div>
+                  </div>
+                  <div className="font-mono text-[10px] text-fg-subtle tracking-[0.2em] uppercase mb-4">
+                     Principle 04
+                  </div>
+                  <h4 className="text-3xl md:text-4xl font-light text-fg mb-6">
+                     No unnecessary complexity.
+                  </h4>
+                  <p className="text-lg md:text-xl font-light text-fg-muted leading-relaxed">
+                     Complexity should solve a problem. Never exist for its own sake. You do not pay for features you will not use or libraries that add weight without adding value.
+                  </p>
+                </RevealOnScroll>
              </div>
           </div>
        </div>
        
        {/* OUTRO LINE FOR MOBILE/STATIC */}
        <div className="h-32 w-full flex justify-center border-t border-border/30">
-          <div className="w-[1px] h-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]" />
+          <motion.div
+            className="w-[1px] h-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          />
        </div>
     </div>
   )

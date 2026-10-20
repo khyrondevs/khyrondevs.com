@@ -12,8 +12,14 @@ export function SystemCore() {
     if (!containerRef.current) return
     const container = containerRef.current
 
-    // Initialize Renderer
-    const renderer = new Renderer({ alpha: true, dpr: Math.min(window.devicePixelRatio, 2), antialias: true })
+    // Initialize Renderer with mobile DPR clamping for GPU fill-rate protection
+    const isMobile = window.innerWidth < 768
+    const maxDpr = isMobile ? 1.25 : 2.0
+    const renderer = new Renderer({
+      alpha: true,
+      dpr: Math.min(window.devicePixelRatio, maxDpr),
+      antialias: !isMobile,
+    })
     const gl = renderer.gl
     gl.clearColor(0, 0, 0, 0)
     container.appendChild(gl.canvas)
@@ -147,8 +153,18 @@ export function SystemCore() {
       mouseX = (e.clientX / window.innerWidth) * 2 - 1
       mouseY = -(e.clientY / window.innerHeight) * 2 + 1
     }
+
+    function onTouchMove(e: TouchEvent) {
+      if (e.touches.length > 0) {
+        mouseX = (e.touches[0].clientX / window.innerWidth) * 2 - 1
+        mouseY = -(e.touches[0].clientY / window.innerHeight) * 2 + 1
+      }
+    }
+
     if (!reducedMotion) {
       window.addEventListener('mousemove', onMouseMove)
+      window.addEventListener('touchmove', onTouchMove, { passive: true })
+      window.addEventListener('touchstart', onTouchMove, { passive: true })
     }
 
     // --- RENDER LOOP ---
@@ -168,51 +184,78 @@ export function SystemCore() {
     window.addEventListener('resize', resize, false)
     resize()
 
-    let animationId: number
+    let isVisible = true
+    let animationId = 0
+
     function update(t: number) {
+      if (!isVisible) {
+        animationId = 0
+        return
+      }
+
       if (!reducedMotion) {
         animationId = requestAnimationFrame(update)
       }
-      
+
       const time = t * 0.001
-      
-      // Pointer interpolation
+
+      // Ambient gyration ensures dynamic breathing even without pointer/touch interaction
+      const ambientX = Math.sin(time * 0.7) * 0.22
+      const ambientY = Math.cos(time * 0.5) * 0.16
+
+      // Pointer & Touch interpolation
       targetX += (mouseX - targetX) * 0.05
       targetY += (mouseY - targetY) * 0.05
 
       // Scroll interpolation
       const scrollY = window.scrollY
       const scrollProgress = Math.min(scrollY / window.innerHeight, 1.0)
-      
+
       // Dramatic scroll transformation:
       // Camera moves closer/through the system
       camera.position.z = 8 - (scrollProgress * 4)
-      
-      // The entire system tilts upward on scroll
-      const targetSceneX = targetY * 0.2 + (scrollProgress * Math.PI / 4)
-      
-      // Parallax & Rotation
-      scene.rotation.x += (targetSceneX - scene.rotation.x) * 0.05
-      scene.rotation.y += (targetX * 0.2 - scene.rotation.y) * 0.05
 
-      cylinder.rotation.y = time * 0.1 + scrollProgress
-      cylinder.rotation.z = time * 0.05
+      // The entire system tilts upward on scroll with organic gyration
+      const targetSceneX = (targetY * 0.2) + ambientY + (scrollProgress * Math.PI / 4)
+
+      // Parallax & Rotation with ambient horizontal gyration
+      scene.rotation.x += (targetSceneX - scene.rotation.x) * 0.05
+      scene.rotation.y += ((targetX * 0.2 + ambientX) - scene.rotation.y) * 0.05
+
+      cylinder.rotation.y = time * 0.12 + scrollProgress
+      cylinder.rotation.z = time * 0.06
       cylProg.uniforms.uTime.value = time + scrollProgress * 2.0
 
-      torus.rotation.z = -time * 0.2
-      torus.rotation.x = Math.PI / 2 + Math.sin(time * 0.5) * 0.2 + (scrollProgress * Math.PI / 2)
+      torus.rotation.z = -time * 0.22
+      torus.rotation.x = Math.PI / 2 + Math.sin(time * 0.6) * 0.22 + (scrollProgress * Math.PI / 2)
 
-      core.rotation.y = time * 0.3 - (scrollProgress * 2.0)
+      core.rotation.y = time * 0.35 - (scrollProgress * 2.0)
+      core.rotation.x = Math.sin(time * 0.4) * 0.12
       sphProg.uniforms.uTime.value = time + scrollProgress * 5.0
 
       renderer.render({ scene, camera })
     }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting
+        if (isVisible && !animationId && !reducedMotion) {
+          animationId = requestAnimationFrame(update)
+        }
+      },
+      { threshold: 0 }
+    )
+    observer.observe(container)
+
     animationId = requestAnimationFrame(update)
 
     return () => {
-      cancelAnimationFrame(animationId)
+      observer.disconnect()
+      if (animationId) cancelAnimationFrame(animationId)
       window.removeEventListener('resize', resize)
       window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('touchstart', onTouchMove)
       if (container.contains(gl.canvas)) {
         container.removeChild(gl.canvas)
       }
