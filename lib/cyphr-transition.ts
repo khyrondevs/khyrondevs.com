@@ -1,7 +1,7 @@
 import type { gsap } from "gsap";
 
 export const CYPHR_PORTAL_QUERY = "(min-width: 1100px) and (min-height: 740px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)";
-export const CYPHR_STAGE_QUERY = "(min-width: 1080px) and (min-height: 760px) and (prefers-reduced-motion: no-preference)";
+export const CYPHR_STAGE_QUERY = "(min-width: 1080px) and (min-height: 680px) and (prefers-reduced-motion: no-preference)";
 
 export function canPinCyphr(viewportHeight: number, cardHeight: number) {
   return Number.isFinite(viewportHeight) && Number.isFinite(cardHeight)
