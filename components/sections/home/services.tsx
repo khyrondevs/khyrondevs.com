@@ -203,12 +203,14 @@ function CustomVisual({
       <motion.div
         className="relative w-40 h-40 md:w-48 md:h-48"
         style={{ rotate: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : rotate) }}
+        animate={isMobileLayout && !reducedMotion ? { rotate: [-4, 4, -4] } : {}}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       >
         {/* Center Core */}
         <div className="absolute inset-0 border-2 border-cyan-400/50 bg-cyan-950/20 backdrop-blur-md shadow-[0_0_50px_rgba(34,211,238,0.15)] flex items-center justify-center">
           <motion.div
             className="w-1/2 h-1/2 border border-accent/30 rotate-45"
-            animate={reducedMotion ? {} : { scale: [1, 1.06, 1], rotate: [45, 48, 45] }}
+            animate={reducedMotion ? {} : { scale: [1, 1.08, 1], rotate: [45, 49, 45] }}
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           />
         </div>
@@ -217,29 +219,29 @@ function CustomVisual({
         <motion.div
           className="absolute -top-6 -left-6 w-16 h-16 border border-accent/60 bg-accent/10 backdrop-blur-sm"
           style={{ x: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p1X), y: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p1Y) }}
-          animate={isMobileLayout && !reducedMotion ? { y: [0, -3, 0] } : {}}
-          transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          animate={isMobileLayout && !reducedMotion ? { x: [0, -8, 0], y: [0, -8, 0], rotate: [0, -3, 0] } : {}}
+          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
         />
         {/* Fragment 2 */}
         <motion.div
           className="absolute -top-6 -right-6 w-24 h-12 border border-accent/60 bg-accent/10 backdrop-blur-sm"
           style={{ x: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p2X), y: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p2Y) }}
-          animate={isMobileLayout && !reducedMotion ? { y: [0, -4, 0] } : {}}
-          transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+          animate={isMobileLayout && !reducedMotion ? { x: [0, 8, 0], y: [0, -7, 0], rotate: [0, 3, 0] } : {}}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
         />
         {/* Fragment 3 */}
         <motion.div
           className="absolute -bottom-6 -left-6 w-12 h-24 border border-accent/60 bg-accent/10 backdrop-blur-sm"
           style={{ x: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p3X), y: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p3Y) }}
-          animate={isMobileLayout && !reducedMotion ? { y: [0, 3, 0] } : {}}
-          transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+          animate={isMobileLayout && !reducedMotion ? { x: [0, -7, 0], y: [0, 8, 0], rotate: [0, 2, 0] } : {}}
+          transition={{ duration: 4.8, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
         />
         {/* Fragment 4 */}
         <motion.div
           className="absolute -bottom-6 -right-6 w-16 h-16 border border-cyan-400 bg-cyan-400/15 backdrop-blur-sm shadow-[0_0_30px_rgba(34,211,238,0.3)] flex items-center justify-center"
           style={{ x: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p4X), y: isMobileLayout ? 0 : ((reducedMotion || forceStatic) ? 0 : p4Y) }}
-          animate={isMobileLayout && !reducedMotion ? { scale: [1, 1.05, 1] } : {}}
-          transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+          animate={isMobileLayout && !reducedMotion ? { x: [0, 9, 0], y: [0, 9, 0], scale: [1, 1.08, 1] } : {}}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
         >
           <div className="w-2 h-2 bg-cyan-300" />
         </motion.div>
