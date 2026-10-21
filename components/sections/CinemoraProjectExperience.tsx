@@ -224,8 +224,8 @@ export default function CinemoraProjectExperience({
                     className={`cinemora-mode-tab${idx === activePhaseIndex ? " is-active" : ""}`}
                     onClick={() => handlePhaseSelect(idx)}
                   >
-                    <div className="font-bold text-[#f59e0b]">{phase.number}</div>
-                    <div className="truncate text-white/80">{phase.codename}</div>
+                    <div className="font-bold text-[#f59e0b] text-[11px] sm:text-xs">{phase.number}</div>
+                    <div className="cinemora-tab-codename text-white/80">{phase.codename}</div>
                   </button>
                 ))}
               </div>

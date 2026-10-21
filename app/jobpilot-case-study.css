@@ -997,14 +997,66 @@
     padding: 0.5rem;
   }
 
-  .jobpilot-mode-tabs {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
+  @media (max-width: 639px) {
+    .jobpilot-mode-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.5rem;
+      border-bottom: none;
+      overflow-x: visible;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .jobpilot-mode-tab {
+      min-width: 0;
+      width: 100%;
+      box-sizing: border-box;
+      padding: 0.5rem 0.625rem;
+      border-radius: 0.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(56, 189, 248, 0.15);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 0.15rem;
+      min-height: 54px;
+      text-align: left;
+      white-space: normal;
+    }
+
+    .jobpilot-mode-tab.is-active {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: var(--pilot-cyan);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    }
+
+    .jobpilot-tab-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--pilot-cyan);
+    }
+
+    .jobpilot-tab-code {
+      white-space: normal;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      word-break: break-word;
+      line-height: 1.2;
+      font-size: 10px;
+      letter-spacing: 0.02em;
+      color: rgba(255, 255, 255, 0.8);
+    }
   }
 
-  @media (min-width: 640px) {
+  @media (min-width: 640px) and (max-width: 1023px) {
     .jobpilot-mode-tabs {
-      grid-template-columns: repeat(4, 1fr);
+      display: flex;
+      overflow-x: auto;
     }
   }
 }

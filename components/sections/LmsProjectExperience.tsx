@@ -218,8 +218,8 @@ export default function LmsProjectExperience({
                     className={`lms-mode-tab${idx === activePhaseIndex ? " is-active" : ""}`}
                     onClick={() => handlePhaseSelect(idx)}
                   >
-                    <div className="font-bold text-[#6366f1]">{phase.number}</div>
-                    <div className="truncate text-white/80">{phase.codename}</div>
+                    <div className="font-bold text-[#6366f1] text-[11px] sm:text-xs">{phase.number}</div>
+                    <div className="lms-tab-codename text-white/80">{phase.codename}</div>
                   </button>
                 ))}
               </div>
@@ -253,7 +253,7 @@ export default function LmsProjectExperience({
                 data-theater-screen
               >
                 <div className="relative w-full max-w-4xl mx-auto flex items-center justify-center">
-                  <div className="lms-orbital-container scale-[0.8] xs:scale-[0.88] sm:scale-95 md:scale-100">
+                  <div className="lms-orbital-container scale-[0.68] xs:scale-[0.78] sm:scale-90 md:scale-100">
                     <div data-ring-student className="lms-orbital-ring lms-ring-student">
                       <div className="lms-orbit-badge border border-[#22d3ee]/60 text-[#22d3ee] shadow-[0_0_14px_rgba(34,211,238,0.35)]">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#22d3ee] shadow-[0_0_6px_#22d3ee]" />

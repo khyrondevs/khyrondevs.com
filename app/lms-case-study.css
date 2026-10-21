@@ -281,17 +281,20 @@
   width: 100%;
   margin: 0.75rem 0;
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .lms-mode-tabs {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.75rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 639px) {
   .lms-mode-tabs {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.5rem;
   }
 }
@@ -307,6 +310,22 @@
   text-align: left;
   transition: all 0.2s ease;
   cursor: pointer;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+@media (max-width: 639px) {
+  .lms-mode-tab {
+    padding: 0.5rem 0.625rem;
+    font-size: 0.6875rem;
+    line-height: 1.25;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 54px;
+  }
 }
 
 .lms-mode-tab.is-active {
@@ -314,6 +333,26 @@
   border-color: var(--lms-indigo);
   color: var(--lms-indigo);
   box-shadow: 0 0 15px var(--lms-indigo-glow);
+}
+
+.lms-tab-codename {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 639px) {
+  .lms-tab-codename {
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+    line-height: 1.2;
+    font-size: 10px;
+    letter-spacing: 0.02em;
+  }
 }
 
 .lms-scrub-bar {
