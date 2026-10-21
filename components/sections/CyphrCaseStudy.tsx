@@ -379,29 +379,22 @@ export default function CyphrCaseStudy({
         ScrollTrigger.create({ ...triggerOptions, onUpdate: (trigger) => sync(trigger.progress) });
       }
       if (motion) {
-        const titleSection = root.querySelector<HTMLElement>(".cyphr-hero-statement") || root.querySelector<HTMLElement>("#cyphr-story-title");
-        const words = Array.from(root.querySelectorAll<HTMLElement>(".cyphr-title-word"));
-        const underline = root.querySelector<HTMLElement>(".cyphr-title-underline");
-        if (titleSection && words.length) {
-          const titleTimeline = gsap.timeline({ paused: true, defaults: { ease: "power3.out" } });
-          titleTimeline.fromTo(words,
-            { opacity: 0, y: 36, scale: 0.92, rotation: (i: number) => (i % 2 ? 2.5 : -2.5) },
-            { opacity: 1, y: 0, scale: 1, rotation: 0, duration: 0.75, stagger: 0.12 }
-          );
-          if (underline) {
-            titleTimeline.fromTo(underline,
-              { scaleX: 0 },
-              { scaleX: 1, duration: 0.6, ease: "power2.out" },
-              "-=0.25"
-            );
-          }
-          titleTimeline.progress(1).progress(0);
-          ScrollTrigger.create({
-            trigger: titleSection,
-            start: "top 82%",
-            animation: titleTimeline,
-            toggleActions: "play none none reverse",
+        const words = root.querySelectorAll<HTMLElement>(".cyphr-title-word");
+        words.forEach((word, index) => {
+          const title = gsap.fromTo(word, { scale: .84, rotation: index % 2 ? 3 : -3, xPercent: index % 2 ? 6 : -3 }, {
+            scale: 1, rotation: 0, xPercent: 0, ease: "power2.out",
+            scrollTrigger: { trigger: word, start: "top 94%", end: "top 44%", scrub: .5, invalidateOnRefresh: true },
           });
+          title.progress(1).progress(title.scrollTrigger?.progress ?? 0);
+        });
+        const underline = root.querySelector<HTMLElement>(".cyphr-title-underline");
+        const evidenceWord = root.querySelector<HTMLElement>(".cyphr-title-evidence");
+        if (underline && evidenceWord) {
+          const underAnim = gsap.fromTo(underline, { scaleX: 0 }, {
+            scaleX: 1, ease: "power2.out",
+            scrollTrigger: { trigger: evidenceWord, start: "top 94%", end: "top 44%", scrub: .5, invalidateOnRefresh: true },
+          });
+          underAnim.progress(1).progress(underAnim.scrollTrigger?.progress ?? 0);
         }
         if (!desktop) inlineFigures.forEach((figure, index) => {
           const inlineScene = figure.querySelector<HTMLElement>(".cyphr-movie-scene");

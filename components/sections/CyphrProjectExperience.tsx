@@ -44,6 +44,7 @@ export default function CyphrProjectExperience({ project, children }: { project:
               scrub: 0.35,
               anticipatePin: 1,
               invalidateOnRefresh: true,
+              refreshPriority: 1,
             },
           });
           scoreCyphrTransition(timeline, {
@@ -62,6 +63,7 @@ export default function CyphrProjectExperience({ project, children }: { project:
           delete container.dataset.enhanced;
         };
       }, container);
+      ScrollTrigger.refresh();
       return true;
     };
     buildScene();
