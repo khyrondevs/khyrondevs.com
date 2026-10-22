@@ -5,8 +5,12 @@ import { usePathname } from 'next/navigation'
 import * as Dialog from '@radix-ui/react-dialog'
 import { motion } from 'motion/react'
 import Link from 'next/link'
-import { X } from 'lucide-react'
+import { X, ArrowUpRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import type { NavLink } from '@/lib/content/site-config'
+import { useReducedMotion } from '@/hooks/use-reduced-motion'
+
+const MotionLink = motion.create(Link)
 
 interface NavMobileProps {
   links: NavLink[]
@@ -16,6 +20,7 @@ interface NavMobileProps {
 
 export function NavMobile({ links, open, onOpenChange }: NavMobileProps) {
   const pathname = usePathname()
+  const reducedMotion = useReducedMotion()
 
   // Close on route change
   useEffect(() => {
@@ -47,35 +52,57 @@ export function NavMobile({ links, open, onOpenChange }: NavMobileProps) {
                 Navigation
               </Dialog.Title>
               <Dialog.Close asChild>
-                <button
-                  className="text-fg-muted hover:text-fg transition-colors p-2 -mr-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+                <motion.button
+                  whileTap={reducedMotion ? undefined : { scale: 0.90 }}
+                  className="text-fg-muted hover:text-fg transition-colors p-2 -mr-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
                   aria-label="Close navigation"
                 >
                   <X size={20} />
-                </button>
+                </motion.button>
               </Dialog.Close>
             </div>
 
             <ul className="flex flex-col gap-2 flex-1" role="list">
-              {links.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    className="block py-3 text-3xl font-light text-fg-muted hover:text-fg transition-colors focus-visible:outline-none focus-visible:text-accent"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {links.map((link) => {
+                const isActive = pathname === link.href
+
+                return (
+                  <li key={link.href}>
+                    <MotionLink
+                      href={link.href}
+                      whileTap={reducedMotion ? undefined : { scale: 0.97 }}
+                      className={cn(
+                        'flex items-center justify-between py-3 text-3xl font-light transition-colors focus-visible:outline-none focus-visible:text-accent',
+                        isActive ? 'text-accent font-normal' : 'text-fg-muted hover:text-fg'
+                      )}
+                    >
+                      <span>{link.label}</span>
+                      {isActive && (
+                        <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />
+                      )}
+                    </MotionLink>
+                  </li>
+                )
+              })}
             </ul>
 
             <div className="pt-8 border-t border-border">
-              <Link
+              <MotionLink
                 href="/contact"
-                className="inline-flex w-full items-center justify-center rounded-lg bg-accent px-6 py-3 text-white font-medium hover:bg-accent-light transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+                whileTap={reducedMotion ? undefined : { scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                className="group relative flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-6 py-3.5 text-white font-medium hover:bg-accent-light shadow-[0_0_20px_rgba(59,130,246,0.3)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
               >
-                Start a project
-              </Link>
+                <span className="relative flex h-2 w-2 items-center justify-center">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-60" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-white shadow-[0_0_6px_#fff]" />
+                </span>
+                <span>Start a project</span>
+                <ArrowUpRight
+                  size={16}
+                  className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
+              </MotionLink>
             </div>
           </motion.nav>
         </Dialog.Content>
