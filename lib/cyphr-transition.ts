@@ -92,7 +92,7 @@ export function scoreCyphrDocumentMovie(timeline: gsap.core.Timeline, targets: M
       // Finish the stagger before context assembly. Overlapping transforms on
       // one token otherwise depend on whether a local clock arrived forwards or backwards.
       .to(token, { x: -60 + index * 24, y: 35 + index % 2 * 18, scale: .8, duration: .8, ease: "power2.inOut" }, 2.2)
-      .to(token, { x: -58 + index % 3 * 58, y: -33 + Math.floor(index / 3) * 38, scale: .75, opacity: .25, duration: 1, ease: "power2.inOut" }, 3);
+      .to(token, { x: -58 + index % 3 * 58, y: -33 + Math.floor(index / 3) * 38, scale: .75, opacity: 1, duration: 1, ease: "power2.inOut" }, 3);
   });
   timeline.fromTo(targets.answer, { scale: .65, rotationY: 24, rotationZ: -5, opacity: 0 }, { scale: 1, rotationY: 0, rotationZ: 0, opacity: 1, duration: .9, ease: "power2.inOut" }, 3)
     .fromTo(targets.citation, { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .8, ease: "none" }, 3.2);
