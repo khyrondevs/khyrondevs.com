@@ -108,14 +108,42 @@ export function Footer() {
       <div className="w-full flex flex-col items-center max-w-[1800px] mx-auto">
         <div className="w-full h-px bg-fg-subtle/10 mb-8" />
         
-        {/* Massive edge-to-edge SVG Wordmark guarantees perfect scaling on all devices */}
+        {/* Massive edge-to-edge SVG Wordmark + Emblem guarantees perfect scaling on all devices */}
         <div className="w-full select-none" aria-hidden="true">
-          <svg viewBox="0 0 1200 160" className="w-full h-auto block" preserveAspectRatio="xMidYMid meet">
+          <svg viewBox="0 0 1020 144" className="w-full h-auto block" preserveAspectRatio="xMidYMid meet">
+            <defs>
+              <clipPath id="footer-logo-clip">
+                <rect x="18" y="32.85" width="86" height="86" rx="18" />
+              </clipPath>
+              <filter id="footer-logo-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#22d3ee" floodOpacity="0.4" />
+              </filter>
+            </defs>
+
+            {/* Emblem Frame calibrated to letter cap-height and baseline */}
+            <g filter="url(#footer-logo-glow)">
+              <rect x="18" y="32.85" width="86" height="86" rx="18" fill="#07090e" stroke="rgba(34, 211, 238, 0.5)" strokeWidth="2" />
+              <image
+                href="/android-chrome-512x512.png"
+                x="18"
+                y="32.85"
+                width="86"
+                height="86"
+                clipPath="url(#footer-logo-clip)"
+                preserveAspectRatio="xMidYMid slice"
+              />
+              <rect x="18" y="32.85" width="86" height="86" rx="18" fill="none" stroke="rgba(34, 211, 238, 0.4)" strokeWidth="1.5" />
+            </g>
+
+            {/* Wordmark */}
             <text
-              x="600"
-              y="135"
-              textAnchor="middle"
-              className="text-[132px] font-light tracking-[-0.03em] uppercase fill-fg"
+              x="132"
+              y="120"
+              fontFamily="var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif"
+              fontSize="124"
+              fontWeight="300"
+              letterSpacing="-0.03em"
+              className="fill-fg"
             >
               {siteConfig.name}
             </text>

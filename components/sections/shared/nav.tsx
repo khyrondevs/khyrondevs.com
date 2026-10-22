@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { motion } from 'motion/react'
 import { Menu } from 'lucide-react'
@@ -38,10 +39,20 @@ export function Nav() {
             {/* Wordmark */}
             <Link
               href="/"
-              className="font-mono text-sm tracking-[0.2em] uppercase text-fg hover:text-accent transition-colors focus-visible:outline-none focus-visible:text-accent"
+              className="group flex items-center gap-2.5 font-mono text-sm tracking-[0.2em] uppercase text-fg hover:text-accent transition-colors focus-visible:outline-none focus-visible:text-accent"
               aria-label={`${siteConfig.name} — home`}
             >
-              {siteConfig.name}
+              <div className="relative w-6 h-6 sm:w-6.5 sm:h-6.5 shrink-0 rounded-[6px] overflow-hidden border border-cyan-400/30 bg-[#07090e] shadow-[0_0_10px_rgba(34,211,238,0.2)] group-hover:border-cyan-400/60 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all duration-300">
+                <Image
+                  src="/android-chrome-192x192.png"
+                  alt={`${siteConfig.name} logo`}
+                  width={26}
+                  height={26}
+                  priority
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <span className="flex items-center">{siteConfig.name}</span>
             </Link>
 
             {/* Desktop nav */}
