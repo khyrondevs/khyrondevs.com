@@ -5,7 +5,6 @@ import Image from "next/image";
 import {
   AlertTriangle,
   CheckCircle2,
-  ExternalLink,
   Lock,
   QrCode,
   Radio,
@@ -16,6 +15,7 @@ import {
 } from "lucide-react";
 import type { Project } from "@/lib/content/projects";
 import { cn } from "@/lib/utils";
+import { ProjectActionButtons } from "@/components/ui/project-action-buttons";
 
 type SeatState = "available" | "selected" | "held" | "locked";
 
@@ -336,25 +336,7 @@ export default function CinemoraCaseStudy({
             Distributed Real-Time Concurrency System
           </span>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
-          {project.links?.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                "inline-flex items-center gap-2 rounded-lg px-4 py-2 font-mono text-xs font-medium transition-all",
-                link.kind === "live"
-                  ? "bg-[#f59e0b] text-black shadow-lg shadow-[#f59e0b]/20 hover:bg-[#fbbf24]"
-                  : "border border-white/10 bg-white/5 text-white/80 hover:border-[#f59e0b]/40 hover:text-white"
-              )}
-            >
-              <span>{link.label}</span>
-              <ExternalLink size={13} />
-            </a>
-          ))}
-        </div>
+        <ProjectActionButtons project={project} size="sm" />
       </div>
 
       {/* ── High-Impact KPI Metrics Strip ── */}

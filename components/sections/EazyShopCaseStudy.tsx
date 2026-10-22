@@ -7,7 +7,6 @@ import {
   CheckCircle2,
   Copy,
   Database,
-  ExternalLink,
   Layers,
   Server,
   ShieldCheck,
@@ -19,6 +18,7 @@ import {
 import { projects, type Project } from "@/lib/content/projects";
 import { cn } from "@/lib/utils";
 import useClipboard from "@/hooks/useClipboard";
+import { ProjectActionButtons } from "@/components/ui/project-action-buttons";
 
 type NodeId = "session" | "order" | "payment" | "ledger";
 
@@ -780,17 +780,8 @@ export default function EazyShopCaseStudy({
             <span className="inline-block w-2.5 h-2.5 bg-[#10b981] rounded-full animate-pulse" />
             {project.title} &bull; Commerce Architecture & Telemetry
           </div>
-          <div className="flex items-center gap-3">
-            {project.links?.find((l) => l.kind === "live") && (
-              <a
-                href={project.links.find((l) => l.kind === "live")?.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 border border-[#10b981]/30 bg-[#10b981]/10 text-[#10b981] rounded-md text-xs font-mono uppercase hover:bg-[#10b981]/20 transition-colors flex items-center gap-1.5"
-              >
-                Live Storefront <ExternalLink size={13} />
-              </a>
-            )}
+          <div className="flex items-center gap-3 flex-wrap">
+            <ProjectActionButtons project={project} size="sm" />
             {onBackToCard && (
               <button
                 type="button"

@@ -8,7 +8,6 @@ import {
   Copy,
   Cpu,
   Database,
-  ExternalLink,
   Layers,
   Sliders,
   Terminal,
@@ -18,6 +17,7 @@ import {
 import { projects, type Project } from "@/lib/content/projects";
 import { cn } from "@/lib/utils";
 import useClipboard from "@/hooks/useClipboard";
+import { ProjectActionButtons } from "@/components/ui/project-action-buttons";
 
 type NodeId = "features" | "ensemble" | "tuning" | "serving";
 
@@ -274,27 +274,8 @@ export default function HousePriceCaseStudy({
             <span className="inline-block w-2.5 h-2.5 bg-[#06b6d4] rounded-full animate-pulse" />
             {project.title} &bull; Applied ML Architecture & Benchmarks
           </div>
-          <div className="flex items-center gap-3">
-            {project.links?.find((l) => l.kind === "live") && (
-              <a
-                href={project.links.find((l) => l.kind === "live")?.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 border border-[#06b6d4]/30 bg-[#06b6d4]/10 text-[#06b6d4] rounded-md text-xs font-mono uppercase hover:bg-[#06b6d4]/20 transition-colors flex items-center gap-1.5"
-              >
-                Live Predictor <ExternalLink size={13} />
-              </a>
-            )}
-            {project.links?.find((l) => l.kind === "docs") && (
-              <a
-                href={project.links.find((l) => l.kind === "docs")?.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 border border-white/10 bg-white/5 text-fg-muted rounded-md text-xs font-mono uppercase hover:bg-white/10 transition-colors flex items-center gap-1.5"
-              >
-                Swagger API <ExternalLink size={13} />
-              </a>
-            )}
+          <div className="flex items-center gap-3 flex-wrap">
+            <ProjectActionButtons project={project} size="sm" />
             {onBackToCard && (
               <button
                 type="button"

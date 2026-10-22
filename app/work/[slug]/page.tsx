@@ -5,7 +5,7 @@ import { projects, getProjectBySlug } from '@/lib/content/projects'
 import { RevealOnScroll } from '@/components/ui/reveal-on-scroll'
 import { Badge } from '@/components/ui/badge'
 import { BentoCard } from '@/components/ui/bento-card'
-import { ArrowLeft, ExternalLink, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, CheckCircle2 } from 'lucide-react'
 import { Gallery } from '@/components/ui/gallery'
 
 import CyphrProjectExperience from '@/components/sections/CyphrProjectExperience'
@@ -14,6 +14,7 @@ import EazyShopProjectExperience from '@/components/sections/EazyShopProjectExpe
 import HousePriceProjectExperience from '@/components/sections/HousePriceProjectExperience'
 import CinemoraProjectExperience from '@/components/sections/CinemoraProjectExperience'
 import LmsProjectExperience from '@/components/sections/LmsProjectExperience'
+import { ProjectActionButtons } from '@/components/ui/project-action-buttons'
 
 export async function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }))
@@ -51,7 +52,8 @@ export default async function CaseStudyPage(props: CaseStudyPageProps) {
             <Badge variant="outline">{project.category}</Badge>
           </div>
           <h1 className="text-4xl md:text-6xl font-light text-fg mb-6">{project.title}</h1>
-          <p className="text-xl text-fg-muted mb-12">{project.coverDescription}</p>
+          <p className="text-xl text-fg-muted mb-8">{project.coverDescription}</p>
+          <ProjectActionButtons project={project} className="mb-12" />
         </div>
       </CyphrProjectExperience>
     )
@@ -69,7 +71,8 @@ export default async function CaseStudyPage(props: CaseStudyPageProps) {
             <Badge variant="outline">{project.category}</Badge>
           </div>
           <h1 className="text-4xl md:text-6xl font-light text-fg mb-6">{project.title}</h1>
-          <p className="text-xl text-fg-muted mb-12">{project.coverDescription}</p>
+          <p className="text-xl text-fg-muted mb-8">{project.coverDescription}</p>
+          <ProjectActionButtons project={project} className="mb-12" />
         </div>
       </CinemoraProjectExperience>
     )
@@ -87,7 +90,8 @@ export default async function CaseStudyPage(props: CaseStudyPageProps) {
             <Badge variant="outline">{project.category}</Badge>
           </div>
           <h1 className="text-4xl md:text-6xl font-light text-fg mb-6">{project.title}</h1>
-          <p className="text-xl text-fg-muted mb-12">{project.coverDescription}</p>
+          <p className="text-xl text-fg-muted mb-8">{project.coverDescription}</p>
+          <ProjectActionButtons project={project} className="mb-12" />
         </div>
       </JobPilotProjectExperience>
     )
@@ -105,7 +109,8 @@ export default async function CaseStudyPage(props: CaseStudyPageProps) {
             <Badge variant="outline">{project.category}</Badge>
           </div>
           <h1 className="text-4xl md:text-6xl font-light text-fg mb-6">{project.title}</h1>
-          <p className="text-xl text-fg-muted mb-12">{project.coverDescription}</p>
+          <p className="text-xl text-fg-muted mb-8">{project.coverDescription}</p>
+          <ProjectActionButtons project={project} className="mb-12" />
         </div>
       </EazyShopProjectExperience>
     )
@@ -123,7 +128,8 @@ export default async function CaseStudyPage(props: CaseStudyPageProps) {
             <Badge variant="outline">{project.category}</Badge>
           </div>
           <h1 className="text-4xl md:text-6xl font-light text-fg mb-6">{project.title}</h1>
-          <p className="text-xl text-fg-muted mb-12">{project.coverDescription}</p>
+          <p className="text-xl text-fg-muted mb-8">{project.coverDescription}</p>
+          <ProjectActionButtons project={project} className="mb-12" />
         </div>
       </HousePriceProjectExperience>
     )
@@ -141,7 +147,8 @@ export default async function CaseStudyPage(props: CaseStudyPageProps) {
             <Badge variant="outline">{project.category}</Badge>
           </div>
           <h1 className="text-4xl md:text-6xl font-light text-fg mb-6">{project.title}</h1>
-          <p className="text-xl text-fg-muted mb-12">{project.coverDescription}</p>
+          <p className="text-xl text-fg-muted mb-8">{project.coverDescription}</p>
+          <ProjectActionButtons project={project} className="mb-12" />
         </div>
       </LmsProjectExperience>
     )
@@ -169,22 +176,7 @@ export default async function CaseStudyPage(props: CaseStudyPageProps) {
             {project.coverDescription}
           </p>
 
-          {project.links && project.links.length > 0 && (
-            <div className="flex items-center gap-3 flex-wrap mb-8">
-              {project.links.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-mono text-xs border border-border bg-surface hover:border-accent transition-colors text-fg"
-                >
-                  <span>{link.label}</span>
-                  <ExternalLink size={13} />
-                </a>
-              ))}
-            </div>
-          )}
+          <ProjectActionButtons project={project} className="mb-8" />
 
           {project.metrics && project.metrics.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">

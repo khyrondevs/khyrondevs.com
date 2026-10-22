@@ -64,8 +64,8 @@ export const projects: Project[] = [
       { label: 'Security & Regression', value: '125 tests' }
     ],
     links: [
-      { label: 'Open CYPHR', href: 'https://cyphr-rag.vercel.app/', kind: 'live' },
-      { label: 'View source', href: 'https://github.com/Vittal-17/CYPHR-RAG', kind: 'github' }
+      { label: 'Live Platform', href: 'https://cyphr-rag.vercel.app/', kind: 'live' },
+      { label: 'Source Code', href: 'https://github.com/Vittal-17/CYPHR-RAG', kind: 'github' }
     ],
     gallery: [
       { src: '/images/cyphr/dark/6_chat_response.png', label: 'Grounded answer with citation', theme: 'Dark' },
@@ -104,7 +104,8 @@ export const projects: Project[] = [
       { label: 'Gate Lookup Speed', value: '<5ms Indexed' }
     ],
     links: [
-      { label: 'View source', href: 'https://github.com/Gowthamr1/Cinemora', kind: 'github' },
+      { label: 'Live Platform', href: 'https://cinemora-alpha.vercel.app/', kind: 'live' },
+      { label: 'Source Code', href: 'https://github.com/Gowthamr1/Cinemora', kind: 'github' },
       { label: 'API Backend', href: 'https://cinemora-6r4q.onrender.com/api/', kind: 'api' }
     ],
     gallery: [
@@ -138,7 +139,8 @@ export const projects: Project[] = [
       { label: 'Automated tests', value: '590 tests' }
     ],
     links: [
-      { label: 'Live Platform', href: 'https://jobpilot.cfd', kind: 'live' }
+      { label: 'Live Platform', href: 'https://jobpilot.cfd/', kind: 'live' },
+      { label: 'Source Code', href: 'https://github.com/Vittal-17/Jobpilot', kind: 'github' }
     ],
     gallery: [
       { src: '/images/jobpilot/Today.png', label: 'Today / live recommendations' },
@@ -164,8 +166,8 @@ export const projects: Project[] = [
     ],
     stack: ['Django', 'React', 'SQL', 'REST API'],
     links: [
-      { label: 'Open live app', href: 'https://django-react-ecommerce-platform.vercel.app', kind: 'live' },
-      { label: 'View source', href: 'https://github.com/Vittal-17/django-react-ecommerce-platform', kind: 'github' }
+      { label: 'Live Storefront', href: 'https://eazyshop-store.vercel.app/', kind: 'live' },
+      { label: 'Source Code', href: 'https://github.com/Vittal-17/EazyShop', kind: 'github' }
     ],
     gallery: [
       { src: '/images/eazyshop/eazyshop_home.png', label: 'Home' },
@@ -194,8 +196,8 @@ export const projects: Project[] = [
       { label: 'Accuracy', value: 'R² 0.8062' }
     ],
     links: [
-      { label: 'Open live app', href: 'https://aihouseprice.vercel.app', kind: 'live' },
-      { label: 'View source', href: 'https://github.com/Vittal-17/ai-house-price-estimator', kind: 'github' },
+      { label: 'Live Predictor', href: 'https://aihouseprice.vercel.app/', kind: 'live' },
+      { label: 'Source Code', href: 'https://github.com/Vittal-17/ai-house-price-estimator', kind: 'github' },
       { label: 'API docs', href: 'https://aihouseprice.onrender.com/docs', kind: 'docs' }
     ],
     gallery: [
@@ -234,7 +236,8 @@ export const projects: Project[] = [
       { label: 'Curriculum Tracking', value: '100% Progress Gate' }
     ],
     links: [
-      { label: 'View source', href: 'https://github.com/Gowthamr1/LMS-django-react', kind: 'github' }
+      { label: 'Live Portal', href: 'https://lms-django-react-one.vercel.app/', kind: 'live' },
+      { label: 'Source Code', href: 'https://github.com/Gowthamr1/LMS-django-react', kind: 'github' }
     ],
     gallery: [
       { src: '/images/online_lms/Screenshot_2026-10-17_184130.png', label: 'Course Catalog & Interactive Learning Portal' },

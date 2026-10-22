@@ -16,6 +16,7 @@ import {
 import { projects, type Project } from "@/lib/content/projects";
 import { cn } from "@/lib/utils";
 import useClipboard from "@/hooks/useClipboard";
+import { ProjectActionButtons } from "@/components/ui/project-action-buttons";
 
 type NodeId = "ingest" | "dedup" | "matcher" | "deploy";
 
@@ -676,7 +677,21 @@ export default function JobPilotCaseStudy({
 
   return (
     <section id="jobpilot-case-study" className={cn("py-16 md:py-24", embedded && "jobpilot-embedded")}>
-      <div className="container-site space-y-20">
+      <div className="container-site space-y-16">
+        {/* ── Action Bar & Links ── */}
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.03] p-4 backdrop-blur-md">
+          <div className="flex items-center gap-3">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
+            </span>
+            <span className="font-mono text-xs uppercase tracking-widest text-emerald-400">
+              Autonomous Intelligence &bull; Production System
+            </span>
+          </div>
+          <ProjectActionButtons project={project} size="sm" />
+        </div>
+
         {/* ── Section Header ── */}
         <div className="space-y-4 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-sky-400/20 bg-sky-400/5 text-sky-400 text-xs font-mono tracking-widest uppercase">

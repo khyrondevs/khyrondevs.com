@@ -3,7 +3,6 @@
 import {
   ArrowDown,
   ArrowRight,
-  ArrowUpRight,
   BrainCircuit,
   Check,
   CheckCircle2,
@@ -26,6 +25,7 @@ import { projects, type Project } from "@/lib/content/projects";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import useClipboard from "@/hooks/useClipboard";
+import { ProjectActionButtons } from "@/components/ui/project-action-buttons";
 import { gsap, registerGsap, ScrollTrigger } from "@/lib/gsap";
 import {
   createCyphrAmbientState,
@@ -794,13 +794,7 @@ export default function CyphrCaseStudy({
         {/* FOOTER */}
         <footer className="cyphr-footer">
           <div><span className="cyphr-footer-pulse" aria-hidden /> {project.title} &bull; Enterprise RAG System</div>
-          <div className="cyphr-footer-links">
-            {project.links?.map((link) => (
-              <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">
-                {link.label}<ArrowUpRight size={14} aria-hidden />
-              </a>
-            ))}
-          </div>
+          <ProjectActionButtons project={project} size="sm" />
         </footer>
       </div>
     </section>
