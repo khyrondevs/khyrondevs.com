@@ -170,15 +170,27 @@ export function SystemCore() {
     // --- RENDER LOOP ---
     function resize() {
       renderer.setSize(container.clientWidth, container.clientHeight)
-      camera.perspective({ aspect: gl.canvas.width / gl.canvas.height })
+      const aspect = gl.canvas.width / gl.canvas.height
+      camera.perspective({ aspect })
       
-      // Shift scene to the right on desktop to balance with left-aligned typography
-      if (window.innerWidth > 1024) {
+      const width = window.innerWidth
+      // Desktop: place on right side with full scale to balance left-aligned typography
+      if (width > 1024) {
+        scene.scale.set(1.0)
         scene.position.x = 2.5
         scene.position.y = 0
+      } else if (width >= 768) {
+        // Tablet: medium scale centered
+        scene.scale.set(0.70)
+        scene.position.x = 0.5
+        scene.position.y = 0.5
       } else {
+        // Mobile: scaled to 0.48 so the spinning ring stays monumental across the hero
+        // headline while fitting comfortably within the screen without horizontal clipping.
+        const mobileScale = Math.min(Math.max((width / 390) * 0.48, 0.40), 0.52)
+        scene.scale.set(mobileScale)
         scene.position.x = 0
-        scene.position.y = 1.0 // Shift up slightly on mobile
+        scene.position.y = 1.0
       }
     }
     window.addEventListener('resize', resize, false)
