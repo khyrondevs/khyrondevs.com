@@ -27,6 +27,18 @@ export function NavMobile({ links, open, onOpenChange }: NavMobileProps) {
     onOpenChange(false)
   }, [pathname, onOpenChange])
 
+  // Signal body when mobile menu is open to pause background WebGL canvas
+  useEffect(() => {
+    if (open) {
+      document.body.dataset.mobileMenuOpen = 'true'
+    } else {
+      delete document.body.dataset.mobileMenuOpen
+    }
+    return () => {
+      delete document.body.dataset.mobileMenuOpen
+    }
+  }, [open])
+
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <AnimatePresence>
@@ -34,57 +46,45 @@ export function NavMobile({ links, open, onOpenChange }: NavMobileProps) {
           <Dialog.Portal forceMount>
             <Dialog.Overlay asChild forceMount>
               <motion.div
-                className="fixed inset-0 z-40 bg-black/80 backdrop-blur-md"
+                className="fixed inset-0 z-40 bg-black/80"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.35, ease: 'easeInOut' }}
+                transition={{ duration: 0.28, ease: 'easeOut' }}
               />
             </Dialog.Overlay>
             <Dialog.Content asChild forceMount>
               <motion.nav
-                className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col bg-[#07090e]/98 backdrop-blur-2xl border-l border-cyan-500/20 p-8 shadow-[-25px_0_70px_rgba(0,0,0,0.95)] overflow-hidden"
+                className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col border-l border-cyan-500/25 p-8 shadow-[-10px_0_30px_rgba(0,0,0,0.85)] overflow-hidden transform-gpu will-change-transform"
+                style={{
+                  background:
+                    'radial-gradient(circle at 100% 0%, rgba(34, 211, 238, 0.16) 0%, rgba(34, 211, 238, 0.04) 35%, transparent 70%), radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.20) 0%, rgba(37, 99, 235, 0.05) 45%, transparent 75%), #07090e',
+                }}
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
                 transition={
                   reducedMotion
                     ? { duration: 0 }
-                    : { duration: 0.55, ease: [0.22, 1, 0.36, 1] }
+                    : { duration: 0.42, ease: [0.16, 1, 0.3, 1] }
                 }
                 aria-label="Mobile navigation"
               >
                 {/* Cybernetic laser line tracing down the left border */}
                 <motion.div
-                  className="pointer-events-none absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-cyan-400 via-blue-500 to-transparent"
+                  className="pointer-events-none absolute left-0 top-0 bottom-0 w-[2px] bg-gradient-to-b from-cyan-400 via-blue-500 to-transparent transform-gpu will-change-transform"
                   initial={{ scaleY: 0 }}
                   animate={{ scaleY: 1 }}
                   exit={{ scaleY: 0 }}
                   transition={
                     reducedMotion
                       ? { duration: 0 }
-                      : { duration: 0.65, ease: [0.16, 1, 0.3, 1], delay: 0.05 }
+                      : { duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.05 }
                   }
                   style={{
                     transformOrigin: 'top',
-                    boxShadow: '0 0 12px rgba(34,211,238,0.7)',
+                    boxShadow: '0 0 10px rgba(34,211,238,0.7)',
                   }}
-                />
-
-                {/* Ambient glowing atmosphere */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.7 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.8, ease: 'easeOut' }}
-                  className="pointer-events-none absolute -top-32 -right-32 w-80 h-80 rounded-full bg-cyan-500/15 blur-[90px] -z-10"
-                />
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.7 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
-                  className="pointer-events-none absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-blue-600/15 blur-[90px] -z-10"
                 />
 
                 {/* Header */}
@@ -125,20 +125,21 @@ export function NavMobile({ links, open, onOpenChange }: NavMobileProps) {
                     return (
                       <li key={link.href} className="overflow-hidden">
                         <motion.div
+                          className="transform-gpu will-change-transform"
                           initial={
                             reducedMotion
                               ? undefined
-                              : { y: '120%', opacity: 0, skewY: 1.5 }
+                              : { y: 24, opacity: 0 }
                           }
-                          animate={{ y: '0%', opacity: 1, skewY: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
                           exit={
                             reducedMotion
                               ? undefined
-                              : { y: '80%', opacity: 0 }
+                              : { y: 16, opacity: 0 }
                           }
                           transition={{
-                            duration: 0.5,
-                            delay: reducedMotion ? 0 : 0.18 + idx * 0.08,
+                            duration: 0.38,
+                            delay: reducedMotion ? 0 : 0.12 + idx * 0.05,
                             ease: [0.16, 1, 0.3, 1],
                           }}
                         >
@@ -205,15 +206,15 @@ export function NavMobile({ links, open, onOpenChange }: NavMobileProps) {
 
                 {/* Footer Section */}
                 <motion.div
-                  initial={reducedMotion ? undefined : { opacity: 0, y: 25 }}
+                  initial={reducedMotion ? undefined : { opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={reducedMotion ? undefined : { opacity: 0, y: 15 }}
+                  exit={reducedMotion ? undefined : { opacity: 0, y: 10 }}
                   transition={{
-                    duration: 0.5,
-                    delay: reducedMotion ? 0 : 0.18 + links.length * 0.08,
+                    duration: 0.38,
+                    delay: reducedMotion ? 0 : 0.12 + links.length * 0.05,
                     ease: [0.16, 1, 0.3, 1],
                   }}
-                  className="pt-6 border-t border-white/[0.08]"
+                  className="pt-6 border-t border-white/[0.08] transform-gpu will-change-transform"
                 >
                   <MotionLink
                     href="/contact"

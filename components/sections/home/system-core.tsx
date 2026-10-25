@@ -205,6 +205,12 @@ export function SystemCore() {
         return
       }
 
+      // If mobile navigation menu is open, pause WebGL render passes to preserve 100% GPU fill-rate for menu animations
+      if (document.body.dataset.mobileMenuOpen === 'true') {
+        animationId = requestAnimationFrame(update)
+        return
+      }
+
       if (!reducedMotion) {
         animationId = requestAnimationFrame(update)
       }
