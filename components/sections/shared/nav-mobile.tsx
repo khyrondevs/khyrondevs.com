@@ -53,7 +53,12 @@ export function NavMobile({ links, open, onOpenChange }: NavMobileProps) {
                 transition={{ duration: 0.28, ease: 'easeOut' }}
               />
             </Dialog.Overlay>
-            <Dialog.Content asChild forceMount>
+            <Dialog.Content
+              asChild
+              forceMount
+              onOpenAutoFocus={(e) => e.preventDefault()}
+              onCloseAutoFocus={(e) => e.preventDefault()}
+            >
               <motion.nav
                 className="fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col border-l border-cyan-500/25 p-8 shadow-[-10px_0_30px_rgba(0,0,0,0.85)] overflow-hidden transform-gpu will-change-transform"
                 style={{
@@ -108,7 +113,8 @@ export function NavMobile({ links, open, onOpenChange }: NavMobileProps) {
                     <motion.button
                       whileHover={reducedMotion ? undefined : { rotate: 90 }}
                       whileTap={reducedMotion ? undefined : { scale: 0.85, rotate: 180 }}
-                      className="text-fg-muted hover:text-white p-2 -mr-2 rounded-lg hover:bg-white/[0.06] border border-transparent hover:border-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                      className="text-fg-muted hover:text-white p-2 -mr-2 rounded-lg hover:bg-white/[0.06] border border-transparent hover:border-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 touch-manipulation"
+                      style={{ touchAction: 'manipulation' }}
                       aria-label="Close navigation"
                     >
                       <X size={20} />
@@ -146,8 +152,9 @@ export function NavMobile({ links, open, onOpenChange }: NavMobileProps) {
                           <MotionLink
                             href={link.href}
                             whileTap={reducedMotion ? undefined : { scale: 0.96 }}
+                            style={{ touchAction: 'manipulation' }}
                             className={cn(
-                              'group relative flex items-center justify-between py-3 px-3.5 rounded-xl transition-all duration-300 select-none',
+                              'group relative flex items-center justify-between py-3 px-3.5 rounded-xl transition-all duration-300 select-none touch-manipulation',
                               'hover:bg-white/[0.05] active:bg-white/[0.08]',
                               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400',
                               isActive
@@ -220,7 +227,8 @@ export function NavMobile({ links, open, onOpenChange }: NavMobileProps) {
                     href="/contact"
                     whileTap={reducedMotion ? undefined : { scale: 0.96 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-                    className="group relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-accent px-6 py-4 text-white font-medium hover:bg-accent-light shadow-[0_0_25px_rgba(59,130,246,0.35)] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
+                    style={{ touchAction: 'manipulation' }}
+                    className="group relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-accent px-6 py-4 text-white font-medium hover:bg-accent-light shadow-[0_0_25px_rgba(59,130,246,0.35)] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 touch-manipulation"
                   >
                     {/* Interactive light sweep */}
                     <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />

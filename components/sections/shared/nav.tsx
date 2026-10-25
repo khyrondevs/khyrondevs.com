@@ -189,8 +189,12 @@ export function Nav() {
 
               <motion.button
                 whileTap={reducedMotion ? undefined : { scale: 0.90 }}
-                className="md:hidden p-2 -mr-2 text-fg-muted hover:text-fg hover:bg-white/[0.06] transition-colors rounded-lg border border-transparent hover:border-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400"
-                onClick={() => setMobileOpen(true)}
+                className="md:hidden p-2 -mr-2 text-fg-muted hover:text-fg hover:bg-white/[0.06] transition-colors rounded-lg border border-transparent hover:border-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 touch-manipulation"
+                style={{ touchAction: 'manipulation' }}
+                onClick={() => {
+                  document.body.dataset.mobileMenuOpen = 'true'
+                  setMobileOpen(true)
+                }}
                 aria-label="Open navigation menu"
                 aria-expanded={mobileOpen}
                 aria-controls="mobile-nav"
