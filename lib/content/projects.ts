@@ -61,7 +61,7 @@ export const projects: Project[] = [
     ],
     stack: ['FastAPI', 'React', 'MongoDB Atlas', 'Vector Search', 'Jina Embeddings'],
     metrics: [
-      { label: 'Security & Regression', value: '125 tests' }
+      { label: 'Security & Regression', value: '178 tests' }
     ],
     links: [
       { label: 'Live Platform', href: 'https://cyphr-rag.vercel.app/', kind: 'live' },
@@ -136,7 +136,7 @@ export const projects: Project[] = [
     ],
     stack: ['FastAPI', 'PostgreSQL 16', 'React 19', 'Docker', 'n8n'],
     metrics: [
-      { label: 'Automated tests', value: '590 tests' }
+      { label: 'Automated tests', value: '825 tests' }
     ],
     links: [
       { label: 'Live Platform', href: 'https://jobpilot.cfd/', kind: 'live' },
@@ -165,6 +165,9 @@ export const projects: Project[] = [
       'Comprehensive audit logging for all transactional states'
     ],
     stack: ['Django', 'React', 'SQL', 'REST API'],
+    metrics: [
+      { label: 'Automated Tests', value: '261 tests' }
+    ],
     links: [
       { label: 'Live Storefront', href: 'https://eazyshop-store.vercel.app/', kind: 'live' },
       { label: 'Source Code', href: 'https://github.com/Vittal-17/EazyShop', kind: 'github' }

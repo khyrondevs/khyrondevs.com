@@ -25,7 +25,7 @@ export const teamMembers: TeamMember[] = [
       'Engineering interactive platforms, scalable edge runtimes, and design systems with mathematical precision.',
     focus: ['React / Next.js', 'Interactive 3D / GSAP', 'Edge Architecture', 'Design Systems'],
     email: 'vittal@khyrondevs.com',
-    portfolioUrl: 'https://vittal-dev.vercel.app/',
+    portfolioUrl: 'https://vittal.khyrondevs.com',
     portfolioStatus: 'live',
     socials: {
       github: 'https://github.com/Vittal-17',
@@ -42,7 +42,8 @@ export const teamMembers: TeamMember[] = [
       'Architecting high-throughput distributed APIs, database persistence layers, and fault-tolerant cloud backends.',
     focus: ['Distributed APIs', 'Database Internals', 'System Reliability', 'Cloud Infrastructure'],
     email: 'gowtham@khyrondevs.com',
-    portfolioStatus: 'deploying',
+    portfolioUrl: 'https://gowtham.khyrondevs.com',
+    portfolioStatus: 'live',
     socials: {
       github: 'https://github.com/Gowthamr1',
       linkedin: 'https://www.linkedin.com/in/gowtham-r-8a1450410/',
@@ -58,8 +59,10 @@ export const teamMembers: TeamMember[] = [
       'Translating commercial business models, financial logic, and big data intelligence into software that drives measurable ROI.',
     focus: ['Commercial Logic & ROI', 'Financial Systems', 'Big Data Modeling', 'Analytics Pipelines'],
     email: 'gurupavan@khyrondevs.com',
-    portfolioStatus: 'deploying',
+    portfolioUrl: 'https://gurupavan.khyrondevs.com',
+    portfolioStatus: 'live',
     socials: {
+      linkedin: 'https://www.linkedin.com/in/gurupavan-b-r-88741b351',
       instagram: 'https://www.instagram.com/gurupavan_22/',
     },
   },

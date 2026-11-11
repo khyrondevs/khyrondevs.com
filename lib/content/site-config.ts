@@ -1,19 +1,28 @@
 export type NavLink = { label: string; href: string }
 
+export interface NetworkChannel {
+  id: string
+  label: string
+  href: string
+  active: boolean
+  external: boolean
+}
+
 export type SiteConfig = {
   name: string
   tagline: string
   description: string
-  url: string // [PLACEHOLDER]
+  url: string
   primaryCta: { label: string; href: string }
   secondaryCta: { label: string; href: string }
   navLinks: NavLink[]
   footerLinks: NavLink[]
+  networkChannels: NetworkChannel[]
   contact: {
     email: string
-    twitter: string // [PLACEHOLDER]
-    github: string // [PLACEHOLDER]
-    linkedin: string // [PLACEHOLDER]
+    github: string
+    twitter?: string
+    linkedin?: string
   }
 }
 
@@ -39,10 +48,39 @@ export const siteConfig: SiteConfig = {
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },
   ],
+  networkChannels: [
+    {
+      id: 'email',
+      label: 'Direct / Email',
+      href: 'mailto:enquiries@khyrondevs.com',
+      active: true,
+      external: false,
+    },
+    {
+      id: 'github',
+      label: 'GitHub',
+      href: 'https://github.com/khyrondevs',
+      active: true,
+      external: true,
+    },
+    {
+      id: 'twitter',
+      label: 'X (Twitter)',
+      href: 'https://twitter.com/khyrondevs',
+      active: false,
+      external: true,
+    },
+    {
+      id: 'linkedin',
+      label: 'LinkedIn',
+      href: 'https://linkedin.com/company/khyrondevs',
+      active: false,
+      external: true,
+    },
+  ],
   contact: {
     email: 'enquiries@khyrondevs.com',
-    twitter: 'https://twitter.com/khyrondevs', // [PLACEHOLDER]
     github: 'https://github.com/khyrondevs',
-    linkedin: 'https://linkedin.com/company/khyrondevs', // [PLACEHOLDER]
+    // Twitter and LinkedIn official accounts will activate in networkChannels when registered
   },
 }

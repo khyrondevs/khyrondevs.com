@@ -494,7 +494,7 @@ export default function CyphrCaseStudy({
         <div className="cyphr-telemetry-banner">
           <div className="cyphr-telemetry-chip">
             <ShieldCheck size={14} className="cyphr-icon-lime" />
-            <span>125 Tests Passing</span>
+            <span>178 Tests Passing</span>
           </div>
           <div className="cyphr-telemetry-chip">
             <Cpu size={14} className="cyphr-icon-blue" />
@@ -722,7 +722,7 @@ export default function CyphrCaseStudy({
 
                           <div className="cyphr-code-window-footer">
                             <span className="cyphr-code-status">
-                              <span className="cyphr-status-dot-mini" /> 125 tests passing
+                              <span className="cyphr-status-dot-mini" /> 178 tests passing
                             </span>
                             <span className="cyphr-code-lang-tag">Conceptual example</span>
                           </div>
@@ -759,9 +759,9 @@ export default function CyphrCaseStudy({
           <div className="cyphr-bento-grid">
             <div className="cyphr-bento-card">
               <div className="cyphr-bento-icon"><ShieldCheck size={20} className="cyphr-icon-lime" /></div>
-              <span className="cyphr-bento-stat">125</span>
+              <span className="cyphr-bento-stat">178</span>
               <h4>Automated Test Coverage</h4>
-              <p>125 automated security and regression tests support the project&apos;s release workflow.</p>
+              <p>178 automated security and regression tests support the project&apos;s release workflow.</p>
               <div className="cyphr-bento-foot">Security &amp; regression coverage</div>
             </div>
 

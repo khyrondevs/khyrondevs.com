@@ -208,7 +208,14 @@ export default function InteractiveTerminal() {
         </div>
 
         {/* Console Log Area */}
-        <div ref={logRef} role="log" aria-label="Command output" aria-live="polite" data-lenis-prevent className="max-h-[340px] min-h-[220px] overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-3 font-mono text-sm bg-base">
+        <div
+          ref={logRef}
+          role="region"
+          aria-label="Terminal command history"
+          aria-live="polite"
+          tabIndex={0}
+          className="max-h-[340px] min-h-[220px] overflow-y-auto p-4 sm:p-6 space-y-3 font-mono text-sm bg-base focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent/60 focus-visible:ring-inset"
+        >
           {logs.map((log) => (
             <motion.div key={log.id} initial={animate && log.id !== "init" ? { opacity: 0, y: 8 } : false} animate={{ opacity: 1, y: 0 }} transition={{ duration: animate ? .25 : 0 }} className="space-y-1">
               <div className="flex items-center gap-2 text-fg-subtle text-xs">

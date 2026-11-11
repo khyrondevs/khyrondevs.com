@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Mail } from 'lucide-react'
+import { ObfuscatedEmail } from '@/components/ui/obfuscated-email'
 import { RevealOnScroll } from '@/components/ui/reveal-on-scroll'
 import { BentoCard } from '@/components/ui/bento-card'
 import InteractiveTerminal from '@/components/ui/interactive-terminal'
 import { teamMembers } from '@/lib/content/team'
+import { getCleanDomain, isSafeHttpUrl } from '@/lib/url'
 
 function GithubIcon({ className = 'w-3.5 h-3.5' }: { className?: string }) {
   return (
@@ -141,16 +142,9 @@ export default function AboutPage() {
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-border/60 flex flex-col gap-3">
-                  <a
-                    href={`mailto:${member.email}`}
-                    className="inline-flex items-center gap-2 font-mono text-xs text-fg-muted hover:text-accent transition-colors"
-                    title={`Email ${member.name} directly`}
-                  >
-                    <Mail size={13} className="text-accent shrink-0" />
-                    <span className="truncate">{member.email}</span>
-                  </a>
+                  <ObfuscatedEmail email={member.email} name={member.name} />
 
-                  {member.portfolioUrl ? (
+                  {member.portfolioUrl && isSafeHttpUrl(member.portfolioUrl) ? (
                     <a
                       href={member.portfolioUrl}
                       target="_blank"
@@ -161,7 +155,7 @@ export default function AboutPage() {
                         <span>↗</span> View Portfolio
                       </span>
                       <span className="text-[10px] text-fg-muted font-mono truncate max-w-[140px]">
-                        vittal-dev.vercel.app
+                        {getCleanDomain(member.portfolioUrl)}
                       </span>
                     </a>
                   ) : (

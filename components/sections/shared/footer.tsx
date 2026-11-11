@@ -59,45 +59,21 @@ export function Footer() {
               Network
             </span>
             <ul className="flex flex-col gap-3">
-              <li>
-                <a 
-                  href={`mailto:${siteConfig.contact.email}`} 
-                  className="text-sm text-fg-muted hover:text-fg transition-colors duration-300 flex items-center group py-1 outline-none focus-visible:text-cyan-400"
-                >
-                  <span className="w-0 h-px bg-cyan-400 transition-all duration-300 ease-out mr-0 group-hover:w-3 group-hover:mr-3" />
-                  Direct / Email
-                </a>
-              </li>
-              <li>
-                <a 
-                  href={siteConfig.contact.github} 
-                  target="_blank" rel="noopener noreferrer"
-                  className="text-sm text-fg-muted hover:text-fg transition-colors duration-300 flex items-center group py-1 outline-none focus-visible:text-cyan-400"
-                >
-                  <span className="w-0 h-px bg-cyan-400 transition-all duration-300 ease-out mr-0 group-hover:w-3 group-hover:mr-3" />
-                  GitHub
-                </a>
-              </li>
-              <li>
-                <a 
-                  href={siteConfig.contact.twitter} 
-                  target="_blank" rel="noopener noreferrer"
-                  className="text-sm text-fg-muted hover:text-fg transition-colors duration-300 flex items-center group py-1 outline-none focus-visible:text-cyan-400"
-                >
-                  <span className="w-0 h-px bg-cyan-400 transition-all duration-300 ease-out mr-0 group-hover:w-3 group-hover:mr-3" />
-                  X (Twitter)
-                </a>
-              </li>
-              <li>
-                <a 
-                  href={siteConfig.contact.linkedin} 
-                  target="_blank" rel="noopener noreferrer"
-                  className="text-sm text-fg-muted hover:text-fg transition-colors duration-300 flex items-center group py-1 outline-none focus-visible:text-cyan-400"
-                >
-                  <span className="w-0 h-px bg-cyan-400 transition-all duration-300 ease-out mr-0 group-hover:w-3 group-hover:mr-3" />
-                  LinkedIn
-                </a>
-              </li>
+              {siteConfig.networkChannels
+                .filter((channel) => channel.active)
+                .map((channel) => (
+                  <li key={channel.id}>
+                    <a
+                      href={channel.href}
+                      target={channel.external ? '_blank' : undefined}
+                      rel={channel.external ? 'noopener noreferrer' : undefined}
+                      className="text-sm text-fg-muted hover:text-fg transition-colors duration-300 flex items-center group py-1 outline-none focus-visible:text-cyan-400"
+                    >
+                      <span className="w-0 h-px bg-cyan-400 transition-all duration-300 ease-out mr-0 group-hover:w-3 group-hover:mr-3" />
+                      {channel.label}
+                    </a>
+                  </li>
+                ))}
             </ul>
           </div>
 

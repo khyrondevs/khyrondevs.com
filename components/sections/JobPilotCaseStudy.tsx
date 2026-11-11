@@ -278,12 +278,12 @@ def assert_safe_url(target_url: str):
       description:
         "The production stack runs on Oracle Cloud Infrastructure (OCI) Always Free Ampere A1 ARM64 architecture (4 OCPU, 24 GB RAM). Docker Compose orchestrates the FastAPI service, PostgreSQL 16 with WAL persistence, Redis task cache, and self-hosted n8n for automated webhook notifications.",
       proof: project.summary ?? "Autonomous job intelligence platform deployed on Oracle Cloud",
-      tags: ["OCI Ampere A1", "PostgreSQL 16", "n8n Workflows", "590 Tests"],
+      tags: ["OCI Ampere A1", "PostgreSQL 16", "n8n Workflows", "825 Tests"],
       icon: Cpu,
       specs: [
         { label: "Hardware Specs", val: "4 OCPU ARM64, 24 GB RAM (Oracle A1)" },
         { label: "Orchestration", val: "Docker Compose + n8n Webhook Engine" },
-        { label: "Automated Tests", val: "590 Passed Tests (Regression & Leases)" },
+        { label: "Automated Tests", val: "825 Passed Tests (Regression & Leases)" },
       ],
       codeSnippet: `# deploy/docker-compose.arm64.yml
 version: "3.8"
@@ -712,7 +712,7 @@ export default function JobPilotCaseStudy({
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="jobpilot-metric-card">
             <span className="jobpilot-metric-label">REGRESSION TESTS</span>
-            <strong className="jobpilot-metric-val">590 Tests</strong>
+            <strong className="jobpilot-metric-val">825 Tests</strong>
             <span className="jobpilot-metric-sub">Pytest &bull; Worker Leases</span>
           </div>
           <div className="jobpilot-metric-card">

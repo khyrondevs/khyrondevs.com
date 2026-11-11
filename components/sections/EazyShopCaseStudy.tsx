@@ -778,7 +778,7 @@ export default function EazyShopCaseStudy({
         <header className="flex items-center justify-between flex-wrap gap-4 pb-6 border-b border-border mb-12">
           <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-wider text-fg-muted">
             <span className="inline-block w-2.5 h-2.5 bg-[#10b981] rounded-full animate-pulse" />
-            {project.title} &bull; Commerce Architecture & Telemetry
+            {project.title} &bull; Commerce Architecture & Telemetry &bull; <span className="text-[#10b981]">261 Tests Passing</span>
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             <ProjectActionButtons project={project} size="sm" />

@@ -380,7 +380,7 @@ export default function EazyShopProjectExperience({ project, children }: { proje
         <section className="eazyshop-pipeline-panel" aria-label="Transaction pipeline trace">
           <div className="eazyshop-pipeline-head">
             <div>
-              <span className="eazyshop-kicker">pipeline telemetry</span>
+              <span className="eazyshop-kicker">pipeline telemetry &bull; 261 tests passing</span>
               <h3>Order Lifecycle Trace</h3>
             </div>
             <p>Django REST &bull; PostgreSQL Row Locks &bull; Razorpay Webhooks &bull; Brevo Dispatch</p>
