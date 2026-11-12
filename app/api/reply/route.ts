@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     const {
       replyMessage,
       devName = 'Vittal',
-      devRole = 'Lead Systems & Full-Stack Architect',
+      devRole = 'Lead Cloud, DevOps & AI Engineer',
     } = body
 
     if (!clientEmail || !isValidEmail(clientEmail.trim())) {
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
     const senderEmail = process.env.BREVO_SENDER_EMAIL || 'enquiries@khyrondevs.com'
     const teamRecipient = process.env.CONTACT_RECIPIENT_EMAIL || 'enquiries@khyrondevs.com'
     const trimmedDevName = (devName || 'Khyron Devs Lead').trim()
-    const trimmedDevRole = (devRole || 'Lead Systems & Full-Stack Architect').trim()
+    const trimmedDevRole = (devRole || 'Lead Cloud, DevOps & AI Engineer').trim()
 
     const subject = `Re: Project Brief Discussion // Khyron Devs`
     const replyPayload: Record<string, unknown> = {

@@ -167,7 +167,7 @@ async function testPipeline() {
       REPLY_MESSAGE: replySampleText.replace(/\n/g, '<br/>'),
       ORIGINAL_MESSAGE: samplePayload.message,
       DEV_NAME: 'Vittal',
-      DEV_ROLE: 'Lead Systems & Full-Stack Architect',
+      DEV_ROLE: 'Lead Cloud, DevOps & AI Engineer',
     }
     console.log(`   Using Brevo Template ID: ${replyTemplateId}`)
   } else {
@@ -175,7 +175,7 @@ async function testPipeline() {
       samplePayload,
       replySampleText,
       'Vittal',
-      'Lead Systems & Full-Stack Architect'
+      'Lead Cloud, DevOps & AI Engineer'
     )
     console.log('   Using Embedded Resilient HTML Fallback')
   }

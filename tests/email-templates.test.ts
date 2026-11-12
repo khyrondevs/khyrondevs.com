@@ -74,13 +74,13 @@ describe('Email Template Engine & Sanitization Security', () => {
   test('Template 3 (Developer Reply) displays custom message, engineer signature, and quoted dossier', () => {
     const replyMessage = 'Thank you Ada. We have scheduled an architectural review for Friday.'
     const devName = 'Vittal'
-    const devRole = 'Lead Systems & Full-Stack Architect'
+    const devRole = 'Lead Cloud, DevOps & AI Engineer'
     const html = renderDeveloperReplyEmail(basePayload, replyMessage, devName, devRole)
 
     assert.ok(html.includes('Following Up on Your Project Brief'))
     assert.ok(html.includes('Thank you Ada. We have scheduled an architectural review for Friday.'))
     assert.ok(html.includes('Vittal'))
-    assert.ok(html.includes('Lead Systems &amp; Full-Stack Architect &bull; Khyron Devs'))
+    assert.ok(html.includes('Lead Cloud, DevOps &amp; AI Engineer &bull; Khyron Devs'))
     assert.ok(html.includes('ORIGINAL INQUIRY ARCHIVE // CONTEXT'))
     assert.ok(html.includes('Analytical Engines Ltd'))
   })

@@ -19,11 +19,17 @@ export const teamMembers: TeamMember[] = [
   {
     id: 'vittal',
     name: 'Vittal',
-    role: 'Lead Systems & Full-Stack Architect',
+    role: 'Lead Cloud, DevOps & AI Engineer',
     credentials: 'BCA',
     tagline:
-      'Engineering interactive platforms, scalable edge runtimes, and design systems with mathematical precision.',
-    focus: ['React / Next.js', 'Interactive 3D / GSAP', 'Edge Architecture', 'Design Systems'],
+      'Engineering secure, resilient software systems through cloud infrastructure, automated delivery pipelines, rigorous testing, and intelligent AI & RAG solutions.',
+    focus: [
+      'Cloud Infrastructure',
+      'DevSecOps / CI-CD',
+      'QA & Security',
+      'Version Control',
+      'AI & RAG Systems',
+    ],
     email: 'vittal@khyrondevs.com',
     portfolioUrl: 'https://vittal.khyrondevs.com',
     portfolioStatus: 'live',
@@ -36,11 +42,17 @@ export const teamMembers: TeamMember[] = [
   {
     id: 'gowtham',
     name: 'Gowtham R',
-    role: 'Compute & Distributed Backend Engineer',
+    role: 'Lead Full-Stack & Mobile Engineer',
     credentials: 'BCA · MCA Candidate',
     tagline:
-      'Architecting high-throughput distributed APIs, database persistence layers, and fault-tolerant cloud backends.',
-    focus: ['Distributed APIs', 'Database Internals', 'System Reliability', 'Cloud Infrastructure'],
+      'Architecting intuitive digital products through refined UI/UX design, responsive frontend systems, scalable backend architectures, and cross-platform mobile applications.',
+    focus: [
+      'Frontend Engineering',
+      'UI/UX Design',
+      'Backend Architecture',
+      'API Development',
+      'Mobile Engineering',
+    ],
     email: 'gowtham@khyrondevs.com',
     portfolioUrl: 'https://gowtham.khyrondevs.com',
     portfolioStatus: 'live',

@@ -29,8 +29,8 @@ const PRESETS: Preset[] = [
 ]
 
 const TEAM_MEMBERS = [
-  { name: 'Vittal', role: 'Lead Systems & Full-Stack Architect' },
-  { name: 'Gowtham R', role: 'Lead Compute & Distributed Backend Engineer' },
+  { name: 'Vittal', role: 'Lead Cloud, DevOps & AI Engineer' },
+  { name: 'Gowtham R', role: 'Lead Full-Stack & Mobile Engineer' },
   { name: 'Gurupavan BR', role: 'Business Intelligence & Data Strategist' },
 ]
 
