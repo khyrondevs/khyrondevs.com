@@ -16,6 +16,13 @@ const cspHeader = `
   .trim()
 
 const nextConfig: NextConfig = {
+  redirects: async () => [
+    {
+      source: '/work/ai-house-price-estimator',
+      destination: '/work/roofworth',
+      permanent: true,
+    },
+  ],
   headers: async () => [
     {
       source: '/(.*)',

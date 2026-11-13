@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Database, Cpu, Sliders, TrendingUp, Activity, ArrowDown, ArrowRight, Check, Sparkles, MapPin } from "lucide-react";
 import Image from "next/image";
-import type { Project } from "@/lib/content/projects";
+import { roofWorthScreenshots, type Project } from "@/lib/content/projects";
 import { registerGsap, gsap, ScrollTrigger } from "@/lib/gsap";
 import { housepriceChapterAtTime, createHousePriceStoryState, scoreHousePriceStory } from "@/lib/houseprice-story";
 import HousePriceCaseStudy from "@/components/sections/HousePriceCaseStudy";
@@ -12,11 +12,9 @@ type MLChapter = {
   id: string;
   number: string;
   phase: string;
-  eyebrow: string;
   title: string;
-  subtitle: string;
   desc: string;
-  image: string;
+  screenshot: (typeof roofWorthScreenshots)[keyof typeof roofWorthScreenshots];
   metric: string;
   status: string;
   valuation: string;
@@ -44,12 +42,10 @@ const chapters: MLChapter[] = [
   {
     id: "ingestion",
     number: "01",
-    phase: "SPATIAL INGESTION",
-    eyebrow: "01 // SPATIAL INGESTION",
-    title: "8-Dimensional feature space normalized via StandardScaler.",
-    subtitle: "StandardScaler Z-Score Transformation",
+    phase: "Feature scaling",
+    title: "Scaling eight housing inputs",
     desc: "Raw census block records are transformed into continuous z-scores across median income, room ratios, household densities, and high-precision GPS coordinates.",
-    image: "/images/aihouseprice/home.png",
+    screenshot: roofWorthScreenshots.inputs,
     metric: "StandardScaler (μ=0, σ=1)",
     status: "VECTORS_NORMALIZED",
     valuation: "$389,000",
@@ -75,12 +71,10 @@ const chapters: MLChapter[] = [
   {
     id: "ensemble",
     number: "02",
-    phase: "TREE BAGGING",
-    eyebrow: "02 // TREE BAGGING",
-    title: "200 bagged decision trees minimizing variance across clusters.",
-    subtitle: "Bootstrapped Variance Reduction",
+    phase: "Random Forest",
+    title: "A forest of 200 trees",
     desc: "Bootstrapped decision trees vote on non-linear price splits, dampening outlier leverage in multi-modal California real estate sub-markets.",
-    image: "/images/aihouseprice/sample_data_set.png",
+    screenshot: roofWorthScreenshots.example,
     metric: "200 Bagged Trees",
     status: "ENSEMBLE_TRAINED",
     valuation: "$425,500",
@@ -106,12 +100,10 @@ const chapters: MLChapter[] = [
   {
     id: "tuning",
     number: "03",
-    phase: "HYPERPARAMETER SURFACE",
-    eyebrow: "03 // GRIDSEARCHCV OPTIMIZATION",
-    title: "5-fold cross-validation reaching an R² of 0.8062 and MAE of 0.3261.",
-    subtitle: "R² 0.8062 & MAE 0.3261 Convergence",
+    phase: "Validation",
+    title: "Tuning and validating the model",
     desc: "Exhaustive grid search isolates optimal tree depth and split criteria across 5 held-out folds, preventing localized data leakage.",
-    image: "/images/aihouseprice/predicted_price.png",
+    screenshot: roofWorthScreenshots.wakeup,
     metric: "R² 0.8062 | MAE 0.3261",
     status: "HYPERPARAMETERS_OPTIMAL",
     valuation: "$512,800",
@@ -137,12 +129,10 @@ const chapters: MLChapter[] = [
   {
     id: "serving",
     number: "04",
-    phase: "PRODUCTION SERVING",
-    eyebrow: "04 // FASTAPI SERVING",
-    title: "Sub-10ms cloud prediction serving with serialized Joblib weights.",
-    subtitle: "Sub-10ms Inference Latency",
+    phase: "Serving",
+    title: "Serving the estimate",
     desc: "Serialized model weights are hosted on an asynchronous FastAPI worker with Pydantic validation and interactive Swagger documentation.",
-    image: "/images/aihouseprice/fastapi_serving.png",
+    screenshot: roofWorthScreenshots.result,
     metric: "< 10ms Inference Latency",
     status: "FASTAPI_ONLINE",
     valuation: "$452,600",
@@ -254,6 +244,7 @@ export default function HousePriceProjectExperience({ project, children }: { pro
     if (!container) return;
 
     const chapterElements = Array.from(container.querySelectorAll<HTMLElement>("[data-houseprice-chapter]"));
+    const mediaElements = Array.from(container.querySelectorAll<HTMLElement>("[data-houseprice-media]"));
     const planeElements = Array.from(container.querySelectorAll<HTMLElement>("[data-houseprice-plane]"));
     const captionElements = Array.from(container.querySelectorAll<HTMLElement>("[data-houseprice-caption]"));
     const chapterLinks = Array.from(container.querySelectorAll<HTMLAnchorElement>("[data-houseprice-link]"));
@@ -274,6 +265,7 @@ export default function HousePriceProjectExperience({ project, children }: { pro
 
     if (
       chapterElements.length !== chapters.length ||
+      mediaElements.length !== chapters.length ||
       planeElements.length !== chapters.length ||
       captionElements.length !== chapters.length ||
       chapterLinks.length !== chapters.length ||
@@ -293,7 +285,7 @@ export default function HousePriceProjectExperience({ project, children }: { pro
       root: container,
       chapters: chapterElements,
       links: chapterLinks,
-      media: planeElements,
+      media: mediaElements,
       captions: captionElements,
       stageFigure,
       progressLabel,
@@ -308,7 +300,14 @@ export default function HousePriceProjectExperience({ project, children }: { pro
     mm.add({
       desktop: "(min-width: 901px)",
       mobile: "(max-width: 900px)",
+      reducedMotion: "(prefers-reduced-motion: reduce)",
     }, (context) => {
+      if (context.conditions?.reducedMotion) {
+        state.setDesktop(false);
+        setActiveChapter(0);
+        return;
+      }
+
       const desktop = Boolean(context.conditions?.desktop);
       state.setDesktop(desktop);
 
@@ -386,6 +385,7 @@ export default function HousePriceProjectExperience({ project, children }: { pro
       });
 
       return () => {
+        scoringContext.revert();
         state.setDesktop(false);
       };
     }, container);
@@ -397,31 +397,15 @@ export default function HousePriceProjectExperience({ project, children }: { pro
   }, []);
 
   return (
-    <div ref={root} id="ai-house-price-estimator" className="houseprice-experience">
-      <div className="houseprice-project-card">{children}</div>
+    <div ref={root} id="roofworth" className="houseprice-experience">
+      <span id="ai-house-price-estimator" aria-hidden="true" />
+      {children}
 
       <section className="houseprice-story" data-houseprice-story aria-labelledby="houseprice-story-title">
-        {/* Reel Heading */}
-        <div className="houseprice-reel-heading">
-          <p className="houseprice-kicker">
-            <span className="houseprice-radar-pulse" aria-hidden="true" />
-            <span>applied machine learning / {project.title}</span>
-          </p>
-        </div>
-
-        {/* Story Intro */}
         <div className="houseprice-story-intro">
-          <div>
-            <h2 id="houseprice-story-title">
-              Spatial feature space.<br />
-              <span>Sub-10ms cloud prediction.</span>
-            </h2>
-            <p className="houseprice-reel-index">
-              one inference pipeline <span aria-hidden="true">/</span> four rigorous mathematical boundaries
-            </p>
-          </div>
+          <h2 id="houseprice-story-title">From property profile to price</h2>
           <p className="houseprice-story-lead">
-            Follow a California housing record through the inference pipeline. An 8-dimensional census block is normalized, processed through 200 bootstrapped decision trees, cross-validated via GridSearchCV, and served in under 10ms via asynchronous FastAPI.
+            Follow eight California housing inputs through feature scaling, a 200-tree Random Forest, model validation, and the FastAPI service behind each estimate.
           </p>
         </div>
 
@@ -429,8 +413,7 @@ export default function HousePriceProjectExperience({ project, children }: { pro
         <section className="houseprice-runtime-panel" aria-label="Machine learning inference pipeline trace">
           <div className="houseprice-runtime-head">
             <div>
-              <span className="houseprice-kicker">pipeline telemetry</span>
-              <h3>Continuous Regression Architecture</h3>
+              <h3>How the model makes an estimate</h3>
             </div>
             <p>Scikit-Learn 1.4 &bull; Joblib Serialization &bull; 5-Fold Cross Validation</p>
           </div>
@@ -477,35 +460,32 @@ export default function HousePriceProjectExperience({ project, children }: { pro
               {/* Rotating Compass Reticle */}
               <div className="houseprice-signal-reticle" data-houseprice-reticle aria-hidden="true">
                 <svg className="houseprice-reticle-rings" viewBox="0 0 64 64" fill="none">
-                  <circle cx="32" cy="32" r="26" stroke="#06b6d4" strokeWidth="1.5" strokeDasharray="3 3" />
-                  <circle cx="32" cy="32" r="18" stroke="#06b6d4" strokeWidth="1" strokeOpacity="0.4" />
-                  <path d="M32 2v8M32 54v8M2 32h8M54 32h8" stroke="#06b6d4" strokeWidth="1.5" />
-                  <circle cx="32" cy="32" r="3" fill="#06b6d4" />
+                  <circle cx="32" cy="32" r="26" stroke="var(--roof-coral-ink)" strokeWidth="1.5" strokeDasharray="3 3" />
+                  <circle cx="32" cy="32" r="18" stroke="var(--roof-coral-ink)" strokeWidth="1" strokeOpacity="0.4" />
+                  <path d="M32 2v8M32 54v8M2 32h8M54 32h8" stroke="var(--roof-coral-ink)" strokeWidth="1.5" />
+                  <circle cx="32" cy="32" r="3" fill="var(--roof-coral-ink)" />
                 </svg>
               </div>
 
-              <div aria-hidden="true">
-                <span className="font-mono text-[10px] text-fg-subtle uppercase tracking-wider block">INFERENCE HUD</span>
-                <strong className="text-sm font-semibold text-fg">CALIFORNIA REGRESSION RADAR</strong>
-              </div>
+              <strong className="text-sm font-semibold text-fg" aria-hidden="true">California regression radar</strong>
 
               <div className="houseprice-r2-dial" aria-hidden="true" title="R² Accuracy Gauge">
                 <svg width="42" height="42" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="8" />
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="var(--border-subtle)" strokeWidth="8" />
                   <circle
                     data-houseprice-r2-meter
                     cx="50"
                     cy="50"
                     r="45"
                     fill="none"
-                    stroke="#06b6d4"
+                    stroke="var(--roof-coral-ink)"
                     strokeWidth="8"
                     strokeDasharray="283"
                     strokeDashoffset="283"
                     strokeLinecap="round"
                     transform="rotate(-90 50 50)"
                   />
-                  <text x="50" y="55" textAnchor="middle" fill="#06b6d4" fontSize="22" fontFamily="monospace" fontWeight="bold">R²</text>
+                  <text x="50" y="55" textAnchor="middle" fill="var(--roof-coral-ink)" fontSize="22" fontWeight="bold">R²</text>
                 </svg>
               </div>
             </div>
@@ -513,8 +493,8 @@ export default function HousePriceProjectExperience({ project, children }: { pro
             {/* Navigation Rail */}
             <nav className="houseprice-progress-nav" aria-label="Story chapter progress">
               <div className="houseprice-progress-heading">
-                <span>PIPELINE MILESTONE</span>
-                <span data-houseprice-progress-label aria-live="polite">01 / 04</span>
+                <span>Pipeline progress</span>
+                <span data-houseprice-progress-label aria-live="polite">1 of 4</span>
               </div>
               <div className="houseprice-progress-track" aria-hidden="true">
                 <span data-houseprice-progress />
@@ -528,8 +508,7 @@ export default function HousePriceProjectExperience({ project, children }: { pro
                       data-houseprice-link
                       aria-current={index === 0 ? "step" : undefined}
                     >
-                      <span>0{index + 1}<ArrowRight size={11} aria-hidden="true" /></span>
-                      <strong>{chapter.phase.split(" ")[0]}</strong>
+                      <strong>{chapter.phase}</strong>
                     </a>
                   </li>
                 ))}
@@ -540,9 +519,9 @@ export default function HousePriceProjectExperience({ project, children }: { pro
             <div className="houseprice-stage-figure" data-houseprice-stage-figure hidden>
               {/* Telemetry Bar */}
               <div className="houseprice-console-boundary" aria-hidden="true">
-                <span>ACTIVE PHASE:</span>
+                <span>Active phase</span>
                 <strong data-houseprice-phase>{chapters[0].phase}</strong>
-                <span className="text-[#10b981] ml-auto font-mono text-[10px] bg-[#10b981]/15 px-2 py-0.5 rounded border border-[#10b981]/30">
+                <span className="text-[var(--roof-sage-ink)] ml-auto font-mono text-[10px] bg-[var(--roof-sage-ink)]/15 px-2 py-0.5 rounded border border-[var(--roof-sage-ink)]/30">
                   FASTAPI 6.8ms
                 </span>
               </div>
@@ -555,23 +534,20 @@ export default function HousePriceProjectExperience({ project, children }: { pro
                 {/* Anamorphic Stage Sweep Light Beam */}
                 <div className="houseprice-stage-sweep" data-houseprice-stage-sweep aria-hidden="true" />
 
-                {/* Topographic Contour Overlay */}
-                <div className="houseprice-contour-overlay" aria-hidden="true" />
-
                 {/* SVG Decision Tree Split Overlay */}
                 <svg className="houseprice-tree-svg" viewBox="0 0 400 240" fill="none" aria-hidden="true">
                   <path
                     data-houseprice-tree-branch
                     d="M 200 20 L 200 70 L 100 130 L 100 180 M 200 70 L 300 130 L 300 180"
-                    stroke="#06b6d4"
+                    stroke="var(--roof-coral-ink)"
                     strokeWidth="2"
                     strokeDasharray="400"
                     strokeDashoffset="400"
                     strokeLinecap="round"
                   />
-                  <circle cx="200" cy="20" r="4" fill="#06b6d4" />
-                  <circle cx="100" cy="180" r="4" fill="#10b981" />
-                  <circle cx="300" cy="180" r="4" fill="#8b5cf6" />
+                  <circle cx="200" cy="20" r="4" fill="var(--roof-coral-ink)" />
+                  <circle cx="100" cy="180" r="4" fill="var(--roof-sage-ink)" />
+                  <circle cx="300" cy="180" r="4" fill="var(--roof-gold)" />
                 </svg>
 
                 {/* 3D Perspective Plane Media Stack */}
@@ -586,53 +562,46 @@ export default function HousePriceProjectExperience({ project, children }: { pro
                       <div className="houseprice-stage-plane" data-houseprice-plane>
                         <div className="houseprice-plane-viewport">
                           <Image
-                            src={chapter.image}
-                            alt={`${project.title} — ${chapter.title}`}
+                            src={chapter.screenshot.src}
+                            alt={chapter.screenshot.alt}
                             fill
                             sizes="(min-width: 1400px) 720px, (min-width: 901px) 54vw, 1px"
-                            className="object-cover object-top"
-                            priority={index === 0}
+                            className="object-contain"
                           />
                         </div>
                       </div>
                       <figcaption className={`houseprice-stage-caption${index === 0 ? " is-active" : ""}`} data-houseprice-caption>
-                        <span>{chapter.subtitle}</span>
+                        <span>{chapter.screenshot.label}</span>
                         <ArrowRight size={14} aria-hidden="true" />
                       </figcaption>
                     </figure>
                   ))}
                 </div>
+              </div>
 
-                {/* Floating Hologram Decision Rule Chip */}
+              <div className="houseprice-stage-readouts">
                 <div className="houseprice-hud-chip" aria-hidden="true">
-                  <div className="flex items-center gap-1.5 text-[10px] text-[#06b6d4]">
+                  <div className="flex items-center gap-1.5 text-[10px] text-[var(--roof-coral-ink)]">
                     <Sparkles size={11} />
-                    <span>DECISION RULE</span>
+                    <span>Decision rule</span>
                   </div>
-                  <div className="text-[11px] text-white truncate max-w-[280px]" data-houseprice-rule>
+                  <div className="text-xs text-fg" data-houseprice-rule>
                     {chapters[0].decisionRule}
                   </div>
                 </div>
 
-                {/* Floating Holographic Valuation Badge */}
                 <div className="houseprice-hud-valuation" aria-hidden="true">
                   <div className="flex items-center gap-1.5 text-[10px] text-fg-subtle">
-                    <Activity size={12} className="text-[#06b6d4]" />
-                    <span>DISTRICT ESTIMATE</span>
+                    <Activity size={12} className="text-[var(--roof-coral-ink)]" />
+                    <span>District estimate</span>
                   </div>
-                  <div className="text-xl font-bold text-[#06b6d4] mt-0.5" data-houseprice-valuation>
+                  <div className="text-xl font-bold text-[var(--roof-coral-ink)] mt-0.5" data-houseprice-valuation>
                     {chapters[0].valuation}
                   </div>
-                  <div className="text-[9px] text-[#10b981] font-mono mt-0.5">
-                    MAE ±$32,610 Envelope
+                  <div className="text-[11px] text-[var(--roof-sage-ink)] mt-0.5">
+                    MAE $32,610
                   </div>
                 </div>
-              </div>
-
-              {/* Console Footnote */}
-              <div className="houseprice-stage-note">
-                <span className="houseprice-radar-pulse" aria-hidden="true" />
-                <span>SCIKIT-LEARN 1.4 &bull; ESTIMATOR PIPELINE LIVE</span>
               </div>
             </div>
           </aside>
@@ -652,13 +621,7 @@ export default function HousePriceProjectExperience({ project, children }: { pro
                 aria-labelledby={`houseprice-chapter-title-${chapter.id}`}
                 tabIndex={-1}
               >
-                <div className="houseprice-chapter-marker">
-                  <span className="font-mono text-xs font-bold text-[#06b6d4]">0{index + 1}</span>
-                  <span className="houseprice-marker-dot" />
-                </div>
-
                 <div className="houseprice-chapter-copy">
-                  <p className="houseprice-kicker">{chapter.eyebrow}</p>
                   <h3 id={`houseprice-chapter-title-${chapter.id}`}>{chapter.title}</h3>
                   <p className="text-fg-muted text-base leading-relaxed mb-6">{chapter.desc}</p>
 
@@ -676,7 +639,7 @@ export default function HousePriceProjectExperience({ project, children }: { pro
                   <ul className="houseprice-contract-list">
                     {chapter.contracts.map((contract) => (
                       <li key={contract}>
-                        <Check size={13} className="text-[#06b6d4]" aria-hidden="true" />
+                        <Check size={13} className="text-[var(--roof-coral-ink)]" aria-hidden="true" />
                         <span>{contract}</span>
                       </li>
                     ))}
@@ -699,15 +662,15 @@ export default function HousePriceProjectExperience({ project, children }: { pro
                 >
                   <div className="houseprice-plane-viewport">
                     <Image
-                      src={chapter.image}
-                      alt={`${project.title} — ${chapter.title}`}
+                      src={chapter.screenshot.src}
+                      alt={chapter.screenshot.alt}
                       fill
                       sizes="(max-width: 900px) 92vw, 1100px"
-                      className="object-cover object-top"
+                      className="object-contain"
                     />
                   </div>
                   <figcaption className="houseprice-stage-caption">
-                    <span>{chapter.subtitle}</span>
+                    <span>{chapter.screenshot.label}</span>
                     <ArrowRight size={14} aria-hidden="true" />
                   </figcaption>
                 </figure>
@@ -718,18 +681,13 @@ export default function HousePriceProjectExperience({ project, children }: { pro
 
         {/* ── Interactive Feature Synthesizer & Prediction Simulator ── */}
         <div className="houseprice-interactive-simulator mt-20">
-          <div className="p-8 rounded-3xl bg-surface border border-border">
+          <div className="p-5 sm:p-8 rounded-3xl bg-surface border border-border">
             <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
               <div>
-                <span className="font-mono text-xs uppercase tracking-widest text-[#06b6d4] block mb-1">
-                  Interactive Evaluation Workbench
-                </span>
-                <h3 className="text-2xl font-light text-fg">
-                  Feature Synthesizer & Real-Time Price Estimator
-                </h3>
+                <h3 className="text-2xl font-medium text-fg">Try the valuation simulator</h3>
               </div>
-              <span className="font-mono text-xs text-[#06b6d4] bg-[#06b6d4]/10 border border-[#06b6d4]/20 px-3 py-1 rounded-md flex items-center gap-2">
-                <span className={`inline-block w-2 h-2 rounded-full ${isVerifying ? "bg-amber-400 animate-pulse" : "bg-[#10b981]"}`} />
+              <span className="text-xs text-[var(--roof-sage-ink)] bg-[var(--roof-sage-wash)] px-3 py-1 rounded-md flex items-center gap-2">
+                <span className={`inline-block w-2 h-2 rounded-full ${isVerifying ? "bg-amber-400 animate-pulse" : "bg-[var(--roof-sage-ink)]"}`} />
                 FASTAPI /api/predict &bull; {apiLatency}ms
               </span>
             </div>
@@ -744,13 +702,14 @@ export default function HousePriceProjectExperience({ project, children }: { pro
                   <button
                     key={preset.name}
                     type="button"
+                    aria-pressed={selectedPreset === idx}
                     onClick={() => {
                       setSelectedPreset(idx);
                       setIncomeSlider(preset.medInc);
                     }}
                     className={`houseprice-preset-chip ${selectedPreset === idx ? "is-active" : ""}`}
                   >
-                    <MapPin size={12} className={selectedPreset === idx ? "text-[#06b6d4]" : "text-fg-subtle"} />
+                    <MapPin size={12} className={selectedPreset === idx ? "text-[var(--roof-coral-ink)]" : "text-fg-subtle"} />
                     <span className="truncate">{preset.name}</span>
                   </button>
                 ))}
@@ -763,10 +722,11 @@ export default function HousePriceProjectExperience({ project, children }: { pro
               <div className="space-y-4">
                 <div className="houseprice-slider-row">
                   <div className="flex justify-between text-xs font-mono mb-2">
-                    <span className="text-fg-muted">Median Household Income:</span>
-                    <strong className="text-[#06b6d4]">${(incomeSlider * 10).toFixed(1)}k/yr ({incomeSlider.toFixed(2)})</strong>
+                    <label htmlFor="houseprice-income" className="text-fg-muted">Median household income</label>
+                    <strong className="text-[var(--roof-coral-ink)]">${(incomeSlider * 10).toFixed(1)}k/yr ({incomeSlider.toFixed(2)})</strong>
                   </div>
                   <input
+                    id="houseprice-income"
                     type="range"
                     min="1.5"
                     max="15.0"
@@ -803,20 +763,20 @@ export default function HousePriceProjectExperience({ project, children }: { pro
               </div>
 
               {/* Dynamic Valuation Display */}
-              <div className="houseprice-valuation-box p-8 rounded-2xl">
-                <div className="flex items-center justify-between text-xs font-mono text-fg-muted mb-2">
+              <div className="houseprice-valuation-box p-5 sm:p-8 rounded-2xl">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-sm mb-2">
                   <span className="flex items-center gap-1.5">
-                    <Activity size={14} className="text-[#06b6d4]" />
-                    ESTIMATED DISTRICT VALUATION
+                    <Activity size={14} aria-hidden="true" />
+                    Illustrative district value
                   </span>
-                  <span className="text-[#10b981] font-bold">R² 0.8062 ACCURACY</span>
+                  <span className="font-bold">R² 0.8062</span>
                 </div>
-                <div className="text-4xl md:text-5xl font-light text-fg tracking-tight">
+                <div className="text-4xl md:text-5xl font-medium tracking-tight">
                   ${calculatedValuation.toLocaleString()}
                 </div>
-                <div className="flex items-center justify-between text-xs font-mono text-fg-subtle mt-4 pt-3 border-t border-white/5">
-                  <span>Confidence Envelope:</span>
-                  <strong className="text-[#06b6d4]">±$32,610 (MAE 0.3261)</strong>
+                <div className="flex flex-wrap items-center justify-between gap-2 text-sm mt-4 pt-3 border-t border-[var(--roof-sage-ink)]/30">
+                  <span>Model mean absolute error</span>
+                  <strong>$32,610</strong>
                 </div>
               </div>
             </div>
@@ -825,7 +785,7 @@ export default function HousePriceProjectExperience({ project, children }: { pro
 
         {/* Dive Hint Link */}
         <div className="text-center py-12">
-          <a href="#houseprice-case-study" className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-fg-muted hover:text-[#06b6d4] transition-colors">
+          <a href="#houseprice-case-study" className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-fg-muted hover:text-[var(--roof-coral-ink)] transition-colors">
             <span>Explore Architecture & Benchmarks Deep Dive</span>
             <ArrowDown size={14} />
           </a>

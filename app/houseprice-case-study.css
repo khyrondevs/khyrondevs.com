@@ -1,76 +1,172 @@
-/* ==========================================================================
-   AI House Price Estimator: Geospatial Regression & ML Cinematic Story
-   Domain: Applied Machine Learning, 8D Spatial Regression, 200 Bagged Trees
-   Palette: Spatial Midnight (#07080d), Electric Cyan (#06b6d4), Neon Violet (#8b5cf6), Vector Emerald (#10b981)
-   ========================================================================== */
-
-:root {
-  --ml-cyan: #06b6d4;
-  --ml-cyan-glow: rgba(6, 182, 212, 0.25);
-  --ml-emerald: #10b981;
-  --ml-emerald-glow: rgba(16, 185, 129, 0.25);
-  --ml-violet: #8b5cf6;
-  --ml-violet-glow: rgba(139, 92, 246, 0.25);
-  --ml-space: #07080d;
-  --ml-surface: #0f111a;
-  --ml-elevated: #161926;
-  --ml-border: rgba(255, 255, 255, 0.08);
-  --ml-border-strong: rgba(6, 182, 212, 0.35);
-}
-
+/* RoofWorth borrows its paper, coral and sage from the estimator interface. */
 .houseprice-experience {
+  --roof-paper: #f7f2e9;
+  --roof-card: #fffdf7;
+  --roof-sand: #f2e8d8;
+  --roof-coral: #e76e52;
+  --roof-coral-ink: #a13c27;
+  --roof-coral-wash: #fae5dc;
+  --roof-sage: #7aac90;
+  --roof-sage-ink: #28513d;
+  --roof-sage-wash: #e2eee4;
+  --roof-gold: #e8b758;
+  --roof-serif: Georgia, "Times New Roman", serif;
+  --bg-base: var(--roof-paper);
+  --bg-surface: var(--roof-card);
+  --bg-elevated: var(--roof-sand);
+  --text-primary: #2a353b;
+  --text-secondary: #4c5557;
+  --text-muted: #5f6461;
+  --border-subtle: #e3dcd0;
+  --border-strong: #bba993;
+  --accent: var(--roof-coral-ink);
+  --accent-light: #852d1b;
+  --color-fg: var(--text-primary);
+  --color-fg-muted: var(--text-secondary);
+  --color-fg-subtle: var(--text-muted);
+
   position: relative;
   width: 100%;
-  max-width: 100%;
   overflow-x: clip;
-  color: var(--color-fg);
+  color-scheme: light;
+  color: var(--text-primary);
+  background: var(--roof-paper);
+}
+
+.houseprice-hero,
+.houseprice-story,
+#houseprice-case-study .container-site {
+  width: min(100%, 1280px);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+}
+
+.houseprice-hero {
+  padding-block: clamp(6rem, 10vw, 8.5rem) clamp(3rem, 7vw, 6.5rem);
+}
+
+.houseprice-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: clamp(1.75rem, 4vw, 3.5rem);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.houseprice-back-link:hover {
+  color: var(--accent);
+}
+
+.houseprice-hero-grid {
+  display: grid;
+  gap: clamp(1.75rem, 5vw, 4rem);
+  align-items: center;
+}
+
+@media (min-width: 901px) {
+  .houseprice-hero-grid {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  }
+}
+
+.houseprice-hero h1 {
+  font-size: clamp(3.25rem, 7vw, 6.25rem);
+  font-weight: 500;
+  letter-spacing: -0.075em;
+  line-height: 0.98;
+}
+
+.houseprice-hero-description {
+  max-width: 32ch;
+  margin-top: 1.35rem;
+  font-family: var(--roof-serif);
+  font-size: clamp(1.3rem, 2.1vw, 1.8rem);
+  line-height: 1.35;
+}
+
+.houseprice-hero-former-name {
+  margin-block: 0.75rem 1.5rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.houseprice-hero-image,
+.houseprice-gallery-preview {
+  position: relative;
+  aspect-ratio: 1916 / 984;
+  overflow: hidden;
+  background: var(--roof-paper);
+}
+
+.houseprice-hero-image {
+  border: clamp(0.3rem, 0.65vw, 0.6rem) solid var(--roof-sand);
+  border-radius: 1.25rem;
+}
+
+.houseprice-hero-image img {
+  object-fit: contain;
+}
+
+.houseprice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.houseprice-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 44px;
+  padding-inline: 0.85rem;
+  border-radius: 0.65rem;
+  background: var(--roof-sand);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 550;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.houseprice-action-small {
+  min-height: 36px;
+  font-size: 0.8125rem;
+}
+
+.houseprice-action:hover {
+  background: var(--roof-coral-wash);
+  color: var(--accent);
+}
+
+.houseprice-action-primary {
+  background: var(--roof-coral);
+  color: #281913;
+  font-weight: 650;
+}
+
+.houseprice-action-primary:hover {
+  background: var(--roof-coral-ink);
+  color: var(--roof-card);
+}
+
+.houseprice-experience :is(a, button, input):focus-visible {
+  outline: 2px solid var(--roof-coral-ink);
+  outline-offset: 3px;
 }
 
 /* ── Story Header & Introduction ── */
 .houseprice-story {
   position: relative;
-  width: 100%;
-  max-width: 100%;
-  padding: 2.5rem 1.5rem 6rem;
+  padding-block: clamp(2.25rem, 6vw, 4.5rem) 2rem;
   box-sizing: border-box;
-  overflow-x: clip;
-}
-
-.houseprice-reel-heading {
-  max-width: 1360px;
-  margin: 0 auto 1.5rem;
-}
-
-.houseprice-kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ml-cyan);
-}
-
-.houseprice-radar-pulse {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--ml-cyan);
-  box-shadow: 0 0 10px var(--ml-cyan);
-  animation: ml-radar-ping 2s infinite ease-in-out;
-}
-
-@keyframes ml-radar-ping {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.35; transform: scale(0.8); }
 }
 
 .houseprice-story-intro {
   max-width: 1360px;
   margin: 0 auto 3rem;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
 }
 
@@ -83,41 +179,30 @@
 }
 
 .houseprice-story-intro h2 {
-  font-size: clamp(2rem, 5vw, 4.25rem);
-  font-weight: 300;
+  max-width: 15ch;
+  font-family: var(--roof-serif);
+  font-size: clamp(2.25rem, 4vw, 3.75rem);
+  font-weight: 400;
   line-height: 1.05;
   letter-spacing: -0.03em;
   color: var(--color-fg);
 }
 
-.houseprice-story-intro h2 span {
-  color: var(--ml-cyan);
-}
-
-.houseprice-reel-index {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--color-fg-subtle);
-  margin-top: 1rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
 .houseprice-story-lead {
   font-size: clamp(1rem, 1.25vw, 1.2rem);
-  color: var(--color-fg-muted);
-  font-weight: 300;
-  line-height: 1.7;
+  max-width: 62ch;
+  color: var(--color-fg);
+  line-height: 1.6;
 }
 
 /* ── Horizontal Pipeline Trace Panel ── */
 .houseprice-runtime-panel {
   max-width: 1360px;
   margin: 0 auto 4rem;
-  padding: 1.5rem 1.75rem;
+  padding: clamp(1rem, 2.4vw, 1.75rem);
   border-radius: 20px;
-  background: var(--ml-surface);
-  border: 1px solid var(--ml-border);
+  background: var(--roof-card);
+  border: 1px solid var(--border-subtle);
 }
 
 .houseprice-runtime-head {
@@ -126,9 +211,7 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--ml-border);
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 
 .houseprice-runtime-head h3 {
@@ -139,8 +222,7 @@
 }
 
 .houseprice-runtime-head p {
-  font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 0.8125rem;
   color: var(--color-fg-subtle);
 }
 
@@ -160,7 +242,7 @@
 
 @media (min-width: 768px) {
   .houseprice-runtime-trace {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1.5rem;
   }
 }
@@ -176,28 +258,24 @@
   width: 32px;
   height: 32px;
   border-radius: 10px;
-  background: rgba(6, 182, 212, 0.1);
-  border: 1px solid rgba(6, 182, 212, 0.25);
+  background: var(--roof-coral-wash);
+  border: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--ml-cyan);
+  color: var(--roof-coral-ink);
   flex-shrink: 0;
 }
 
 .houseprice-runtime-trace-copy h4 {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 0.875rem;
+  font-weight: 650;
   color: var(--color-fg);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
   margin-bottom: 0.25rem;
 }
 
 .houseprice-runtime-trace-copy p {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 0.8125rem;
   color: var(--color-fg-muted);
   display: flex;
   align-items: center;
@@ -206,7 +284,7 @@
 }
 
 .houseprice-runtime-trace-copy strong {
-  color: var(--ml-cyan);
+  color: var(--roof-coral-ink);
 }
 
 .houseprice-runtime-trace-line {
@@ -215,7 +293,7 @@
   left: calc(100% + 0.5rem);
   width: calc(1.5rem - 1rem);
   height: 1px;
-  background: var(--ml-border);
+  background: var(--border-subtle);
   display: none;
 }
 
@@ -231,11 +309,10 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background: linear-gradient(90deg, var(--ml-cyan), var(--ml-emerald));
+  background: var(--roof-coral);
   transform-origin: left center;
   transform: scaleX(0);
   border-radius: 999px;
-  box-shadow: 0 0 12px var(--ml-cyan-glow);
 }
 
 /* ── Story Body Layout ── */
@@ -243,15 +320,15 @@
   max-width: 1360px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 2.5rem;
   align-items: start;
 }
 
 @media (min-width: 901px) {
-  .houseprice-story-body {
-    grid-template-columns: minmax(0, 580px) minmax(0, 1fr);
-    gap: 4.5rem;
+  [data-houseprice-layout="desktop"] .houseprice-story-body {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 5vw, 4.5rem);
   }
 }
 
@@ -262,7 +339,7 @@
 }
 
 @media (min-width: 901px) {
-  .houseprice-story-stage {
+  [data-houseprice-layout="desktop"] .houseprice-story-stage {
     position: sticky;
     top: 96px;
     z-index: 20;
@@ -276,8 +353,8 @@
   justify-content: space-between;
   padding: 1rem 1.25rem;
   border-radius: 16px;
-  background: var(--ml-surface);
-  border: 1px solid var(--ml-border);
+  background: var(--roof-card);
+  border: 1px solid var(--border-subtle);
   margin-bottom: 1rem;
 }
 
@@ -304,8 +381,8 @@
 .houseprice-progress-nav {
   padding: 0.85rem 1.25rem;
   border-radius: 14px;
-  background: rgba(15, 17, 26, 0.75);
-  border: 1px solid var(--ml-border);
+  background: var(--roof-card);
+  border: 1px solid var(--border-subtle);
   margin-bottom: 1rem;
 }
 
@@ -313,10 +390,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font-size: 0.8125rem;
   color: var(--color-fg-subtle);
   margin-bottom: 0.5rem;
 }
@@ -325,7 +399,7 @@
   width: 100%;
   height: 3px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--roof-sand);
   overflow: hidden;
   margin-bottom: 0.75rem;
 }
@@ -334,14 +408,14 @@
   display: block;
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg, var(--ml-cyan), var(--ml-emerald));
+  background: var(--roof-coral);
   transform-origin: 0% 50%;
   transform: scaleX(0);
 }
 
 .houseprice-progress-nav ol {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.5rem;
   list-style: none;
   padding: 0;
@@ -350,49 +424,39 @@
 
 .houseprice-progress-step {
   display: flex;
-  flex-direction: column;
-  padding: 0.4rem 0.5rem;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0.3rem 0.25rem;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--roof-paper);
   border: 1px solid transparent;
   text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.houseprice-progress-step span {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: var(--color-fg-subtle);
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .houseprice-progress-step strong {
-  font-size: 10px;
+  font-size: clamp(0.6875rem, 0.95vw, 0.8125rem);
+  line-height: 1.2;
+  text-align: center;
   color: var(--color-fg-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-top: 0.15rem;
 }
 
 .houseprice-progress-step.is-active {
-  background: rgba(6, 182, 212, 0.12);
-  border-color: rgba(6, 182, 212, 0.4);
+  background: var(--roof-coral-wash);
+  border-color: var(--roof-coral-ink);
 }
 
 .houseprice-progress-step.is-active strong {
-  color: var(--ml-cyan);
+  color: var(--roof-coral-ink);
 }
 
 /* ── 3D Perspective Screen Viewport ── */
 .houseprice-stage-figure {
   position: relative;
   border-radius: 20px;
-  background: #05070e;
-  border: 1px solid var(--ml-border);
-  box-shadow: 0 25px 70px -30px rgba(0, 0, 0, 0.9), 0 0 40px -15px var(--ml-cyan-glow);
+  background: var(--roof-card);
+  border: 1px solid var(--border-subtle);
   padding: 1.15rem;
   overflow: hidden;
 }
@@ -401,26 +465,23 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--ml-border);
+  flex-wrap: wrap;
+  font-size: 0.8125rem;
   color: var(--color-fg-subtle);
 }
 
 .houseprice-console-boundary strong {
   color: var(--color-fg);
-  letter-spacing: 0.05em;
 }
 
 .houseprice-3d-viewport {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 1916 / 984;
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid var(--ml-border);
-  background: #030407;
+  border: 1px solid var(--border-subtle);
+  background: var(--roof-paper);
   contain: paint;
   margin: 0.85rem 0;
   perspective: 1400px;
@@ -433,9 +494,8 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #06b6d4 20%, #38bdf8 50%, #06b6d4 80%, transparent);
-  box-shadow: 0 0 16px 2px #06b6d4;
+  height: 100%;
+  border-top: 2px solid var(--roof-coral);
   z-index: 30;
   pointer-events: none;
   opacity: 0;
@@ -448,24 +508,11 @@
   bottom: 0;
   left: 0;
   width: 120px;
-  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.35) 45%, rgba(255, 255, 255, 0.6) 50%, rgba(6, 182, 212, 0.35) 55%, transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--roof-gold) 26%, transparent), transparent);
   transform: skewX(-24deg);
   pointer-events: none;
   z-index: 31;
   opacity: 0;
-}
-
-/* Topographic Contour Overlay */
-.houseprice-contour-overlay {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 20;
-  background-image:
-    radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 65%),
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-  background-size: 100% 100%, 28px 28px, 28px 28px;
 }
 
 /* SVG Decision Tree Split Overlay */
@@ -476,7 +523,7 @@
   height: 100%;
   pointer-events: none;
   z-index: 22;
-  opacity: 0.75;
+  opacity: 0.17;
 }
 
 /* 3D Perspective Plane Stack */
@@ -495,16 +542,16 @@
   width: 100%;
   height: 100%;
   display: block;
-  opacity: 0;
-  visibility: hidden;
   pointer-events: none;
   margin: 0;
 }
 
-.houseprice-stage-media.is-active {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+.houseprice-stage-media:not(.is-active) .houseprice-stage-caption {
+  visibility: hidden;
+}
+
+.houseprice-stage-media:not(:first-child) .houseprice-stage-plane {
+  visibility: hidden;
 }
 
 .houseprice-stage-plane {
@@ -530,56 +577,34 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 0.8125rem;
   color: var(--color-fg-muted);
-  background: rgba(7, 10, 18, 0.92);
-  backdrop-filter: blur(8px);
+  background: var(--roof-card);
   padding: 0.35rem 0.65rem;
   border-radius: 6px;
-  border: 1px solid var(--ml-border);
+  border: 1px solid var(--border-subtle);
   z-index: 25;
 }
 
-/* Floating Decision Rule Chip */
+/* The rule and estimate sit below the screenshot to keep the UI visible. */
+.houseprice-stage-readouts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+}
+
 .houseprice-hud-chip {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(7, 10, 18, 0.94);
-  backdrop-filter: blur(10px);
-  padding: 0.45rem 0.75rem;
-  border-radius: 8px;
-  border: 1px solid rgba(6, 182, 212, 0.4);
-  box-shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.7);
-  z-index: 25;
-  font-family: var(--font-mono);
+  min-width: 0;
+  align-content: center;
+  background: var(--roof-sand);
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.65rem;
 }
 
-/* Floating Valuation Badge */
 .houseprice-hud-valuation {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  background: rgba(7, 10, 18, 0.94);
-  backdrop-filter: blur(12px);
-  padding: 0.65rem 0.95rem;
-  border-radius: 10px;
-  border: 1px solid rgba(6, 182, 212, 0.35);
-  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.85);
-  z-index: 25;
-  font-family: var(--font-mono);
-}
-
-.houseprice-stage-note {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: var(--color-fg-subtle);
-  padding-top: 0.75rem;
-  border-top: 1px solid var(--ml-border);
+  background: var(--roof-sage-wash);
+  padding: 0.65rem 0.85rem;
+  border-radius: 0.65rem;
 }
 
 /* ── Right Column: Scrolling Narrative Chapters ── */
@@ -594,12 +619,12 @@
   bottom: 0;
   left: -2rem;
   width: 2px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--border-subtle);
   display: none;
 }
 
 @media (min-width: 901px) {
-  .houseprice-story-rail {
+  [data-houseprice-layout="desktop"] .houseprice-story-rail {
     display: block;
   }
 }
@@ -608,7 +633,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, var(--ml-cyan), var(--ml-emerald));
+  background: var(--roof-coral);
   transform-origin: 50% 0%;
   transform: scaleY(0);
 }
@@ -617,29 +642,15 @@
   position: relative;
   min-height: 70vh;
   padding: 3rem 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-.houseprice-chapter-marker {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1.25rem;
-}
-
-.houseprice-marker-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ml-cyan);
-  box-shadow: 0 0 8px var(--ml-cyan);
-}
-
 .houseprice-chapter-copy h3 {
   font-size: clamp(1.75rem, 3vw, 2.5rem);
-  font-weight: 300;
+  font-weight: 500;
   line-height: 1.2;
   letter-spacing: -0.02em;
   color: var(--color-fg);
@@ -653,9 +664,8 @@
   gap: 0.75rem;
   padding: 0.85rem 1.15rem;
   border-radius: 12px;
-  background: rgba(6, 182, 212, 0.06);
-  border: 1px solid rgba(6, 182, 212, 0.2);
-  font-family: var(--font-mono);
+  background: var(--roof-card);
+  border: 1px solid var(--border-subtle);
   font-size: 12px;
   color: var(--color-fg-muted);
   position: relative;
@@ -673,14 +683,14 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--roof-sand);
 }
 
 .houseprice-boundary-route i span {
   display: block;
   height: 100%;
   width: 100%;
-  background: var(--ml-cyan);
+  background: var(--roof-coral-ink);
   transform-origin: 0% 50%;
   transform: scaleX(0);
 }
@@ -698,7 +708,6 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  font-family: var(--font-mono);
   font-size: 11.5px;
   color: var(--color-fg-subtle);
 }
@@ -712,27 +721,51 @@
 .houseprice-mini-chip {
   padding: 0.35rem 0.6rem;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--ml-border);
-  font-family: var(--font-mono);
+  background: var(--roof-paper);
+  border: 1px solid var(--border-subtle);
   font-size: 10.5px;
   color: var(--color-fg-subtle);
 }
 
 .houseprice-mini-chip strong {
-  color: var(--ml-cyan);
+  color: var(--roof-coral-ink);
 }
 
 /* Mobile Inline Figure */
 .houseprice-inline-figure {
-  margin-top: 2rem;
-  display: block;
+  margin-top: 1.5rem;
+  padding: 0;
 }
 
-@media (min-width: 901px) {
-  .houseprice-inline-figure {
-    display: none;
-  }
+.houseprice-inline-figure .houseprice-plane-viewport {
+  position: relative;
+  aspect-ratio: 1916 / 984;
+}
+
+.houseprice-inline-figure .houseprice-stage-caption {
+  position: static;
+  display: flex;
+  border: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0;
+}
+
+[data-houseprice-layout="desktop"] .houseprice-inline-figure {
+  display: none;
+}
+
+.houseprice-experience:not([data-houseprice-layout="desktop"]) .houseprice-chapter {
+  min-height: 0;
+  padding-block: 1.5rem 2.25rem;
+}
+
+.houseprice-experience:not([data-houseprice-layout="desktop"]) .houseprice-story-body {
+  max-width: 54rem;
+}
+
+.houseprice-chapter,
+#houseprice-case-study {
+  scroll-margin-top: 5.5rem;
 }
 
 /* ── Interactive Simulator Deck ── */
@@ -742,30 +775,29 @@
   gap: 0.45rem;
   padding: 0.55rem 0.85rem;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--ml-border);
-  font-family: var(--font-mono);
+  background: var(--roof-paper);
+  border: 1px solid var(--border-subtle);
   font-size: 11px;
   color: var(--color-fg-muted);
   cursor: pointer;
   text-align: left;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .houseprice-preset-chip:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.15);
+  background: var(--roof-sand);
+  border-color: var(--border-strong);
 }
 
 .houseprice-preset-chip.is-active {
-  background: rgba(6, 182, 212, 0.12);
-  border-color: var(--ml-cyan);
-  color: var(--ml-cyan);
+  background: var(--roof-coral-wash);
+  border-color: var(--roof-coral-ink);
+  color: var(--roof-coral-ink);
 }
 
 .houseprice-slider-row {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid var(--ml-border);
+  background: var(--roof-paper);
+  border: 1px solid var(--border-subtle);
   border-radius: 12px;
   padding: 0.85rem 1rem;
 }
@@ -774,9 +806,9 @@
   width: 100%;
   height: 6px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--roof-sand);
   outline: none;
-  accent-color: var(--ml-cyan);
+  accent-color: var(--roof-coral-ink);
   cursor: pointer;
 }
 
@@ -785,35 +817,28 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem 1rem;
   padding: 0.75rem 1rem;
-  background: #040508;
+  background: var(--roof-sand);
   border-radius: 10px;
-  border: 1px solid var(--ml-border);
+  border: 1px solid var(--border-subtle);
 }
 
 .houseprice-vector-cell {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-family: var(--font-mono);
   font-size: 11px;
   color: var(--color-fg-muted);
 }
 
 .houseprice-vector-cell strong {
-  color: var(--ml-cyan);
-}
-
-.houseprice-valuation-box {
-  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  box-shadow: 0 10px 30px -10px var(--ml-cyan-glow);
+  color: var(--roof-coral-ink);
 }
 
 /* ── Deep Dive Architecture & Case Study Section ── */
 .houseprice-benchmark-bar {
   height: 8px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--roof-sand);
   overflow: hidden;
   position: relative;
   margin-top: 0.4rem;
@@ -822,68 +847,120 @@
 .houseprice-benchmark-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--ml-cyan), var(--ml-violet));
+  background: var(--roof-coral);
   transition: width 1s ease-out;
 }
 
 .houseprice-benchmark-card {
   padding: 1.5rem;
   border-radius: 16px;
-  background: linear-gradient(145deg, rgba(15, 17, 26, 0.9) 0%, rgba(7, 8, 13, 0.95) 100%);
-  border: 1px solid var(--ml-border);
-  transition: all 0.25s ease;
+  background: var(--roof-card);
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.25s ease, transform 0.25s ease;
 }
 
 .houseprice-benchmark-card:hover {
-  border-color: rgba(6, 182, 212, 0.35);
+  border-color: var(--roof-coral);
   transform: translateY(-2px);
 }
 
-.houseprice-tab-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1.2rem;
-  border-radius: 999px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-fg-muted);
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--ml-border);
-  transition: all 0.2s ease;
-  cursor: pointer;
+.houseprice-valuation-box {
+  position: relative;
+  background: var(--roof-sage);
+  isolation: isolate;
+  overflow: hidden;
+  color: #1b3529;
 }
 
-.houseprice-tab-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--color-fg);
+.houseprice-valuation-box::after {
+  position: absolute;
+  z-index: -1;
+  right: -3.5rem;
+  bottom: -5rem;
+  width: 12rem;
+  aspect-ratio: 1;
+  border: 1.1rem solid rgb(255 253 247 / 12%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.1rem rgb(255 253 247 / 8%);
+  content: "";
 }
 
-.houseprice-tab-btn.is-active {
-  background: rgba(6, 182, 212, 0.15);
-  color: var(--ml-cyan);
-  border-color: var(--ml-cyan);
-  box-shadow: 0 0 20px -5px var(--ml-cyan-glow);
+.houseprice-benchmark-best {
+  background: var(--roof-sage-wash);
+  border-color: var(--roof-sage);
+}
+
+.houseprice-gallery {
+  padding: clamp(0.75rem, 2.5vw, 2rem);
+  background: var(--roof-card);
+  border-radius: 1.25rem;
+}
+
+.houseprice-gallery-preview {
+  border-radius: 0.75rem;
+}
+
+.houseprice-gallery-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1rem;
+  padding-block: 1rem 1.5rem;
+}
+
+.houseprice-gallery-caption h4 {
+  font-family: var(--roof-serif);
+  font-size: 1.45rem;
+}
+
+.houseprice-gallery-caption p {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+}
+
+.houseprice-gallery-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+@media (min-width: 700px) {
+  .houseprice-gallery-options {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
 }
 
 .houseprice-thumb-btn {
-  position: relative;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 2px solid transparent;
-  opacity: 0.6;
-  transition: all 0.2s ease;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.4rem 0.4rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 0.7rem;
+  background: var(--roof-paper);
+  color: var(--text-secondary);
+  text-align: left;
+  font-size: 0.8125rem;
   cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease;
 }
 
-.houseprice-thumb-btn:hover {
-  opacity: 0.9;
+.houseprice-thumb-btn:hover,
+.houseprice-thumb-btn[aria-pressed="true"] {
+  background: var(--roof-coral-wash);
+  color: var(--roof-coral-ink);
 }
 
-.houseprice-thumb-btn.is-active {
-  opacity: 1;
-  border-color: var(--ml-cyan);
-  box-shadow: 0 0 15px -3px var(--ml-cyan-glow);
+.houseprice-thumb-btn[aria-pressed="true"] {
+  border-color: var(--roof-coral);
+}
+
+.houseprice-thumbnail {
+  position: relative;
+  aspect-ratio: 1916 / 984;
+  overflow: hidden;
+  border-radius: 0.4rem;
+}
+
+.houseprice-thumbnail img {
+  object-fit: contain;
 }

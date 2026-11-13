@@ -20,6 +20,7 @@ export function Nav() {
   const [hoveredHref, setHoveredHref] = useState<string | null>(null)
   const [isCtaHovered, setIsCtaHovered] = useState(false)
   const pathname = usePathname()
+  const isRoofWorth = pathname === '/work/roofworth'
   const reducedMotion = useReducedMotion()
 
   useEffect(() => {
@@ -33,7 +34,9 @@ export function Nav() {
       <motion.header
         className={cn(
           'fixed top-0 left-0 right-0 z-30 transition-all duration-300',
-          scrolled
+          isRoofWorth
+            ? 'bg-base border-b border-border'
+            : scrolled
             ? 'bg-base/90 backdrop-blur-md border-b border-border'
             : 'bg-transparent'
         )}

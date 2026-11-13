@@ -39,6 +39,39 @@ export type Project = {
   year: number
 }
 
+export const roofWorthScreenshots = {
+  home: {
+    src: '/images/roofworth/1.home_page.png',
+    label: 'Home',
+    alt: 'RoofWorth home page with an illustrated California house and the property profile form',
+    description: 'The landing page introduces the California housing estimator and leads directly into the property profile.',
+  },
+  inputs: {
+    src: '/images/roofworth/2.input_field.png',
+    label: 'Property profile',
+    alt: 'RoofWorth form with eight property and neighborhood inputs next to an empty estimate panel',
+    description: 'Eight fields capture income, housing age, room and occupancy ratios, population, and California coordinates.',
+  },
+  example: {
+    src: '/images/roofworth/3.ex_home_values.png',
+    label: 'Example home',
+    alt: 'RoofWorth property profile populated with an example California home',
+    description: 'The example fills all eight fields so visitors can try an estimate with a complete property profile.',
+  },
+  wakeup: {
+    src: '/images/roofworth/4.server_wakeup_overlay.png',
+    label: 'Service warm-up',
+    alt: 'Preparing your estimate overlay showing RoofWorth connecting to the valuation service',
+    description: 'A progress overlay shows when the app is connecting to the valuation service and preparing the estimate.',
+  },
+  result: {
+    src: '/images/roofworth/5.predicted_value.png',
+    label: 'Estimate result',
+    alt: 'Sage RoofWorth estimate card showing $293,378, the model score, and a recent estimates list',
+    description: 'The estimate card displays the predicted value and model score, with recent estimates listed below it.',
+  },
+} satisfies Record<string, GalleryItem & { alt: string; description: string }>
+
 export const projects: Project[] = [
   {
     slug: 'cyphr',
@@ -182,33 +215,30 @@ export const projects: Project[] = [
     year: 2026,
   },
   {
-    slug: 'ai-house-price-estimator',
-    title: 'AI House Price Estimator',
+    slug: 'roofworth',
+    title: 'RoofWorth',
     status: 'self-initiated',
     statusLabel: 'Self-initiated technical build',
     category: 'Applied Machine Learning',
-    problem: 'Machine learning models are often trapped in notebooks. This required an end-to-end deployment of an evaluated model through a functional API and interface.',
+    problem: 'A model trained on California census data needed a usable property form, a prediction API, and clear feedback while the service starts.',
     solution: 'An end-to-end machine learning application predicting California house prices. Tuned Random Forest model deployed via FastAPI and React.',
     summary: 'Random Forest + FastAPI + React, tuned with GridSearchCV and deployed on Render and Vercel.',
     keyDecisions: [
       'GridSearchCV hyperparameter tuning resulting in an R² of 0.8062',
-      'Axios API communication with animated prediction results and toast notifications'
+      'An example property profile, service warm-up feedback, and an estimate panel with recent results'
     ],
     stack: ['Python', 'Scikit-learn', 'FastAPI', 'React'],
     metrics: [
       { label: 'Accuracy', value: 'R² 0.8062' }
     ],
     links: [
-      { label: 'Live Predictor', href: 'https://aihouseprice.vercel.app/', kind: 'live' },
+      { label: 'Try RoofWorth', href: 'https://roof-worth.vercel.app/', kind: 'live' },
       { label: 'Source Code', href: 'https://github.com/Vittal-17/ai-house-price-estimator', kind: 'github' },
       { label: 'API docs', href: 'https://aihouseprice.onrender.com/docs', kind: 'docs' }
     ],
-    gallery: [
-      { src: '/images/aihouseprice/home.png', label: 'Home' },
-      { src: '/images/aihouseprice/predicted_price.png', label: 'Prediction Result' }
-    ],
+    gallery: Object.values(roofWorthScreenshots),
     featured: true,
-    coverDescription: 'A tuned Random Forest regression model deployed via a FastAPI backend and React frontend.',
+    coverDescription: 'Estimate a California home’s value from eight housing and neighborhood inputs.',
     year: 2026,
   },
   {

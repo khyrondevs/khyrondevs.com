@@ -61,7 +61,7 @@ export function createHousePriceStoryState(targets: StoryStateTargets) {
 
     syncMedia();
 
-    targets.progressLabel.textContent = `0${next + 1} / 0${targets.chapters.length}`;
+    targets.progressLabel.textContent = `${next + 1} of ${targets.chapters.length}`;
     const readout = targets.readouts[next];
     if (readout) {
       targets.root.setAttribute("data-houseprice-active", readout.id);
@@ -219,13 +219,13 @@ export function scoreHousePriceStory(
 
   // 6. Laser Scan Sweep (sweeps vertically across active screen on every phase transition)
   if (targets.laserScan) {
-    timeline.set(targets.laserScan, { autoAlpha: 0, yPercent: -120 }, 0);
+    timeline.set(targets.laserScan, { autoAlpha: 0, yPercent: 0 }, 0);
     chapterOffsets.forEach((at) => {
       timeline
         .fromTo(
           targets.laserScan!,
-          { autoAlpha: 0, yPercent: -120 },
-          { autoAlpha: 1, yPercent: 450, duration: duration * 0.75, ease: "power1.inOut", immediateRender: false },
+          { autoAlpha: 0, yPercent: 0 },
+          { autoAlpha: 0.65, yPercent: 100, duration: duration * 0.75, ease: "power1.inOut", immediateRender: false },
           at,
         )
         .to(targets.laserScan!, { autoAlpha: 0, duration: duration * 0.25, ease: "power1.out" }, at + duration * 0.75);

@@ -36,7 +36,7 @@ export const siteConfig: SiteConfig = {
   secondaryCta: { label: 'See our work', href: '/work' },
   navLinks: [
     { label: 'Services', href: '/services' },
-    { label: 'Work', href: '/work' },
+    { label: 'Our Work', href: '/work' },
     { label: 'Process', href: '/process' },
     { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },

@@ -57,7 +57,7 @@ describe('Zero-Dead-Link Route Crawler & Security Cloaking Suite', async () => {
         'cinemora',
         'jobpilot',
         'eazyshop',
-        'ai-house-price-estimator',
+        'roofworth',
         'online-lms',
       ]
       const actualSlugs = projects.map((p) => p.slug)
@@ -115,6 +115,12 @@ describe('Zero-Dead-Link Route Crawler & Security Cloaking Suite', async () => {
         assert.ok(html.includes(project.title), `HTML missing project title for ${project.slug}`)
       })
     }
+
+    it('redirects the legacy estimator URL to RoofWorth', async () => {
+      const res = await fetch(`${BASE_URL}/work/ai-house-price-estimator`, { redirect: 'manual' })
+      assert.equal(res.status, 308)
+      assert.equal(res.headers.get('location'), '/work/roofworth')
+    })
 
     it('robots.txt responds with HTTP 200 and valid directives', async () => {
       const res = await fetch(`${BASE_URL}/robots.txt`)

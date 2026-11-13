@@ -89,19 +89,6 @@ const PROJECT_STYLES: Record<string, ProjectStyle> = {
     githubHoverBg: "hover:bg-[#10b981]/15",
     githubHoverShadow: "hover:shadow-[0_0_20px_rgba(16,185,129,0.25)]",
   },
-  "ai-house-price-estimator": {
-    liveBg: "bg-gradient-to-r from-[#0284c7] via-[#06b6d4] to-[#38bdf8]",
-    liveText: "text-black font-semibold",
-    liveShadow: "shadow-[0_0_20px_rgba(6,182,212,0.35)]",
-    liveHoverShadow: "hover:shadow-[0_0_30px_rgba(56,189,248,0.6)]",
-    liveRing: "focus-visible:ring-[#06b6d4]",
-    liveDot: "bg-[#22d3ee]",
-    githubBorder: "border-[#06b6d4]/40",
-    githubText: "text-white",
-    githubHoverBorder: "hover:border-[#38bdf8]",
-    githubHoverBg: "hover:bg-[#06b6d4]/15",
-    githubHoverShadow: "hover:shadow-[0_0_20px_rgba(6,182,212,0.25)]",
-  },
   "online-lms": {
     liveBg: "bg-gradient-to-r from-[#4f46e5] via-[#6366f1] to-[#818cf8]",
     liveText: "text-white font-semibold",
@@ -144,6 +131,25 @@ export function ProjectActionButtons({
 }: ProjectActionButtonsProps) {
   const links = project.links ?? [];
   if (!links.length) return null;
+
+  if (project.slug === "roofworth") {
+    return (
+      <div className={cn("houseprice-actions", className)}>
+        {links.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn("houseprice-action", link.kind === "live" && "houseprice-action-primary", size === "sm" && "houseprice-action-small")}
+          >
+            {link.label}
+            <ArrowUpRight size={15} aria-hidden="true" />
+          </a>
+        ))}
+      </div>
+    );
+  }
 
   const liveLink = links.find((l) => l.kind === "live");
   const githubLink = links.find((l) => l.kind === "github");

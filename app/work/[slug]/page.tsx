@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { projects, getProjectBySlug } from '@/lib/content/projects'
+import { projects, getProjectBySlug, roofWorthScreenshots } from '@/lib/content/projects'
 import { RevealOnScroll } from '@/components/ui/reveal-on-scroll'
 import { Badge } from '@/components/ui/badge'
 import { BentoCard } from '@/components/ui/bento-card'
@@ -116,21 +117,31 @@ export default async function CaseStudyPage(props: CaseStudyPageProps) {
     )
   }
 
-  if (slug === 'ai-house-price-estimator') {
+  if (slug === 'roofworth') {
     return (
       <HousePriceProjectExperience project={project}>
-        <div className="pt-24 md:pt-32 px-6 container-site max-w-4xl pb-12">
-          <Link className="inline-flex items-center gap-2 text-sm text-fg-muted hover:text-fg transition-colors mb-12" href="/work">
+        <header className="houseprice-hero">
+          <Link className="houseprice-back-link" href="/work">
             <ArrowLeft size={16} /> All work
           </Link>
-          <div className="flex items-center gap-3 flex-wrap mb-6">
-            <Badge variant="muted">{project.statusLabel}</Badge>
-            <Badge variant="outline">{project.category}</Badge>
+          <div className="houseprice-hero-grid">
+            <div>
+              <h1>{project.title}</h1>
+              <p className="houseprice-hero-description">{project.coverDescription}</p>
+              <p className="houseprice-hero-former-name">Previously AI House Price Estimator</p>
+              <ProjectActionButtons project={project} />
+            </div>
+            <figure className="houseprice-hero-image">
+              <Image
+                src={roofWorthScreenshots.home.src}
+                alt={roofWorthScreenshots.home.alt}
+                fill
+                sizes="(min-width: 1200px) 680px, (min-width: 901px) 56vw, 94vw"
+                preload
+              />
+            </figure>
           </div>
-          <h1 className="text-4xl md:text-6xl font-light text-fg mb-6">{project.title}</h1>
-          <p className="text-xl text-fg-muted mb-8">{project.coverDescription}</p>
-          <ProjectActionButtons project={project} className="mb-12" />
-        </div>
+        </header>
       </HousePriceProjectExperience>
     )
   }

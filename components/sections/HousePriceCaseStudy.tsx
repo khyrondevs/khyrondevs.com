@@ -14,7 +14,7 @@ import {
   TrendingUp,
   type LucideIcon,
 } from "lucide-react";
-import { projects, type Project } from "@/lib/content/projects";
+import { projects, roofWorthScreenshots, type Project } from "@/lib/content/projects";
 import { cn } from "@/lib/utils";
 import useClipboard from "@/hooks/useClipboard";
 import { ProjectActionButtons } from "@/components/ui/project-action-buttons";
@@ -35,54 +35,7 @@ type ArchitectureNode = {
   specs: { label: string; val: string }[];
 };
 
-type GalleryItem = {
-  id: string;
-  src: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  tag: string;
-  stats: string;
-};
-
-const GALLERY_ITEMS: GalleryItem[] = [
-  {
-    id: "gui",
-    src: "/images/aihouseprice/home.png",
-    title: "Real-Time Inference Interface",
-    subtitle: "React Web Dashboard & Form Controls",
-    description: "Interactive parameter inputs with client-side validation, toast notifications, and Axios HTTP client communicating directly with the FastAPI cloud backend.",
-    tag: "React 19 Frontend",
-    stats: "Sub-10ms UX Response",
-  },
-  {
-    id: "dataset",
-    src: "/images/aihouseprice/sample_data_set.png",
-    title: "California Housing Dataset Schema",
-    subtitle: "8-Dimensional Census Distribution",
-    description: "20,640 district block records representing 1990 U.S. Census metrics across California, normalized through Scikit-Learn StandardScaler pipelines.",
-    tag: "Pandas & NumPy",
-    stats: "20,640 Data Points",
-  },
-  {
-    id: "prediction",
-    src: "/images/aihouseprice/predicted_price.png",
-    title: "High-Confidence Valuation Engine",
-    subtitle: "Evaluated Random Forest Output",
-    description: "Instantaneous valuation estimate computed through 200 bagged decision trees, displaying predicted median district house price with confidence bounds.",
-    tag: "FastAPI REST API",
-    stats: "R² 0.8062 Accuracy",
-  },
-  {
-    id: "serving",
-    src: "/images/aihouseprice/fastapi_serving.png",
-    title: "FastAPI REST API & Swagger UI",
-    subtitle: "Sub-10ms Cloud Inference Endpoint",
-    description: "Production ASGI endpoint serving serialized Joblib model weights with Pydantic request schema validation, OpenAPI 3.1 documentation, and real-time execution telemetry.",
-    tag: "FastAPI & Uvicorn",
-    stats: "6.8ms Inference Latency",
-  },
-];
+const GALLERY_ITEMS = Object.values(roofWorthScreenshots);
 
 const FEATURE_IMPORTANCES = [
   { feature: "MedInc", name: "Median Household Income", weight: 52.3, desc: "Primary economic predictor of district property values" },
@@ -122,8 +75,8 @@ const FILE_NAMES: Record<NodeId, string> = {
 };
 
 const getHousePriceProject = (): Project => {
-  const project = projects.find((item) => item.slug === "ai-house-price-estimator");
-  if (!project) throw new Error("AI House Price Estimator project data is missing");
+  const project = projects.find((item) => item.slug === "roofworth");
+  if (!project) throw new Error("RoofWorth project data is missing");
   return project;
 };
 
@@ -136,7 +89,7 @@ function getArchitectureNodes(project: Project): ArchitectureNode[] {
       number: "01",
       label: "Feature Space",
       shortLabel: "8 Dimensions",
-      headline: "Comprehensive geographical and demographic feature normalization.",
+      headline: "Preparing the housing inputs",
       description:
         "Inputs incorporate 8 numerical dimensions from the California housing dataset including median income, housing age, average rooms, population density, and GPS coordinates.",
       proof: project.summary ?? project.solution,
@@ -159,7 +112,7 @@ def prepare_features(df):
       number: "02",
       label: "Random Forest Ensemble",
       shortLabel: "200 Trees",
-      headline: "Robust regression through bagged decision tree ensembles.",
+      headline: "Averaging the tree predictions",
       description:
         "The model builds 200 regression trees across bootstrapped samples, averaging splits to minimize variance and prevent overfitting on outlier districts.",
       proof: project.keyDecisions[0] ?? "GridSearchCV hyperparameter tuning",
@@ -185,7 +138,7 @@ model = RandomForestRegressor(
       number: "03",
       label: "Hyperparameter Optimization",
       shortLabel: "GridSearchCV",
-      headline: "Rigorous 5-fold cross-validation yielding R² 0.8062.",
+      headline: "Tuning with five folds",
       description:
         "Exhaustive hyperparameter sweeps via GridSearchCV with 5-fold cross-validation optimized tree depth, feature splits, and leaf samples to achieve an R² of 0.8062 and MAE of 0.3261.",
       proof: project.metrics?.find((m) => m.label === "Accuracy")?.value ?? "R² 0.8062",
@@ -207,7 +160,7 @@ grid_search.fit(X_train, y_train)`,
       number: "04",
       label: "API Serving Boundary",
       shortLabel: "FastAPI REST",
-      headline: "Sub-10ms inference serving via FastAPI and Joblib.",
+      headline: "Serving predictions with FastAPI",
       description:
         "Tuned model weights are serialized using Joblib and loaded into a lightweight FastAPI service, enabling instantaneous predictions through documented Swagger REST endpoints.",
       proof: project.highlights?.[3] ?? "FastAPI backend, React frontend, Swagger API docs",
@@ -271,7 +224,7 @@ export default function HousePriceCaseStudy({
         {/* Navigation Bar */}
         <header className="flex items-center justify-between flex-wrap gap-4 pb-6 border-b border-border mb-12">
           <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-wider text-fg-muted">
-            <span className="inline-block w-2.5 h-2.5 bg-[#06b6d4] rounded-full animate-pulse" />
+            <span className="inline-block w-2.5 h-2.5 bg-[var(--roof-coral-ink)] rounded-full animate-pulse" />
             {project.title} &bull; Applied ML Architecture & Benchmarks
           </div>
           <div className="flex items-center gap-3 flex-wrap">
@@ -289,7 +242,7 @@ export default function HousePriceCaseStudy({
               <button
                 type="button"
                 onClick={onNextProject}
-                className="px-4 py-2 bg-[#06b6d4] text-black font-semibold rounded-md text-xs font-mono uppercase hover:bg-[#06b6d4]/90 transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-[var(--roof-coral-ink)] text-white font-semibold rounded-md text-xs font-mono uppercase hover:bg-[var(--roof-coral-ink)]/90 transition-colors flex items-center gap-2"
               >
                 Next Project <ArrowUpRight size={14} />
               </button>
@@ -299,12 +252,8 @@ export default function HousePriceCaseStudy({
 
         {/* Editorial Heading */}
         <div className="mb-16">
-          <span className="font-mono text-xs uppercase tracking-widest text-[#06b6d4] mb-3 block">
-            Applied Machine Learning Application
-          </span>
-          <h2 className="text-4xl md:text-6xl font-light text-fg mb-6">
-            Predicting housing values.<br />
-            <span className="text-fg-muted">Evaluated ensemble regression with R² 0.8062.</span>
+          <h2 className="text-4xl md:text-5xl font-medium text-fg mb-6">
+            Model evaluation
           </h2>
           <p className="text-lg text-fg-muted max-w-3xl leading-relaxed">
             {project.summary ?? project.solution}
@@ -314,17 +263,17 @@ export default function HousePriceCaseStudy({
         {/* High-Level Core Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
           <div className="p-8 border border-border bg-surface rounded-2xl">
-            <span className="font-mono text-[10px] uppercase text-[#06b6d4] mb-2 block">Accuracy Metric</span>
+            <span className="font-mono text-[10px] uppercase text-[var(--roof-coral-ink)] mb-2 block">Accuracy Metric</span>
             <div className="text-3xl font-light text-fg mb-1">R² 0.8062</div>
             <p className="text-fg-muted text-xs">Cross-validated coefficient of determination across held-out splits</p>
           </div>
           <div className="p-8 border border-border bg-surface rounded-2xl">
-            <span className="font-mono text-[10px] uppercase text-[#06b6d4] mb-2 block">Error Margin</span>
+            <span className="font-mono text-[10px] uppercase text-[var(--roof-coral-ink)] mb-2 block">Error Margin</span>
             <div className="text-3xl font-light text-fg mb-1">MAE 0.3261</div>
             <p className="text-fg-muted text-xs">Mean absolute error on test split (~$32.6k deviation envelope)</p>
           </div>
           <div className="p-8 border border-border bg-surface rounded-2xl">
-            <span className="font-mono text-[10px] uppercase text-[#06b6d4] mb-2 block">Inference Speed</span>
+            <span className="font-mono text-[10px] uppercase text-[var(--roof-coral-ink)] mb-2 block">Inference Speed</span>
             <div className="text-3xl font-light text-fg mb-1">&lt; 10ms</div>
             <p className="text-fg-muted text-xs">Asynchronous FastAPI REST endpoint execution latency</p>
           </div>
@@ -334,10 +283,10 @@ export default function HousePriceCaseStudy({
         <div className="mb-20">
           <div className="flex items-center justify-between flex-wrap gap-2 mb-6">
             <h3 className="text-xl font-medium text-fg flex items-center gap-2">
-              <Sliders className="text-[#06b6d4]" size={20} />
+              <Sliders className="text-[var(--roof-coral-ink)]" size={20} />
               Random Forest Feature Importance Analysis
             </h3>
-            <span className="font-mono text-xs text-[#06b6d4] uppercase tracking-wider">
+            <span className="font-mono text-xs text-[var(--roof-coral-ink)] uppercase tracking-wider">
               Gini Impurity Reduction &bull; 8-Dimensional Input
             </span>
           </div>
@@ -347,7 +296,7 @@ export default function HousePriceCaseStudy({
               <div key={item.feature}>
                 <div className="flex items-center justify-between text-xs mb-1.5 font-mono">
                   <div className="flex items-center gap-3">
-                    <strong className="text-[#06b6d4] font-semibold text-sm">{item.feature}</strong>
+                    <strong className="text-[var(--roof-coral-ink)] font-semibold text-sm">{item.feature}</strong>
                     <span className="text-fg-muted">{item.name}</span>
                   </div>
                   <span className="text-fg font-semibold">{item.weight}%</span>
@@ -368,7 +317,7 @@ export default function HousePriceCaseStudy({
         <div className="mb-24">
           <div className="flex items-center justify-between flex-wrap gap-2 mb-6">
             <h3 className="text-xl font-medium text-fg flex items-center gap-2">
-              <Cpu className="text-[#06b6d4]" size={20} />
+              <Cpu className="text-[var(--roof-coral-ink)]" size={20} />
               Model Benchmark & Evaluation Matrix
             </h3>
             <span className="font-mono text-xs text-fg-muted uppercase tracking-wider">
@@ -382,7 +331,7 @@ export default function HousePriceCaseStudy({
                 key={bm.model}
                 className={cn(
                   "houseprice-benchmark-card",
-                  bm.best && "border-[#06b6d4] shadow-[0_0_30px_-5px_rgba(6,182,212,0.25)] bg-[#0c1220]"
+                  bm.best && "houseprice-benchmark-best"
                 )}
               >
                 <div className="flex items-center justify-between mb-3">
@@ -390,20 +339,20 @@ export default function HousePriceCaseStudy({
                     {bm.tag}
                   </span>
                   {bm.best && (
-                    <span className="px-2 py-0.5 rounded bg-[#06b6d4]/20 border border-[#06b6d4]/40 font-mono text-[9px] text-[#06b6d4] uppercase font-bold">
+                    <span className="px-2 py-0.5 rounded bg-[var(--roof-coral-ink)]/20 border border-[var(--roof-coral-ink)]/40 font-mono text-[9px] text-[var(--roof-coral-ink)] uppercase font-bold">
                       Winner
                     </span>
                   )}
                 </div>
                 <h4 className="text-base font-medium text-fg mb-4">{bm.model}</h4>
-                <div className="space-y-2 text-xs font-mono border-t border-white/5 pt-3">
+                <div className="space-y-2 text-xs font-mono border-t border-border pt-3">
                   <div className="flex justify-between">
                     <span className="text-fg-muted">R² Score:</span>
-                    <strong className={bm.best ? "text-[#06b6d4] text-sm" : "text-fg"}>{bm.r2}</strong>
+                    <strong className={bm.best ? "text-[var(--roof-coral-ink)] text-sm" : "text-fg"}>{bm.r2}</strong>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-fg-muted">MAE:</span>
-                    <strong className={bm.best ? "text-[#06b6d4]" : "text-fg"}>{bm.mae}</strong>
+                    <strong className={bm.best ? "text-[var(--roof-coral-ink)]" : "text-fg"}>{bm.mae}</strong>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-fg-muted">Latency:</span>
@@ -419,10 +368,10 @@ export default function HousePriceCaseStudy({
         <div className="mb-24">
           <div className="flex items-center justify-between flex-wrap gap-2 mb-6">
             <h3 className="text-xl font-medium text-fg flex items-center gap-2">
-              <Layers className="text-[#06b6d4]" size={20} />
+              <Layers className="text-[var(--roof-coral-ink)]" size={20} />
               5-Fold Cross-Validation & Hyperparameter Grid
             </h3>
-            <span className="font-mono text-xs text-[#06b6d4] uppercase tracking-wider">
+            <span className="font-mono text-xs text-[var(--roof-coral-ink)] uppercase tracking-wider">
               Scikit-Learn GridSearchCV &bull; K-Fold cv=5
             </span>
           </div>
@@ -437,25 +386,25 @@ export default function HousePriceCaseStudy({
                 {CROSS_VALIDATION_FOLDS.map((fold) => (
                   <div
                     key={fold.fold}
-                    className="p-3.5 rounded-xl border border-white/5 bg-[#07080d]/80 flex items-center justify-between font-mono text-xs"
+                    className="p-3.5 rounded-xl border border-border bg-elevated/50 flex items-center justify-between font-mono text-xs"
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-[#06b6d4] font-semibold">{fold.fold}</span>
+                      <span className="text-[var(--roof-coral-ink)] font-semibold">{fold.fold}</span>
                       <span className="text-fg-subtle text-[11px] hidden sm:inline">{fold.records}</span>
                     </div>
                     <div className="flex items-center gap-4">
-                      <span className="text-fg-muted text-[11px]">Train R²: <strong className="text-white">{fold.trainR2}</strong></span>
-                      <span className="text-[#06b6d4] font-semibold">Val R²: {fold.valR2}</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30">
+                      <span className="text-fg-muted text-[11px]">Train R²: <strong className="text-fg">{fold.trainR2}</strong></span>
+                      <span className="text-[var(--roof-coral-ink)] font-semibold">Val R²: {fold.valR2}</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-[var(--roof-sage-ink)]/15 text-[var(--roof-sage-ink)] border border-[var(--roof-sage-ink)]/30">
                         MAE {fold.valMae}
                       </span>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between font-mono text-[11px] text-fg-subtle">
+              <div className="mt-4 pt-3 border-t border-border flex items-center justify-between font-mono text-[11px] text-fg-subtle">
                 <span>Mean Cross-Validation Score:</span>
-                <strong className="text-[#06b6d4]">R² = 0.8062 (±0.0021)</strong>
+                <strong className="text-[var(--roof-coral-ink)]">R² = 0.8062 (±0.0021)</strong>
               </div>
             </div>
 
@@ -468,134 +417,76 @@ export default function HousePriceCaseStudy({
                 {HYPERPARAMETER_GRID.map((hp) => (
                   <div
                     key={hp.param}
-                    className="p-3.5 rounded-xl border border-white/5 bg-[#07080d]/80 space-y-1.5"
+                    className="p-3.5 rounded-xl border border-border bg-elevated/50 space-y-1.5"
                   >
                     <div className="flex items-center justify-between font-mono text-xs">
-                      <strong className="text-[#06b6d4]">{hp.param}</strong>
-                      <span className="px-2 py-0.5 rounded bg-[#06b6d4]/15 border border-[#06b6d4]/30 text-[#06b6d4] text-[10px] font-bold">
+                      <strong className="text-[var(--roof-coral-ink)]">{hp.param}</strong>
+                      <span className="px-2 py-0.5 rounded bg-[var(--roof-coral-ink)]/15 border border-[var(--roof-coral-ink)]/30 text-[var(--roof-coral-ink)] text-[10px] font-bold">
                         Selected: {hp.selected}
                       </span>
                     </div>
                     <div className="flex items-center justify-between text-[11px] font-mono text-fg-subtle">
                       <span>Evaluated: {hp.evaluated}</span>
                     </div>
-                    <p className="text-[11px] font-mono text-fg-muted pt-1 border-t border-white/5">{hp.impact}</p>
+                    <p className="text-[11px] font-mono text-fg-muted pt-1 border-t border-border">{hp.impact}</p>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between font-mono text-[11px] text-fg-subtle">
+              <div className="mt-4 pt-3 border-t border-border flex items-center justify-between font-mono text-[11px] text-fg-subtle">
                 <span>Total Candidate Fits:</span>
-                <strong className="text-white">180 Fits (36 Candidates × 5 Folds)</strong>
+                <strong className="text-fg">180 Fits (36 Candidates × 5 Folds)</strong>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ── Interactive Model Showcase Gallery ── */}
-        <div className="mb-24">
-          <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
-            <div>
-              <span className="font-mono text-xs uppercase tracking-widest text-[#06b6d4] block mb-1">
-                Visual Artifacts & Telemetry
-              </span>
-              <h3 className="text-2xl font-light text-fg">
-                Interface & Data Pipeline Showcase
-              </h3>
-            </div>
+        <section className="mb-24" aria-labelledby="roofworth-gallery-title">
+          <h3 id="roofworth-gallery-title" className="text-3xl font-medium text-fg mb-6">
+            Inside RoofWorth
+          </h3>
 
-            {/* Gallery Tabs */}
-            <div className="flex items-center gap-2 flex-wrap">
+          <div className="houseprice-gallery">
+            <figure aria-live="polite">
+              <div className="houseprice-gallery-preview">
+                <Image
+                  key={activeGallery.src}
+                  src={activeGallery.src}
+                  alt={activeGallery.alt}
+                  fill
+                  sizes="(max-width: 900px) 92vw, 1100px"
+                  className="object-contain"
+                  loading="eager"
+                />
+              </div>
+              <figcaption className="houseprice-gallery-caption">
+                <h4>{activeGallery.label}</h4>
+                <p>{activeGallery.description}</p>
+              </figcaption>
+            </figure>
+
+            <div className="houseprice-gallery-options" aria-label="Choose a RoofWorth screenshot" role="group">
               {GALLERY_ITEMS.map((item, idx) => (
                 <button
-                  key={item.id}
+                  key={item.src}
                   type="button"
+                  aria-pressed={activeGalleryIndex === idx}
                   onClick={() => setActiveGalleryIndex(idx)}
-                  className={cn("houseprice-tab-btn", activeGalleryIndex === idx && "is-active")}
+                  className="houseprice-thumb-btn"
                 >
-                  <span>{item.title}</span>
+                  <span className="houseprice-thumbnail">
+                    <Image src={item.src} alt="" fill sizes="(max-width: 600px) 42vw, 220px" />
+                  </span>
+                  <span>{item.label}</span>
                 </button>
               ))}
             </div>
           </div>
-
-          {/* Interactive Shell */}
-          <div className="p-6 md:p-8 rounded-3xl bg-surface border border-border">
-            <div className="flex flex-col lg:flex-row items-center gap-8 mb-8">
-              {/* Primary Image Viewport */}
-              <div className="relative w-full lg:w-2/3 aspect-[16/10] rounded-2xl overflow-hidden border border-border bg-[#07080d] shadow-2xl">
-                <Image
-                  src={activeGallery.src}
-                  alt={activeGallery.title}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 750px"
-                  className="object-cover object-top transition-transform duration-500 hover:scale-[1.02]"
-                />
-                <div className="absolute top-3 left-3 bg-[#07080d]/85 backdrop-blur-md px-3 py-1 rounded-md border border-white/10 font-mono text-[10px] text-[#06b6d4]">
-                  {activeGallery.tag}
-                </div>
-                <div className="absolute top-3 right-3 bg-[#07080d]/85 backdrop-blur-md px-3 py-1 rounded-md border border-white/10 font-mono text-[10px] text-[#8b5cf6]">
-                  {activeGallery.stats}
-                </div>
-              </div>
-
-              {/* Viewport Meta & Description */}
-              <div className="w-full lg:w-1/3 space-y-4">
-                <span className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle px-2.5 py-1 bg-white/5 rounded-md inline-block">
-                  Artifact 0{activeGalleryIndex + 1} of 0{GALLERY_ITEMS.length}
-                </span>
-                <h4 className="text-2xl font-medium text-fg">{activeGallery.title}</h4>
-                <p className="font-mono text-xs text-[#06b6d4]">{activeGallery.subtitle}</p>
-                <p className="text-fg-muted text-sm leading-relaxed">{activeGallery.description}</p>
-                <div className="pt-4 border-t border-border space-y-2 text-xs font-mono text-fg-subtle">
-                  <div className="flex justify-between">
-                    <span>Component:</span>
-                    <strong className="text-fg">{activeGallery.tag}</strong>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Performance:</span>
-                    <strong className="text-[#06b6d4]">{activeGallery.stats}</strong>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Thumbnail Navigation Rail */}
-            <div className="pt-6 border-t border-border">
-              <span className="font-mono text-[10px] uppercase tracking-wider text-fg-subtle mb-3 block">
-                Model Showcase Artifacts
-              </span>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {GALLERY_ITEMS.map((item, idx) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setActiveGalleryIndex(idx)}
-                    className={cn(
-                      "houseprice-thumb-btn aspect-[16/10] relative text-left",
-                      activeGalleryIndex === idx && "is-active"
-                    )}
-                  >
-                    <Image
-                      src={item.src}
-                      alt={item.title}
-                      fill
-                      sizes="220px"
-                      className="object-cover object-top"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2.5">
-                      <span className="font-mono text-[10px] text-white truncate">{item.title}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+        </section>
 
         {/* ── Deep Dive Architecture Nodes ── */}
         <div className="space-y-16">
           <div className="pb-4 border-b border-border">
-            <span className="font-mono text-xs uppercase tracking-widest text-[#06b6d4] block mb-1">
+            <span className="font-mono text-xs uppercase tracking-widest text-[var(--roof-coral-ink)] block mb-1">
               Code & Boundary Inspector
             </span>
             <h3 className="text-3xl font-light text-fg">
@@ -609,11 +500,11 @@ export default function HousePriceCaseStudy({
             return (
               <div
                 key={node.id}
-                className="p-8 md:p-12 border border-border bg-surface/40 rounded-3xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-start"
+                className="p-5 md:p-10 border border-border bg-surface rounded-3xl grid grid-cols-1 lg:grid-cols-2 gap-8 items-start"
               >
                 <div>
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-xl bg-[#06b6d4]/10 border border-[#06b6d4]/20 flex items-center justify-center text-[#06b6d4]">
+                    <div className="w-10 h-10 rounded-xl bg-[var(--roof-coral-ink)]/10 border border-[var(--roof-coral-ink)]/20 flex items-center justify-center text-[var(--roof-coral-ink)]">
                       <Icon size={20} />
                     </div>
                     <div>
@@ -649,9 +540,9 @@ export default function HousePriceCaseStudy({
                   </div>
                 </div>
 
-                <div className="border border-border bg-[#07080d] rounded-xl overflow-hidden shadow-2xl">
-                  <div className="flex items-center justify-between px-4 py-3 bg-[#0f111a] border-b border-border">
-                    <span className="font-mono text-[11px] text-[#06b6d4] flex items-center gap-2">
+                <div className="border border-border bg-surface rounded-xl overflow-hidden">
+                  <div className="flex items-center justify-between px-4 py-3 bg-elevated border-b border-border">
+                    <span className="font-mono text-[11px] text-[var(--roof-coral-ink)] flex items-center gap-2">
                       <Terminal size={13} /> {FILE_NAMES[node.id]}
                     </span>
                     <button
@@ -659,14 +550,14 @@ export default function HousePriceCaseStudy({
                       onClick={() => handleCopyCode(node.id, node.codeSnippet)}
                       className="px-3 py-1 bg-elevated border border-border rounded text-[10px] font-mono text-fg hover:bg-surface transition-colors flex items-center gap-1.5"
                     >
-                      {isCopied ? <CheckCircle2 size={12} className="text-[#06b6d4]" /> : <Copy size={12} />}
+                      {isCopied ? <CheckCircle2 size={12} className="text-[var(--roof-coral-ink)]" /> : <Copy size={12} />}
                       {isCopied ? "Copied" : "Copy"}
                     </button>
                   </div>
-                  <pre className="p-4 font-mono text-xs text-cyan-300 overflow-x-auto bg-[#07080d]/90 leading-relaxed">
+                  <pre className="p-4 font-mono text-xs text-fg overflow-x-auto bg-surface leading-relaxed">
                     <code>{node.codeSnippet}</code>
                   </pre>
-                  <div className="px-4 py-2 bg-[#0f111a]/50 border-t border-border flex justify-between text-[10px] font-mono text-fg-subtle">
+                  <div className="px-4 py-2 bg-elevated/50 border-t border-border flex justify-between text-[10px] font-mono text-fg-subtle">
                     <span>Scikit-Learn / FastAPI</span>
                     <span>Optimized Weights</span>
                   </div>
