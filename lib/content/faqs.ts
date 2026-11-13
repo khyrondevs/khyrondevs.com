@@ -6,39 +6,39 @@ export type Faq = {
 
 export const faqs: Faq[] = [
   {
-    id: 'engagement-size',
-    question: 'What size of project do you typically work on?',
+    id: 'project-types',
+    question: 'What kind of projects do you take on?',
     answer:
-      'We work best on projects that have real complexity — whether that is a greenfield application with multiple integrations, an AI system that needs to be grounded in proprietary data, or a workflow that spans several systems. We prefer engagements where the problem is well-defined but the right solution is not yet obvious.',
+      'We build web and mobile apps, AI tools, and workflow automations. We also help improve existing software and connect it to other tools.',
+  },
+  {
+    id: 'message',
+    question: 'What should I include in my message?',
+    answer:
+      'Tell us what you’re trying to build or improve, who it’s for, and whether you have a deadline. A few sentences are enough to get started.',
+  },
+  {
+    id: 'budget',
+    question: 'Do I need a budget before reaching out?',
+    answer:
+      'You can leave the budget field blank. If you have a range in mind, sharing it helps us suggest what’s realistic.',
   },
   {
     id: 'timeline',
-    question: 'How long does a typical project take?',
+    question: 'How long will my project take?',
     answer:
-      'Scope determines timeline more than anything else. A focused automation or integration project can be complete in 4–8 weeks. A full-stack web application with custom AI features typically takes 3–5 months. We give more specific estimates after the discovery phase, once scope is defined.',
+      'A focused automation or integration can take 4–8 weeks. A custom web app with AI features typically takes 3–5 months. We’ll give you a clearer estimate once we understand the scope.',
   },
   {
-    id: 'process',
-    question: 'How do you work with clients during the project?',
+    id: 'next-step',
+    question: 'What happens after I send a message?',
     answer:
-      'You see working software regularly — not a big reveal at the end. We use short build cycles, written progress updates, and async-first communication. You are involved in decisions that affect scope or direction. You are not required to attend daily standups.',
-  },
-  {
-    id: 'tech-stack',
-    question: 'Do you work with a specific technology stack?',
-    answer:
-      'We have strong opinions about quality and architecture, not about specific tools. Our common stack includes TypeScript, Next.js, PostgreSQL, and cloud infrastructure, but we adapt to the problem and the existing technical context. We document our technology choices and the reasoning behind them.',
+      'We’ll review what you shared, let you know if we’re a good fit, and suggest a next step.',
   },
   {
     id: 'handoff',
-    question: 'What happens when the project is done?',
+    question: 'Will I own the code after launch?',
     answer:
-      'We transfer ownership fully. That means code in your repository, infrastructure in your accounts, documented runbooks, and a knowledge-transfer session. We do not build systems that require us to maintain them — unless you want a retained relationship for ongoing work.',
-  },
-  {
-    id: 'pricing',
-    question: 'How do you price your work?',
-    answer:
-      'We typically work on a fixed-scope fixed-price basis after the discovery phase. For longer-term or evolving engagements, we can work on a time-and-materials retainer. We are transparent about what changes scope and what does not.',
+      'Yes. We hand over the code, infrastructure, and documentation so your team can run the project.',
   },
 ]

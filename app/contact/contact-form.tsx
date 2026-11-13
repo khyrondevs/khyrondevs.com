@@ -473,11 +473,11 @@ export function ContactForm({ faqs }: ContactFormProps) {
             <Accordion.Item key={i} value={`item-${i}`} className="border-b border-border overflow-hidden">
               <Accordion.Header className="flex">
                 <Accordion.Trigger className="flex flex-1 items-center justify-between py-4 text-left text-fg hover:text-accent transition-colors group [&[data-state=open]>svg]:rotate-180">
-                  <span className="font-medium text-sm md:text-base pr-4">{faq.question}</span>
+                  <span className="font-medium text-sm md:text-[length:var(--text-base)] pr-4">{faq.question}</span>
                   <ChevronDown className="text-fg-subtle transition-transform duration-300 ease-[cubic-bezier(0.87,_0,_0.13,_1)]" size={16} />
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content className="text-fg-muted text-sm md:text-base leading-relaxed overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down" style={{ transition: 'height 0.3s ease' }}>
+              <Accordion.Content className="text-fg-muted text-sm md:text-[length:var(--text-base)] leading-relaxed overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down" style={{ transition: 'height 0.3s ease' }}>
                 <div className="pb-4 pt-0">
                   {faq.answer}
                 </div>
